@@ -20,10 +20,10 @@ class Connector
     protected $username;
     /** @var string The address identifying your KeyMedia installation. */
     protected $mediabaseDomain;
-    /** @var string The class used for progress-reporting. */
-    protected $progressClass;
-    /** @var string The method used for progress reporting. */
-    protected $progressMethod;
+    /** @var string The callback used for progress-reporting. */
+    protected $callback;
+    /** @var int Timout in minutes before the request is cancelled */
+    protected $timeout;
 
     /**
      * Returns an instance of the API.
@@ -32,27 +32,32 @@ class Connector
      * @param $username
      * @param $mediabaseDomain
      */
-    public function __construct($apiKey, $username, $mediabaseDomain)
+    public function __construct($username, $apiKey, $mediabaseDomain)
     {
-        $this->apiKey = $apiKey;
         $this->username = $username;
+        $this->apiKey = $apiKey;
         $this->mediabaseDomain = $mediabaseDomain;
+
+        $this->timeout = 30;
     }
 
     /**
      *
      * Sets the callback used for progressreporting.
-     * The method should be static.
-     * It should also support the four following arguments:
+     * Check PHPDoc for documentation regarding callbacks.
+     * @link http://php.net/manual/en/language.pseudo-types.php
+     * It should support the four following arguments:
      * downloadsize, downloadedsize, uploadsize, uploadedsize.
      *
-     * @param $class
-     * @param $method
+     * @param $callback
+     *
+     * @return bool
      */
-    public function setProgressCallback($class, $method)
+    public function setProgressCallback($callback)
     {
-        $this->progressClass = $class;
-        $this->progressMethod = $method;
+        $this->callback = is_callable($callback) ? $callback : false;
+
+        return (bool)$this->callback;
     }
 
     /**
@@ -67,8 +72,8 @@ class Connector
      */
     public function uploadImage($fieldname, $tags = array(), $attributes = array())
     {
-        set_time_limit(3600);
-        ini_set('max_execution_time', '3600');
+        if (ini_get('max_execution_time') < $this->timeout)
+            set_time_limit($this->timeout + 10);
 
         $url = $this->getRequestUrl();
 
@@ -78,7 +83,7 @@ class Connector
         {
             $postFields = array
             (
-                'image' => '@' . $filename,
+                'media' => '@' . $filename,
                 'originalName' => $_FILES[$fieldname]['name'],
                 'tags' => serialize($tags),
                 'attributes' => serialize($attributes)
@@ -104,9 +109,13 @@ class Connector
     {
         $ch = curl_init($url);
 
-        curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
-        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, array('ezkpmedia\modules\Connector\Connector', 'progressCallback'));
-        curl_setopt($ch, CURLOPT_TIMEOUT, 3600);
+        if ($this->callback)
+        {
+            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
+            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
+        }
+
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
@@ -115,29 +124,6 @@ class Connector
         $result = curl_exec($ch);
 
         return $result;
-    }
-
-    /**
-     *
-     * Progress reporter for curl.
-     *
-     * @param $download_size
-     * @param $downloaded_size
-     * @param $upload_size
-     * @param $uploaded_size
-     */
-    public function progressCallback($download_size, $downloaded_size, $upload_size, $uploaded_size)
-    {
-        if (class_exists($this->progressClass))
-        {
-           if (method_exists($this->progressClass, $this->progressMethod))
-           {
-               $callback = array($this->progressClass, $this->progressMethod);
-               $params = array($download_size, $downloaded_size, $upload_size, $uploaded_size);
-
-               call_user_func_array($callback, $params);
-           }
-        }
     }
 
     /**
@@ -168,5 +154,21 @@ class Connector
             $url .= '&' . $queryString;
 
         return $url;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param int $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
     }
 }
