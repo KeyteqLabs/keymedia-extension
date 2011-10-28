@@ -90,9 +90,10 @@ class Connector
 
             $result = $this->uploadByCurl($url, $postFields);
 
-            return $result;
+            return json_decode($result);
         }
-        else return null;
+
+        return null;
     }
 
     /**
