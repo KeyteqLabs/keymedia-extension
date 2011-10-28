@@ -30,7 +30,7 @@ class UserTest
 
         $attributes = array('ok' => 'nei', 'godtbilde' => 'tja', 'ugyldigattributt' => 'hmm?');
 
-        $result = $api->uploadImage('image', array('tag1', 'tag2'), $attributes);
+        $result = $api->uploadMedia('media', array('tag1', 'tag2'), $attributes);
 
         echo $result;
 

@@ -62,29 +62,28 @@ class Connector
 
     /**
      *
-     * Uploads an image to KeyMedia
+     * Uploads media to KeyMedia
      *
-     * @param $fieldname
+     * @param $filename
+     * @param $originalName
      * @param array $tags
      * @param array $attributes
      *
      * @return mixed|null
      */
-    public function uploadImage($fieldname, $tags = array(), $attributes = array())
+    public function uploadMedia($filename, $originalName, $tags = array(), $attributes = array())
     {
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
         $url = $this->getRequestUrl();
 
-        $filename = $_FILES[$fieldname]['tmp_name'] ?: null;
-
         if (file_exists($filename))
         {
             $postFields = array
             (
                 'media' => '@' . $filename,
-                'originalName' => $_FILES[$fieldname]['name'],
+                'originalName' => $originalName,
                 'tags' => serialize($tags),
                 'attributes' => serialize($attributes)
             );
@@ -94,6 +93,24 @@ class Connector
             return $result;
         }
         else return null;
+    }
+
+    /**
+     *
+     * Uploads media
+     *
+     * @param $fieldname
+     * @param array $tags
+     * @param array $attributes
+     *
+     * @return mixed|null
+     */
+    public function uploadMediaFromForm($fieldname, $tags = array(), $attributes = array())
+    {
+        $filename = $_FILES[$fieldname]['tmp_name'];
+        $originalName = $_FILES[$fieldname]['name'];
+
+        return $this->uploadMedia($filename, $originalName, $tags, $attributes);
     }
 
     /**
