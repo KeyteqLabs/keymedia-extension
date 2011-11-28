@@ -62,6 +62,36 @@ class Connector
 
     /**
      *
+     * Search by one or more tags.
+     *
+     * @param $q
+     * @param bool $limit
+     * @param bool $offset
+     * @param bool $width
+     * @param bool $heigth
+     * @param bool $id
+     * @param bool $externalId
+     *
+     * @return mixed
+     */
+    public function search($q, $limit = false, $offset = false, $width = false, $heigth = false, $id = false, $externalId = false)
+       {
+           $array = compact('q', 'limit', 'offset');
+           if($heigth !== false) $array['height'] = array($heigth);
+           if($width !== false) $array['width'] = array($width);
+           $array['ending'] = 'jpg';
+
+           if($externalId) $array['externalId'] = $externalId;
+
+           //$res = $this->('search', $array);
+
+           //$res = $this->formatRes($res);
+
+           //return $res;
+       }
+
+    /**
+     *
      * Uploads media to KeyMedia
      *
      * @param $filename
@@ -76,7 +106,7 @@ class Connector
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
-        $url = $this->getRequestUrl();
+        $url = $this->getRequestUrl('upload');
 
         if (file_exists($filename))
         {
@@ -148,11 +178,14 @@ class Connector
      *
      * Builds the url for accessing keymedia.
      *
+     * @param $action
+     * @param $params
+     *
      * @return bool|string
      */
-    protected function getRequestUrl()
+    protected function getRequestUrl($action, $params = array())
     {
-        $url = $this->mediabaseDomain .'/media/upload';
+        $url = $this->mediabaseDomain .'/media/' . $action;
         if (strpos($url, "http") === false)
             $url = 'http://'.$url;
 

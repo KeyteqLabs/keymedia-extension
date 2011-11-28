@@ -30,9 +30,9 @@ class UserTest
 
         $attributes = array('ok' => 'nei', 'godtbilde' => 'tja', 'ugyldigattributt' => 'hmm?');
 
-        $result = $api->uploadMedia('media', array('tag1', 'tag2'), $attributes);
+        $result = $api->uploadMedia($_FILES['media']['tmp_name'], $_FILES['media']['name'], array('tag1', 'tag2'), $attributes);
 
-        echo $result;
+        var_dump($result);
 
         \eZExecution::cleanExit();
     }
