@@ -65,30 +65,55 @@ class Connector
      * Search by one or more tags.
      *
      * @param $q
+     * @param bool $attributes
+     * @param bool $collection
      * @param bool $limit
      * @param bool $offset
      * @param bool $width
      * @param bool $heigth
-     * @param bool $id
      * @param bool $externalId
      *
      * @return mixed
      */
-    public function search($q, $limit = false, $offset = false, $width = false, $heigth = false, $id = false, $externalId = false)
-       {
-           $array = compact('q', 'limit', 'offset');
-           if($heigth !== false) $array['height'] = array($heigth);
-           if($width !== false) $array['width'] = array($width);
-           $array['ending'] = 'jpg';
+    public function search($q, $attributes = false, $collection = false, $limit = false, $offset = false, $width = false, $heigth = false, $externalId = false)
+    {
+        $params = compact('q', 'limit', 'offset');
+        if($heigth !== false) $params['height'] = array($heigth);
+        if($width !== false) $params['width'] = array($width);
 
-           if($externalId) $array['externalId'] = $externalId;
+        if($attributes !== false) $params['attributes'] = $attributes;
+        if($collection !== false) $params['collection'] = $collection;
+        if($externalId !== false) $params['externalId'] = $externalId;
 
-           //$res = $this->('search', $array);
+        return $this->makeRequest('search', $params);
+    }
 
-           //$res = $this->formatRes($res);
+    /**
+     *
+     * Retrieves images matching one or more tags.
+     *
+     * @param array $tags A list of tags
+     * @param bool $operator and (default is or)
+     * @param bool $limit
+     * @param bool $offset
+     * @param bool $width
+     * @param bool $height
+     *
+     * @return mixed
+     */
+    public function searchByTags($tags = array(), $operator = false, $limit = false, $offset = false, $width = false, $height = false)
+    {
+        $params = array();
+        $params['tag'] = $tags;
 
-           //return $res;
-       }
+        if ($operator !== false) $params['tagsoperator'] = $operator;
+        if ($limit !== false) $params['limit'] = $limit;
+        if ($offset !== false) $params['offset'] = $offset;
+        if ($width !== false) $params['width'] = $width;
+        if ($height !== false) $params['heigth'] = $height;
+
+        return $this->makeRequest('tag', $params);
+    }
 
     /**
      *
@@ -176,6 +201,22 @@ class Connector
 
     /**
      *
+     * Makes a request and returns the result.
+     *
+     * @param $action
+     * @param $params
+     *
+     * @return mixed
+     */
+    protected function makeRequest($action, $params)
+    {
+        $url = $this->getRequestUrl($action, $params);
+
+        return json_decode(file_get_contents($url));
+    }
+
+    /**
+     *
      * Builds the url for accessing keymedia.
      *
      * @param $action
@@ -185,7 +226,7 @@ class Connector
      */
     protected function getRequestUrl($action, $params = array())
     {
-        $url = $this->mediabaseDomain .'/media/' . $action;
+        $url = $this->mediabaseDomain .'/media/' . $action . '/';
         if (strpos($url, "http") === false)
             $url = 'http://'.$url;
 

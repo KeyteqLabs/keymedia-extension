@@ -20,21 +20,55 @@ use \ezkpmedia\modules\Connector\Connector;
 
 class UserTest
 {
+    /** @var Connector API-Connector */
+    protected $api;
+
+    /**
+     * Initializes the api-connector.
+     */
+    public function __construct()
+    {
+        $this->api = new Connector('keymedia', 'keymedia_test', 'keymedia.raymond.keyteq.no');
+        $this->api->setProgressCallback(array('ezkpmedia\modules\UserTest\UserTest', 'callback'));
+    }
+
     /**
      * Executes the test.
      */
     public function execute()
     {
-        $api = new Connector('ea799a1d3ee2d58690c97735d2f2571a', 'keymedia', 'km.no');
-        $api->setProgressCallback(array('ezkpmedia\modules\UserTest\UserTest', 'callback'));
+        //$this->uploadTest();
 
-        $attributes = array('ok' => 'nei', 'godtbilde' => 'tja', 'ugyldigattributt' => 'hmm?');
+        //$this->searchTest();
 
-        $result = $api->uploadMedia($_FILES['media']['tmp_name'], $_FILES['media']['name'], array('tag1', 'tag2'), $attributes);
-
-        var_dump($result);
+        $this->tagTest();
 
         \eZExecution::cleanExit();
+    }
+
+    protected function tagTest()
+    {
+        $tags = array('meh', 'arkitektur');
+
+        $result = $this->api->searchByTags($tags, 'and');
+
+        var_dump($result);
+    }
+
+    protected function searchTest()
+    {
+        $result = $this->api->search('bity');
+
+        var_dump($result);
+    }
+
+    protected function uploadTest()
+    {
+        $attributes = array('ok' => 'nei', 'godtbilde' => 'tja', 'ugyldigattributt' => 'hmm?');
+
+        $result = $this->api->uploadMedia($_FILES['media']['tmp_name'], $_FILES['media']['name'], array('tag1', 'tag2'), $attributes);
+
+        var_dump($result);
     }
 
     /**
