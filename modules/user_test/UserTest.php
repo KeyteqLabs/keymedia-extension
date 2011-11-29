@@ -16,6 +16,8 @@ namespace ezr_keymedia\modules\user_test;
  *
  */
 
+use \stdClass;
+use \eZHTTPTool;
 use \ezr_keymedia\modules\connector\Connector;
 
 class UserTest
@@ -29,7 +31,7 @@ class UserTest
     public function __construct()
     {
         $this->api = new Connector('keymedia', 'keymedia_test', 'keymedia.raymond.keyteq.no');
-        $this->api->setProgressCallback(array('ezr_keymedia\modules\user_test\UserTest', 'callback'));
+        $this->api->setProgressCallback(array($this, 'callback'));
     }
 
     /**
@@ -37,22 +39,33 @@ class UserTest
      */
     public function execute()
     {
-        //$this->uploadTest();
+        $this->uploadTest();
 
         //$this->searchTest();
-
-        $this->tagTest();
 
         \eZExecution::cleanExit();
     }
 
-    protected function tagTest()
+    public function tags()
     {
-        $tags = array('meh', 'arkitektur');
+        $http = eZHTTPTool::instance();
 
-        $result = $this->api->searchByTags($tags, 'and');
+        $form = new stdClass;
+        $form->action = $_SERVER['SCRIPT_URI'];
 
-        var_dump($result);
+        if ($tags = $http->variable('tags', false))
+        {
+            $operator = $http->variable('operator', 'and');
+            $tags = array_filter(explode(',', $tags));
+            $result = $this->api->searchByTags($tags, strtolower($operator));
+            foreach ($result as &$r)
+            {
+                $images = (array) $r->images;
+                $r->image = current($images);
+            }
+        }
+        require_once('tags.tpl.php');
+        \eZExecution::cleanExit();
     }
 
     protected function searchTest()
@@ -80,7 +93,7 @@ class UserTest
      * @param $c
      * @param $d
      */
-    public static function callBack($a, $b, $c, $d)
+    public function callBack($a, $b, $c, $d)
     {
         trigger_error($a);
         trigger_error($b);
@@ -93,7 +106,10 @@ class UserTest
      */
     public function viewForm()
     {
-        require_once('form.tpl');
+        $form = new \stdClass(array(
+            'action' => '/eng/ezote/delegate/ezkpmedia/UserTest/execute'
+        ));
+        require_once('form.tpl.php');
 
         \eZExecution::cleanExit();
     }
