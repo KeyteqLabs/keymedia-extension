@@ -1,6 +1,6 @@
 <?php
 
-namespace ezkpmedia\modules\Connector;
+namespace ezr_keymedia\modules\connector;
 
 /**
  *

@@ -1,6 +1,6 @@
 <?php
 
-namespace ezkpmedia\modules\UserTest;
+namespace ezr_keymedia\modules\user_test;
 
 /**
  *
@@ -16,7 +16,7 @@ namespace ezkpmedia\modules\UserTest;
  *
  */
 
-use \ezkpmedia\modules\Connector\Connector;
+use \ezr_keymedia\modules\connector\Connector;
 
 class UserTest
 {
@@ -29,7 +29,7 @@ class UserTest
     public function __construct()
     {
         $this->api = new Connector('keymedia', 'keymedia_test', 'keymedia.raymond.keyteq.no');
-        $this->api->setProgressCallback(array('ezkpmedia\modules\UserTest\UserTest', 'callback'));
+        $this->api->setProgressCallback(array('ezr_keymedia\modules\user_test\UserTest', 'callback'));
     }
 
     /**
