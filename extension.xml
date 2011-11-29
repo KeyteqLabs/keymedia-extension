@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<software>
+    <metadata>
+        <name>KeyMedia conncetor</name>
+        <version>1.0.0</version>
+        <copyright>Copyright (C) 2011 Keyteq AS</copyright>
+        <info_url>http://keymedia.no/ez</info_url>
+    </metadata>
+
+    <dependencies>
+        <uses>
+            <extension name="ezkp" />
+        </uses>
+    </dependencies>
+</software>
