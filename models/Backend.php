@@ -6,12 +6,12 @@ class Backend extends \eZPersistentObject
 {
     protected static $definition = array(
         'fields' => array(
-            'id' => array('name' => 'user_id', 'datatype' => 'integer', 'required' => true),
+            'id' => array('name' => 'id', 'datatype' => 'integer', 'required' => false),
             'host' => array('name' => 'host', 'datatype' => 'string', 'required' => true),
             'username' => array('name' => 'username', 'datatype' => 'string', 'required' => true),
             'api_key' => array('name' => 'api_key', 'datatype' => 'string', 'required' => true)
         ),
-        'keys' => 'id',
+        'keys' => array('id'),
         'class_name' => '\\ezr_keymedia\\models\\Backend',
         'name' => 'ezr_keymedia_backends'
     );
@@ -23,7 +23,6 @@ class Backend extends \eZPersistentObject
 
     public static function create(array $data = array())
     {
-        $device = new static($data);
-        return $device;
+        return new static($data);
     }
 }

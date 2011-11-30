@@ -14,6 +14,9 @@ use \ezkp\models\content\Object;
 use \ezkp\models\content\object\Formatter;
 use \ezote\lib\HTTP;
 
+use \eZPersistentObject;
+use ezr_keymedia\models\Backend;
+
 /**
  * Interact with data structures (content objects)
  *
@@ -35,10 +38,44 @@ class KeyMedia extends \ezote\lib\Controller
     public function dashboard()
     {
         $data = array();
+        $data['backends'] = eZPersistentObject::fetchObjectList(Backend::definition());
         return self::response(
             $data,
             array(
                 'template' => 'design:dashboard/dashboard.tpl',
+                'pagelayout' => static::LAYOUT
+            )
+        );
+    }
+
+    /**
+     * Add new mediabase connection
+     */
+    public function addConnection()
+    {
+        $data = array();
+        if ($this->http->method('post'))
+        {
+            $ezhttp = $this->http->ez();
+            $username = $ezhttp->variable('username', false);
+            $host = $ezhttp->variable('host', false);
+            $api_key = $ezhttp->variable('api_key', false);
+            $redirectTo = $ezhttp->variable('redirect_to', false);
+
+            $data = compact('username', 'host', 'api_key');
+            $backend = Backend::create($data);
+            $backend->store();
+            if ($redirectTo)
+            {
+                $id = $backend->id;
+                header("Location: {$redirectTo}?added={$id}");
+            }
+        }
+
+        return self::response(
+            $data,
+            array(
+                'template' => 'design:dashboard/add_connection.tpl',
                 'pagelayout' => static::LAYOUT
             )
         );
