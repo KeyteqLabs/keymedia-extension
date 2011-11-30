@@ -1,26 +1,59 @@
 <?php
 
-//namespace ezr_keymedia\datatypes\keymedia;
-
-//use \ezpI18n;
-//use \eZDataType;
+use \ezr_keymedia\models\Backend;
 
 class KeyMedia extends eZDataType
 {
 	const DATA_TYPE_STRING = 'keymedia';
+    const FIELD_BACKEND = 'data_int1';
 
-    /*!
-     Construction of the class, note that the second parameter in eZDataType 
-     is the actual name showed in the datatype dropdown list.
-    */
+    /**
+     * Construction of the class, note that the second parameter in eZDataType 
+     * is the actual name showed in the datatype dropdown list.
+     */
     function __construct()
     {
-        parent::__construct( self::DATA_TYPE_STRING, \ezpI18n::tr( 'extension/keymedia/datatype', 'KeyMedia', 'Datatype name' ), array( 'serialize_supported' => true ) );
+        parent::__construct(
+            self::DATA_TYPE_STRING, 'KeyMedia', array('serialize_supported' => true)
+        );
     }
 
     /**
-     * Validates the input and returns true if the input was
-     * valid for this datatype.
+     * Called when the datatype is added to a content class
+     * Make sure we store needed metadata somewhere ...
+     *
+     * @param eZHTTPTool $http
+     * @param string $base
+     * @param eZContentClassAttribute $classAttribute
+     */
+    public function fetchClassAttributeHTTPInput($http, $base, $class)
+    {
+        $backend = (int) $http->variable($base . 'connection' . $class->attribute('id'), 0);
+        $class->setAttribute(self::FIELD_BACKEND, $backend);
+        return true;
+    }
+
+    /**
+     * Called on {$class_attribute.content} in template
+     *
+     * @return array 
+     */
+    public function classAttributeContent($class)
+    {
+        $backends = \eZPersistentObject::fetchObjectList(Backend::definition());
+        $selected = $class->attribute(self::FIELD_BACKEND);
+        return compact('backends', 'selected');
+    }
+
+    /**
+     * Validations for when a ContentObject containing this datatype
+     * as an attribute is saved
+     *
+     * @param eZHTTPTool $http
+     * @param mixed $base
+     * @param object $contentObjectAttribute
+     *
+     * @return bool
      */
     function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
@@ -84,9 +117,42 @@ class KeyMedia extends eZDataType
         return true;
     }
 
-    /*!
-     Returns the content.
-    */
+    /**
+     * Notify eZPublish that KeyMedia supports file upload (file insertion)
+     *
+     * @return bool
+     */
+    function isHTTPFileInsertionSupported()
+    {
+        return true;
+    }
+
+    /**
+     * Callback for when file insertion to this datatype happens?
+     *
+     * @param eZContentObject $object
+     * @param int|eZContentObjectVersion $version
+     * @param string $language Current language being worked on
+     * @param mixed $attribute The attribute containing the file
+     * @param eZHTTPFile $file THe actual uploaded file
+     * @param array $mime
+     * @param array $result Out-param containing two keys:
+     *        - _errors_ Array with errors with key `description`
+     *        - _require_storage_ True if the file needs to be stored afterwards
+     * @return bool
+     */
+    function insertHTTPFile($object, $version, $language, $attribute, $file, $mime, &$result)
+    {
+        eZDebug::writeWarning("File upload for the win");
+        return true;
+    }
+
+    /**
+     * Fetch content contained in this attribute when its stored
+     *
+     * @param object $attribute
+     * @return mixed
+     */
     function objectAttributeContent( $contentObjectAttribute )
     {
         return;
