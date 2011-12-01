@@ -16,13 +16,46 @@ class Backend extends \eZPersistentObject
         'name' => 'ezr_keymedia_backends'
     );
 
+    /**
+     * Get data definition for this persistent object
+     *
+     * @return array
+     */
     public static function definition()
     {
         return self::$definition;
     }
 
+    /**
+     * Create a brand new un-stored Backend
+     *
+     * @param array $data
+     * @return \ezr_keymedia\models\Backend
+     */
     public static function create(array $data = array())
     {
         return new static($data);
+    }
+
+    /**
+     * Find a list of objects matching criteria
+     *
+     * @param array $criteria
+     * @return array
+     */
+    public static function find(array $criteria = array())
+    {
+        return static::fetchObjectList(static::definition(), null, $criteria);
+    }
+
+    /**
+     * Find the first object matching criteria (id lookups)
+     *
+     * @param array $criteria
+     * @return \ezr_keymedia\models\Backend
+     */
+    public static function first(array $criteria = array())
+    {
+        return static::fetchObject(static::definition(), null, $criteria);
     }
 }
