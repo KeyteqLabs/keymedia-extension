@@ -3,10 +3,15 @@
 namespace ezr_keymedia\modules\connector;
 
 /**
+ * KeyMedia connector, makes the module talk the talk that KeyMedia talks
+ * Enables the KeyMedia API
  *
- * Beskrivelse
- *
- * Transfers images to KeyMedia.
+ * <code>
+ *   $api = new Connector($username, $apiKey, $host);
+ *   $api->searchByTags($tags, $operator);
+ *   $api->search($q);
+ *   $result = $api->uploadMedia($filepath, $filename, $tags, $attributes);
+ * </code>
  *
  * @author Henning Kvinnesland / henning@keyteq.no
  * @since 27.10.2011
@@ -78,12 +83,12 @@ class Connector
     public function search($q, $attributes = false, $collection = false, $limit = false, $offset = false, $width = false, $heigth = false, $externalId = false)
     {
         $params = compact('q', 'limit', 'offset');
-        if($heigth !== false) $params['height'] = array($heigth);
-        if($width !== false) $params['width'] = array($width);
+        if ($heigth !== false) $params['height'] = array($heigth);
+        if ($width !== false) $params['width'] = array($width);
 
-        if($attributes !== false) $params['attributes'] = $attributes;
-        if($collection !== false) $params['collection'] = $collection;
-        if($externalId !== false) $params['externalId'] = $externalId;
+        if ($attributes !== false) $params['attributes'] = $attributes;
+        if ($collection !== false) $params['collection'] = $collection;
+        if ($externalId !== false) $params['externalId'] = $externalId;
 
         return $this->makeRequest('search', $params);
     }
