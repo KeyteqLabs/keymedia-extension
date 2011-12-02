@@ -142,7 +142,12 @@ $('button.ezr-keymedia-remote-file').click(function(e) {
                 e.preventDefault();
                 confirm('Select');
             });
-            $('button', this.modal).click(function(e) {
+            $('button.close', this.modal).click(function(e) {
+                context.modal.fadeOut(120, function() {
+                    $(this).remove();
+                });
+            });
+            $('button.search', this.modal).click(function(e) {
                 e.preventDefault();
                 var node = $(e.currentTarget);
                 var q = node.prev().val();
