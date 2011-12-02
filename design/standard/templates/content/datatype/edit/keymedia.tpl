@@ -55,8 +55,7 @@ $('button.ezr-keymedia-remote-file').click(function(e) {
 
     var renderer = function(data, tmpl) {
         var node = tmpl.clone();
-        console.log(tmpl);
-        node.find('img').attr('src', data.thumb);
+        node.find('img').attr('src', data.thumb.url);
         node.find('.meta').text(data.filename + ' (' + data.filesize + ')');
         if (data.shared) node.find('.share').addClass('shared');
 
@@ -64,10 +63,12 @@ $('button.ezr-keymedia-remote-file').click(function(e) {
     };
 
     $.getJSON(url, data, function(resp) {
+        var i, tmpl = $(resp.content.item);
+
         var modal = $(resp.content.modal).hide().prependTo('body');
         modal.find('.content').html(resp.content.skeleton);
-        var i, tmpl = $(modal.find('#ezr-keymedia-browser-item-tmpl').html());
         var container = modal.find('.content .body');
+
         var results = resp.content.results.hits;
         for (i = 0; i < results.length; i++)
             container.append(renderer(results[i], tmpl));

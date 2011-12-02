@@ -1,15 +1,13 @@
+{def $searchPlaceholder = 'Search ...'|i18n( 'content/keymedia' )
+    $next = '&gt;'
+    $prev = '&lt;'
+}
+
 <div id="ezr-keymedia-browser">
-    <script type="x-ezr-template" id="ezr-keymedia-browser-item-tmpl">
-    <div class="item">
-        <img />
-        <span class="meta"></span>
-        <span class="share"></span>
-    </div>
-    </script>
     <div class="header">
-        <input type="text" name="ezr-keymedia-search" placeholder={'Search ...'|i18n( 'content/keymedia' )} />
-        <a class="prev">&lt;</a>
-        <a class="next">&gt;</a>
+        <input type="text" name="ezr-keymedia-search" placeholder={$searchPlaceholder} />
+        <a class="prev">{$prev}</a>
+        <a class="next">{$next}</a>
     </div>
 
     <div class="body">

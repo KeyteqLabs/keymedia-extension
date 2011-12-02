@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia\modules\connector;
+namespace ezr_keymedia\models;
 
 /**
  * KeyMedia connector, makes the module talk the talk that KeyMedia talks
@@ -75,16 +75,16 @@ class Connector
      * @param bool $limit
      * @param bool $offset
      * @param bool $width
-     * @param bool $heigth
+     * @param bool $height
      * @param bool $externalId
      *
      * @return mixed
      */
-    public function search($q, $attributes = false, $collection = false, $limit = false, $offset = false, $width = false, $heigth = false, $externalId = false)
+    public function search($q, $attributes = false, $collection = false, $limit = false, $offset = false, $width = false, $height = false, $externalId = false)
     {
         $params = compact('q', 'limit', 'offset');
-        if ($heigth !== false) $params['height'] = array($heigth);
-        if ($width !== false) $params['width'] = array($width);
+        if ($width && !is_array($width)) $params['width'] = $width;
+        if ($height && !is_array($height)) $params['height'] = $height;
 
         if ($attributes !== false) $params['attributes'] = $attributes;
         if ($collection !== false) $params['collection'] = $collection;

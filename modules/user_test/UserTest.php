@@ -18,7 +18,7 @@ namespace ezr_keymedia\modules\user_test;
 
 use \stdClass;
 use \eZHTTPTool;
-use \ezr_keymedia\modules\connector\Connector;
+use \ezr_keymedia\models\Connector;
 
 class UserTest
 {
