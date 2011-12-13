@@ -1,3 +1,12 @@
+{ezscript_require( array(
+    'ezjsc::jquery',
+    'plupload/plupload.js',
+    'plupload/plupload.html4.js',
+    'plupload/plupload.html5.js',
+
+    'keymedia.js'
+) )}
+
 {def $base='ContentObjectAttribute'}
 {run-once}
 <style>
@@ -62,101 +71,73 @@
 {$attribute|attribute('show')}
 *}
 
-<button type="button" class="ezr-keymedia-remote-file">
-    {'Choose from KeyMedia'|i18n( 'content/edit' )}
-</button>
+{* Current image. *}
+<div class="keymedia-image">
+    {$attribute.content.original|attribute('show', 3)}
+    {if $attribute_content.original.is_valid}
+    <label>{'Current image'|i18n( 'design/standard/content/datatype' )}:</label>
+    {else}
+    <label>{'There is no image file'|i18n( 'design/standard/content/datatype' )}:</label>
+    {/if}
 
-<button type="button" class="ezr-keymedia-local-file">
-    {'Choose from computer'|i18n( 'content/edit' )}
-</button>
+    {attribute_view_gui image_class=ezini( 'ImageSettings', 'DefaultEditAlias', 'content.ini' ) attribute=$attribute}
+    <p>
+    {$attribute.content.original.mime_type|wash( xhtml )}
+    {$attribute.content.original.filesize|si( byte )}
+    </p>
+
+</div>
+
+<div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl}
+    data-contentobject-id={$attribute.contentobject_id}
+    data-version={$attribute.version}>
+
+    <button type="button" class="ezr-keymedia-remote-file">
+        {'Choose from KeyMedia'|i18n( 'content/edit' )}
+    </button>
+
+    <button type="button" class="ezr-keymedia-local-file" id="ezr-keymedia-local-file-{$attribute.id}">
+        {'Choose from computer'|i18n( 'content/edit' )}
+    </button>
+
+    <div id="ezr-keymedia-progress-{$attribute.id}"></div>
+</div>
 
 <script type="text/javascript">
-{literal}
-$('button.ezr-keymedia-remote-file').click(function(e) {
-    e.preventDefault();
-    var parts = ['keymedia', 'browse'];
-    parts.push(1);
-    var url = '/ezjscore/call/' + parts.join('::'),
-        data = {
-            skeleton : true,
-            modal: true
-        };
+    var id = {$attribute.id};
+    {literal}
+    (function(data) {
+        var container = $('#keymedia-buttons-' + id);
+        container.data('browser', new window.KeyMediaBrowser({
+            prefix : container.data('prefix')
+        }));
 
-    var renderer = function(data, tmpl) {
-    };
+        $('.ezr-keymedia-remote-file', container).click(function(e) {
+            container.data('browser').search();
+        });
 
-    KeyMediaBrowser = function() {
-        this.modal = false;
-        this.body = false;
-
-        this.url = function() {
-            var parts = ['keymedia', 'browse'];
-            // Make dynamic!
-            parts.push(1);
-            return '/ezjscore/call/' + parts.join('::');
-        }
-        this.search = function(q) {
-            var data = {};
-            if (!this.modal)
-                data = {skeleton:true, modal: true};
-
-            if (typeof q === 'string')
-                data.q = q;
-                
-            var callback = this.onSearch, context = this;
-            $.getJSON(this.url(), data, function(response) {
-                callback.call(context, response);
-            });
-        };
-
-        this.onSearch = function(response) {
-            if (!this.modal && response.content.hasOwnProperty('modal')) {
-                this.modal = $(response.content.modal).hide().prependTo('body');
-                this.modal.find('.content').html(response.content.skeleton);
-                this.modal.show(100);
-                this.events();
+        var uploader = new plupload.Uploader({
+            runtimes : 'html5,html4',
+            browse_button : 'ezr-keymedia-local-file-' + id,
+            container : 'ezr-keymedia-progress-' + id,
+            max_file_size : '10mb',
+            url : container.data('prefix') + '/keymedia::upload',
+            multipart_params : {
+                'AttributeID' : id,
+                'ContentObjectVersion' : container.data('version'),
+                'ContentObjectID' : container.data('contentobject-id')
+            },
+            headers : {
+                'Accept' : 'application/json, text/javascript, */*; q=0.01'
             }
+        });
 
-            this.body = this.modal.find('.content .body').html('');
 
-            var i, tmpl = $(response.content.item), item;
-            var results = response.content.results.hits;
-            for (i = 0; i < results.length; i++) {
-                item = this.item(results[i], tmpl);
-                this.body.append(item);
-            }
-        };
-
-        this.item = function(data, tmpl) {
-            var node = tmpl.clone();
-            node.find('img').attr('src', data.thumb.url);
-            node.find('.meta').text(data.filename + ' (' + data.filesize + ')');
-            if (data.shared) node.find('.share').addClass('shared');
-
-            return node;
-        };
-
-        this.events = function() {
-            var context = this;
-            $('a', this.body).click(function(e) {
-                e.preventDefault();
-                confirm('Select');
-            });
-            $('button.close', this.modal).click(function(e) {
-                context.modal.fadeOut(120, function() {
-                    $(this).remove();
-                });
-            });
-            $('button.search', this.modal).click(function(e) {
-                e.preventDefault();
-                var node = $(e.currentTarget);
-                var q = node.prev().val();
-                context.search(q);
-            });
-        };
-    };
-    var browser = new KeyMediaBrowser();
-    browser.search();
-});
-{/literal}
+        uploader.init();
+        uploader.bind('FilesAdded', function(up, files)
+        {
+            up.start();
+        });
+    }(id));
+    {/literal}
 </script>

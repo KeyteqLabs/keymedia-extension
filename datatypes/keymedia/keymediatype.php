@@ -15,14 +15,11 @@ class KeyMedia extends eZDataType
      */
     function __construct()
     {
-        parent::__construct(
-            self::DATA_TYPE_STRING, 'KeyMedia', array('serialize_supported' => true)
-        );
+        parent::__construct(self::DATA_TYPE_STRING, 'KeyMedia', array('serialize_supported' => true));
     }
 
     /**
      * Called when the datatype is added to a content class
-     * Make sure we store needed metadata somewhere ...
      *
      * @param eZHTTPTool $http
      * @param string $base
@@ -30,7 +27,7 @@ class KeyMedia extends eZDataType
      */
     public function fetchClassAttributeHTTPInput($http, $base, $class)
     {
-        $backend = (int) $http->variable($base . 'connection' . $class->attribute('id'), 0);
+        $backend = (int) $http->variable($base . '_connection_' . $class->attribute('id'), 0);
         $class->setAttribute(self::FIELD_BACKEND, $backend);
         return true;
     }
@@ -157,22 +154,29 @@ class KeyMedia extends eZDataType
      */
     function objectAttributeContent( $contentObjectAttribute )
     {
-        return;
-        $objectId = $contentObjectAttribute->attribute('contentobject_id');
-        $attributeId = $contentObjectAttribute->attribute('id');
-        $ratingObj = null;
-        if ( $objectId && $attributeId )
-        {
-            $ratingObj = ezsrRatingObject::fetchByObjectId( $objectId, $attributeId );
-    
-            // Create empty object if none could be fetched
-            if (  !$ratingObj instanceof ezsrRatingObject )
-            {
-                $ratingObj = ezsrRatingObject::create( array('contentobject_id' => $objectId,
-                                                             'contentobject_attribute_id' => $attributeId ) );
-            }
-        }
-        return $ratingObj;
+        $handler = new Handler;
+        $handler->parseContentObjectAttribute($contentObjectAttribute);
+        return $handler;
+    }
+
+    public function attribute($name)
+    {
+        return parent::attribute($name);
+    }
+
+    /**
+     * Upload new file
+     *
+     * @param eZHTTPFile|string $file
+     * @return bool
+     */
+    public function uploadFile($file = null)
+    {
+        $handler = new Handler($contentObjectAttribute);
+        if (is_string($file))
+            return $handler->uploadUrl($file);
+        elseif ($file instanceof eZHTTPFile)
+            return $handler->uploadFile($file);
     }
 }
 

@@ -10,6 +10,10 @@ namespace ezr_keymedia\modules\key_media;
 use \eZPersistentObject;
 use \ezr_keymedia\models\Backend;
 
+use \eZHTTPFile;
+use \eZHTTPTool;
+use \eZContentObjectAttribute;
+
 /**
  * Interact with data structures (content objects)
  *
@@ -104,6 +108,34 @@ class KeyMedia extends \ezote\lib\Controller
             $data = compact('results', 'skeleton', 'modal', 'item');
         }
         return $data;
+    }
+
+    /**
+     * Upload an image from disk
+     *
+     */
+    public static function upload()
+    {
+        ini_set('display_errors', 1);
+        $http = eZHTTPTool::instance();
+        $httpFile = eZHTTPFile::fetch('file');
+
+        $attributeID = $http->postVariable('AttributeID');
+        $contentObjectVersion = $http->postVariable('ContentObjectVersion');
+        $contentObjectID = $http->postVariable('ContentObjectID');
+
+        $imageAttribute = eZContentObjectAttribute::fetch($attributeID, $contentObjectVersion);
+        $handler = $imageAttribute->content();
+        $handler->uploadFile($httpFile);
+
+        return array(
+            'foo' => 'ba'
+        );
+        /*
+        $imageHandler = $imageAttribute->content();
+        $imageHandler->initializeFromHTTPFile($httpFile, '');
+        $imageHandler->store($imageAttribute);
+         */
     }
 
     /**
