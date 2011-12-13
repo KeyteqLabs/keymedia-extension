@@ -4,6 +4,11 @@ namespace ezr_keymedia\models;
 
 class Backend extends \eZPersistentObject
 {
+    protected $connectors = array(
+        '1' => 'ezr_keymedia\\models\\v1\\Connector',
+        '2' => 'ezr_keymedia\\models\\v2\\Connector',
+    );
+
     protected $connection = false;
 
     protected static $definition = array(
@@ -11,7 +16,8 @@ class Backend extends \eZPersistentObject
             'id' => array('name' => 'id', 'datatype' => 'integer', 'required' => false),
             'host' => array('name' => 'host', 'datatype' => 'string', 'required' => true),
             'username' => array('name' => 'username', 'datatype' => 'string', 'required' => true),
-            'api_key' => array('name' => 'api_key', 'datatype' => 'string', 'required' => true)
+            'api_key' => array('name' => 'api_key', 'datatype' => 'string', 'required' => true),
+            'api_version' => array('name' => 'api_version', 'datatype' => 'int', 'required' => true)
         ),
         'keys' => array('id'),
         'class_name' => '\\ezr_keymedia\\models\\Backend',
@@ -138,7 +144,11 @@ class Backend extends \eZPersistentObject
     {
         if (!is_object($this->connection))
         {
-            $connection = new Connector($this->username, $this->api_key, $this->host);
+            if (!isset($this->connectors[$this->api_version]))
+                throw new \Exception("API version {$this->api_version} has no conncetor");
+
+            $class = $this->connectors[$this->api_version];
+            $connection = new $class($this->username, $this->api_key, $this->host);
             $this->connection = $connection;
         }
         return $this->connection;

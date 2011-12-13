@@ -18,7 +18,8 @@ namespace ezr_keymedia\modules\user_test;
 
 use \stdClass;
 use \eZHTTPTool;
-use \ezr_keymedia\models\Connector;
+use \ezr_keymedia\models\v1\Connector as V1;
+use \ezr_keymedia\models\v2\Connector as V2;
 
 class UserTest
 {
@@ -30,7 +31,7 @@ class UserTest
      */
     public function __construct()
     {
-        $this->api = new Connector('keymedia', 'keymedia_test', 'keymedia.raymond.keyteq.no');
+        $this->api = new V1('keymedia', 'keymedia_test', 'keymedia.raymond.keyteq.no');
         $this->api->setProgressCallback(array($this, 'callback'));
     }
 

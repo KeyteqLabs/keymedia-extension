@@ -2,6 +2,8 @@
 
 use \ezr_keymedia\models\Backend;
 
+use \ezr_keymedia\models\image\Handler;
+
 class KeyMedia extends eZDataType
 {
 	const DATA_TYPE_STRING = 'keymedia';
