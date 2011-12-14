@@ -88,7 +88,7 @@
     data-backend={$backend.id}
     data-version={$attribute.version}>
 
-    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="0" class="image-id" />
+    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$attribute.content.image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
 
     <button type="button" class="ezr-keymedia-remote-file">

@@ -29,7 +29,23 @@ class Image
      */
     public function __get($key)
     {
-        return isset($this->data->$key) ? $this->data->$key : null;
+        if ($key === 'id') $key = '_id';
+        return isset($this->$key) ? $this->data->$key : null;
+    }
+
+    public function __isset($key)
+    {
+        if ($key === 'id') $key = '_id';
+        return isset($this->data->$key);
+    }
+
+    public function hasAttribute($key)
+    {
+        return isset($this->$key);
+    }
+    public function attribute($key)
+    {
+        return $this->$key;
     }
 
     public function thumb($width, $height)

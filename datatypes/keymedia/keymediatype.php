@@ -76,11 +76,12 @@ class KeyMedia extends eZDataType
         // we should not maintain those crops (?)
         $old = $attribute->attribute(self::FIELD_VALUE);
 
-        if (strlen($old) > 0) $old = json_decode($old);
+        if (strlen($old) > 0) $data = json_decode($old);
+        else $data = new \stdClass;
 
-        if (!$old || !is_object($old) || $old->id !== $id)
+        if ($id !== $data->id || !isset($data->id))
         {
-            $data = ($id != 0) ? compact('id', 'host') : array();
+            $data = $id ? compact('id', 'host') : array();
             $attribute->setAttribute(self::FIELD_VALUE, json_encode($data));
         }
 

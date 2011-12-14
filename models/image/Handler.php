@@ -276,7 +276,7 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image');
         if (in_array($name, $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -291,18 +291,22 @@ class Handler
      */
     public function attribute($name)
     {
+        $image = $this->image();
         switch ($name) {
-        case 'backend':
-            return $this->backend();
-        case 'thumb':
-            return $this->image()->thumb(300,200);
-        case 'filesize':
-            return $this->image()->file->size;
-        case 'mime_type':
-            return $this->image()->file->type;
+            case 'backend':
+                return $this->backend();
+            case 'image':
+                return $image;
+            case 'thumb':
+                return $image ? $image->thumb(300, 200) : '';
+            case 'filesize':
+                return $image ? $image->file->size : 0;
+            case 'mime_type':
+                return $image ? $image->file->type : '';
+            default:
+                $values = $this->values();
+                return $values[$name];
         }
-        $values = $this->values();
-        return $values[$name];
     }
 
     protected function thumb($width, $height)
@@ -354,7 +358,10 @@ class Handler
             $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
             $data = json_decode($data);
 
-            $this->_image = $backend->get($data->id);
+            if (is_object($data) && isset($data->id))
+                $this->_image = $backend->get($data->id);
+            else
+                $this->_image = false;
         }
         return $this->_image;
     }
