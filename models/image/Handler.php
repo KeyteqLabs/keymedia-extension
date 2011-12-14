@@ -276,7 +276,7 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image');
+        $ok = array('backend', 'selected', 'thumb', 'filesize', 'mime_type', 'image');
         if (in_array($name, $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -295,6 +295,8 @@ class Handler
         switch ($name) {
             case 'backend':
                 return $this->backend();
+            case 'selected':
+                return $this->selected();
             case 'image':
                 return $image;
             case 'thumb':
@@ -342,6 +344,16 @@ class Handler
             $this->_backend = Backend::first(compact('id'));
         }
         return $this->_backend;
+    }
+
+    /**
+     * What backend is selected for this content class attribute
+     *
+     * @return int
+     */
+    protected function selected()
+    {
+        return $this->attr->contentClassAttribute()->attribute(\KeyMedia::FIELD_BACKEND);
     }
 
     /**

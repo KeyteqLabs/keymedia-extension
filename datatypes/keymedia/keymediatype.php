@@ -8,6 +8,7 @@ class KeyMedia extends eZDataType
 {
 	const DATA_TYPE_STRING = 'keymedia';
     const FIELD_BACKEND = 'data_int1';
+    const FIELD_JSON = 'data_text5';
     const FIELD_VALUE = 'data_text';
 
     /**
@@ -28,8 +29,21 @@ class KeyMedia extends eZDataType
      */
     public function fetchClassAttributeHTTPInput($http, $base, $class)
     {
-        $backend = (int) $http->variable($base . '_connection_' . $class->attribute('id'), 0);
-        $class->setAttribute(self::FIELD_BACKEND, $backend);
+        $backendKey = $base . '_connection_' . $class->attribute('id'); 
+        $versionsKey = $base . '_versions_' . $class->attribute('id'); 
+        if ($http->hasPostVariable($backendKey))
+        {
+            $backend = (int) $http->variable($backendKey, 0);
+            $class->setAttribute(self::FIELD_BACKEND, $backend);
+        }
+        if ($http->hasPostVariable($versionsKey))
+        {
+            $versions = explode("\n", $http->variable($versionsKey, ''));
+            $versions = array_filter($versions);
+            $versions = array_map('trim', $versions);
+            $json = json_encode(compact('versions'));
+            $class->setAttribute(self::FIELD_JSON, $json);
+        }
         return true;
     }
 
@@ -42,7 +56,10 @@ class KeyMedia extends eZDataType
     {
         $backends = \eZPersistentObject::fetchObjectList(Backend::definition());
         $selected = $class->attribute(self::FIELD_BACKEND);
-        return compact('backends', 'selected');
+        $json = json_decode($class->attribute(self::FIELD_JSON));
+        if ($json && $json->versions)
+            $versions = join("\n", $json->versions);
+        return compact('backends', 'selected', 'versions');
     }
 
     /**
@@ -58,10 +75,6 @@ class KeyMedia extends eZDataType
     function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         return eZInputValidator::STATE_ACCEPTED;
-    }
-
-    function deleteStoredObjectAttribute( $contentObjectAttribute, $version = null )
-    {
     }
 
     /*!
@@ -133,45 +146,15 @@ class KeyMedia extends eZDataType
     }
 
     /**
-     * Notify eZPublish that KeyMedia supports file upload (file insertion)
-     *
-     * @return bool
-     */
-    function isHTTPFileInsertionSupported()
-    {
-        return true;
-    }
-
-    /**
-     * Callback for when file insertion to this datatype happens?
-     *
-     * @param eZContentObject $object
-     * @param int|eZContentObjectVersion $version
-     * @param string $language Current language being worked on
-     * @param mixed $attribute The attribute containing the file
-     * @param eZHTTPFile $file THe actual uploaded file
-     * @param array $mime
-     * @param array $result Out-param containing two keys:
-     *        - _errors_ Array with errors with key `description`
-     *        - _require_storage_ True if the file needs to be stored afterwards
-     * @return bool
-     */
-    function insertHTTPFile($object, $version, $language, $attribute, $file, $mime, &$result)
-    {
-        eZDebug::writeWarning("File upload for the win");
-        return true;
-    }
-
-    /**
      * Fetch content contained in this attribute when its stored
      *
      * @param object $attribute
      * @return mixed
      */
-    function objectAttributeContent( $contentObjectAttribute )
+    function objectAttributeContent($attribute)
     {
         $handler = new Handler;
-        $handler->parseContentObjectAttribute($contentObjectAttribute);
+        $handler->parseContentObjectAttribute($attribute);
         return $handler;
     }
 
