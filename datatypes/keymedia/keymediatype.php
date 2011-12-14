@@ -33,7 +33,7 @@ class KeyMedia extends eZDataType
     }
 
     /**
-     * Called on {$class_attribute.content} in template
+     * Called on {$class_attribute.content} in content class template
      *
      * @return array 
      */

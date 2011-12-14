@@ -271,18 +271,27 @@ class Handler
      */
     public function hasAttribute($name)
     {
+        $ok = array('backend');
+        if (in_array($name, $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
     }
 
     /**
      * Return the value for an attribute
+     * Origins from {$attribute.foo} -> attribute('foo')
      *
      * @param string $name Name of attribute
      * @return mixed
      */
     public function attribute($name)
     {
+        switch ($name) {
+        case 'backend':
+            $class = $this->attr->contentClassAttribute();
+            return $class->attribute(\KeyMedia::FIELD_BACKEND);
+            break;
+        }
         $values = $this->values();
         return $values[$name];
     }

@@ -9,7 +9,7 @@ namespace ezr_keymedia\models;
  * @author Raymond Julin (raymond@keyteq.no)
  * @since 1.0.0
  */
-class ConnectorBase implements ConnectorInterface
+abstract class ConnectorBase implements ConnectorInterface
 {
     /** @var string Required for accessing KeyMedia */
     protected $apiKey;
@@ -21,6 +21,7 @@ class ConnectorBase implements ConnectorInterface
     protected $callback;
     /** @var int Timout in minutes before the request is cancelled */
     protected $timeout;
+
 
     /**
      * Returns an instance of the API.

@@ -15,12 +15,11 @@ use \eZHTTPTool;
 use \eZContentObjectAttribute;
 
 /**
- * Interact with data structures (content objects)
+ * KeyMedia controller
+ * Exposes the HTTP actions for eZr KeyMedia integration
  *
- * @author Bjørnar Helland <bh@keyteq.no>
  * @author Raymond Julin <raymond@keyteq.no>
- * @since 24.10.2011
- *
+ * @since 1.0.0
  */
 class KeyMedia extends \ezote\lib\Controller
 {
@@ -111,12 +110,28 @@ class KeyMedia extends \ezote\lib\Controller
     }
 
     /**
-     * Upload an image from disk
+     * Connect KeyMedia image to content object attribute
      *
+     * @param array $args 1: KeyMedia id, 2: image id
+     */
+    public static function connectImage($args)
+    {
+        $http = eZHTTPTool::instance();
+
+        $mediabase = array_shift($args);
+        $id = array_shift($args);
+        $attributeID = $http->postVariable('AttributeID');
+        $contentObjectVersion = $http->postVariable('ContentObjectVersion');
+        $contentObjectID = $http->postVariable('ContentObjectID');
+
+        return compact('ok', 'error');
+    }
+
+    /**
+     * Upload an image from disk
      */
     public static function upload()
     {
-        ini_set('display_errors', 1);
         $http = eZHTTPTool::instance();
         $httpFile = eZHTTPFile::fetch('file');
 
@@ -126,16 +141,10 @@ class KeyMedia extends \ezote\lib\Controller
 
         $imageAttribute = eZContentObjectAttribute::fetch($attributeID, $contentObjectVersion);
         $handler = $imageAttribute->content();
-        $handler->uploadFile($httpFile);
+        if (!$ok = $handler->uploadFile($httpFile))
+            $error = 'Failed upload';
 
-        return array(
-            'foo' => 'ba'
-        );
-        /*
-        $imageHandler = $imageAttribute->content();
-        $imageHandler->initializeFromHTTPFile($httpFile, '');
-        $imageHandler->store($imageAttribute);
-         */
+        return compact('ok', 'error');
     }
 
     /**

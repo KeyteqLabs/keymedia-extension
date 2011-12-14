@@ -17,7 +17,7 @@ namespace ezr_keymedia\models\v1;
  * @since 27.10.2011
  *
  */
-class Connector extends ezr_keymedia\models\ConnectorBase
+class Connector extends \ezr_keymedia\models\ConnectorBase
 {
     /**
      *

@@ -17,10 +17,20 @@ namespace ezr_keymedia\models\v2;
  * @author Raymond Julin (raymond@keyteq.no)
  * @since 1.0.0
  */
-class Connector extends ezr_keymedia\models\ConnectorBase
+class Connector extends \ezr_keymedia\models\ConnectorBase
 {
+
     /**
+     * Generic search, utilize whatever you might want as conditions
      *
+     * @param array $conditions
+     * @return array
+     */
+    public function search(array $conditions = array())
+    {
+    }
+
+    /**
      * Search by one or more tags.
      *
      * @param $q
@@ -44,7 +54,7 @@ class Connector extends ezr_keymedia\models\ConnectorBase
         if ($collection !== false) $params['collection'] = $collection;
         if ($externalId !== false) $params['externalId'] = $externalId;
 
-        return $this->makeRequest('search', $params);
+        return $this->makeRequest('/media.json', $params);
     }
 
     /**
@@ -153,7 +163,11 @@ class Connector extends ezr_keymedia\models\ConnectorBase
     {
         $url = $this->getRequestUrl($action, $params);
 
-        return json_decode(file_get_contents($url));
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($ch);
+        $data = json_decode($result);
+        return $data;
     }
 
     /**
@@ -165,27 +179,30 @@ class Connector extends ezr_keymedia\models\ConnectorBase
      *
      * @return bool|string
      */
-    protected function getRequestUrl($action, $params = array())
+    protected function getRequestUrl($action, array $payload = array())
     {
-        $url = $this->mediabaseDomain .'/media/' . $action . '/';
-        if (strpos($url, "http") === false)
-            $url = 'http://'.$url;
+        $url = $this->mediabaseDomain . $action;
 
+        // Ensure it has http://
+        if (strpos($url, "http") === false) $url = 'http://' . $url;
+
+        /*
         $urlArr = parse_url($url);
         $authUrl = $urlArr['scheme'] . '://' . $urlArr['host'] . $urlArr['path'];
-
         $auth = md5($authUrl . $this->apiKey);
+        $payload += array(
+            'username' => $this->username,
+            'signature' => $this->sign($this->username, $this->apiKey, $payload)
+        );
+         */
 
-        $params['username'] = $this->username;
-        $params['auth'] = $auth;
-
-        $queryString = http_build_query($params);
-
-        if (strpos($url, '?') === false)
-            $url .= '?' . $queryString;
-        else
-            $url .= '&' . $queryString;
+        if ($payload) $url .= '?' . http_build_query($payload);
 
         return $url;
+    }
+
+    protected function sign($username, $secret, $payload)
+    {
+        return hash_hmac('sha256', $payload, $secret);
     }
 }

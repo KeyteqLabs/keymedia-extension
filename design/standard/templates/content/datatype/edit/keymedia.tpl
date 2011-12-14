@@ -46,6 +46,9 @@
     margin: 3px;
     overflow: hidden;
 }
+#ezr-keymedia-modal .item a {
+    display: block;
+}
 #ezr-keymedia-modal .item img {
     margin: 0 auto;
 }
@@ -90,6 +93,7 @@
 
 <div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl}
     data-contentobject-id={$attribute.contentobject_id}
+    data-backend={$attribute.content.backend}
     data-version={$attribute.version}>
 
     <button type="button" class="ezr-keymedia-remote-file">
@@ -109,7 +113,11 @@
     (function(data) {
         var container = $('#keymedia-buttons-' + id);
         container.data('browser', new window.KeyMediaBrowser({
-            prefix : container.data('prefix')
+            prefix : container.data('prefix'),
+            backend : container.data('backend'),
+            contentObjectId : container.data('contentobject-id'),
+            version : container.data('version'),
+            id : id
         }));
 
         $('.ezr-keymedia-remote-file', container).click(function(e) {

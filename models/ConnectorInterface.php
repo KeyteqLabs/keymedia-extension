@@ -11,19 +11,8 @@ namespace ezr_keymedia\models;
  * @since 1.0.0
  */
 
-class Connector implements ConnectorInterface
+interface ConnectorInterface
 {
-    /** @var string Required for accessing KeyMedia */
-    protected $apiKey;
-    /** @var string Your peronal username */
-    protected $username;
-    /** @var string The address identifying your KeyMedia installation. */
-    protected $mediabaseDomain;
-    /** @var string The callback used for progress-reporting. */
-    protected $callback;
-    /** @var int Timout in minutes before the request is cancelled */
-    protected $timeout;
-
     /**
      * Returns an instance of the API.
      *

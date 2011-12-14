@@ -42,6 +42,7 @@ class Backend extends \eZPersistentObject
      */
     public static function create(array $data = array())
     {
+        $data = array_map('trim', $data);
         return new static($data);
     }
 
@@ -99,7 +100,7 @@ class Backend extends \eZPersistentObject
         );
         if ($con = $this->connection())
         {
-            $results = $con->search(
+            $results = $con->searchByTerm(
                 $q, $criteria['attributes'], $criteria['collection'],
                 $options['limit'], $options['offset'], $options['width'], $options['height'],
                 $criteria['externalId']
@@ -119,18 +120,23 @@ class Backend extends \eZPersistentObject
      */
     protected function simplify($results)
     {
+        $results->hits = $results->media;
+        unset($results->media);
         foreach ($results->hits as &$r)
         {
-            $images = (array) $r->images;
-            $thumb = array_shift($images);
+            $parts = explode('.', $r->name);
+            $ending = array_pop($parts);
             $r = array(
-                'id' => $r->id,
-                'shared' => $r->shared,
-                'filesize' => $r->filesize,
-                'width' => (int) $r->width,
-                'height' => (int) $r->height,
-                'filename' => $r->originalFilename
-            ) + compact('thumb', 'images');
+                'id' => $r->_id,
+                //'shared' => $r->shared,
+                'filesize' => $r->file->size,
+                'width' => (int) $r->file->width,
+                'height' => (int) $r->file->height,
+                'thumb' => array(
+                    'url' => 'http://' . $this->host . '/160x120/' . $r->_id . '.' . $ending
+                ),
+                'filename' => $r->name
+            );
         }
         return $results;
     }
