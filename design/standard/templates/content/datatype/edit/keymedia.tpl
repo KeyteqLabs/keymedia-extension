@@ -1,3 +1,7 @@
+{def $base='ContentObjectAttribute'
+    $backend = $attribute.content.backend
+}
+
 {ezscript_require( array(
     'ezjsc::jquery',
     'plupload/plupload.js',
@@ -6,8 +10,6 @@
 
     'keymedia.js'
 ) )}
-
-{def $base='ContentObjectAttribute'}
 {run-once}
 <style>
 {literal}
@@ -70,20 +72,10 @@
 </style>
 {/run-once}
 
-{*
-{$attribute|attribute('show')}
-*}
-
 {* Current image. *}
 <div class="keymedia-image">
-    {$attribute.content.original|attribute('show', 3)}
-    {if $attribute_content.original.is_valid}
-    <label>{'Current image'|i18n( 'design/standard/content/datatype' )}:</label>
-    {else}
-    <label>{'There is no image file'|i18n( 'design/standard/content/datatype' )}:</label>
-    {/if}
-
     {attribute_view_gui image_class=ezini( 'ImageSettings', 'DefaultEditAlias', 'content.ini' ) attribute=$attribute}
+
     <p>
     {$attribute.content.original.mime_type|wash( xhtml )}
     {$attribute.content.original.filesize|si( byte )}
@@ -93,8 +85,11 @@
 
 <div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl}
     data-contentobject-id={$attribute.contentobject_id}
-    data-backend={$attribute.content.backend}
+    data-backend={$backend.id}
     data-version={$attribute.version}>
+
+    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="0" class="image-id" />
+    <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
 
     <button type="button" class="ezr-keymedia-remote-file">
         {'Choose from KeyMedia'|i18n( 'content/edit' )}
@@ -112,8 +107,10 @@
     {literal}
     (function(data) {
         var container = $('#keymedia-buttons-' + id);
+        var value = container.find('.image-id');
         container.data('browser', new window.KeyMediaBrowser({
             prefix : container.data('prefix'),
+            value : value,
             backend : container.data('backend'),
             contentObjectId : container.data('contentobject-id'),
             version : container.data('version'),

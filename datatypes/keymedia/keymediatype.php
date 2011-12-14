@@ -8,6 +8,7 @@ class KeyMedia extends eZDataType
 {
 	const DATA_TYPE_STRING = 'keymedia';
     const FIELD_BACKEND = 'data_int1';
+    const FIELD_VALUE = 'data_text';
 
     /**
      * Construction of the class, note that the second parameter in eZDataType 
@@ -65,10 +66,24 @@ class KeyMedia extends eZDataType
 
     /*!
     */
-    function fetchObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
+    function fetchObjectAttributeHTTPInput( $http, $base, $attribute )
     {
-        // Use data_int for storing 'disabled' flag
-        //$contentObjectAttribute->setAttribute( 'data_int', $http->hasPostVariable( $base . '_data_srrating_disabled_' . $contentObjectAttribute->attribute( 'id' ) ) );
+        // Get value of connected image id
+        $id = $http->variable($base . '_image_id_' . $attribute->attribute('id'));
+        $host = $http->variable($base . '_host_' . $attribute->attribute('id'));
+
+        // If old version has a different id with crops defined
+        // we should not maintain those crops (?)
+        $old = $attribute->attribute(self::FIELD_VALUE);
+
+        if (strlen($old) > 0) $old = json_decode($old);
+
+        if (!$old || !is_object($old) || $old->id !== $id)
+        {
+            $data = ($id != 0) ? compact('id', 'host') : array();
+            $attribute->setAttribute(self::FIELD_VALUE, json_encode($data));
+        }
+
         return true;
     }
 
@@ -157,11 +172,6 @@ class KeyMedia extends eZDataType
         $handler = new Handler;
         $handler->parseContentObjectAttribute($contentObjectAttribute);
         return $handler;
-    }
-
-    public function attribute($name)
-    {
-        return parent::attribute($name);
     }
 
     /**

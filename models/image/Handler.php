@@ -10,11 +10,16 @@ use \eZURLAliasML;
 use \eZINI;
 use \eZSys;
 use \eZImageShellHandler;
+use \ezr_keymedia\models\Backend;
 
+// TODO When parsing a content attribute do an API call to
+// the KeyMedia and get more image information (crops, filesize etc)
+// instead of having this happen multiple times
 class Handler
 {
 
     protected $attr;
+    protected $_backend;
     protected $attributeValues = false;
     protected $postfix = 0;
 
@@ -271,7 +276,7 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend');
+        $ok = array('backend', 'thumb');
         if (in_array($name, $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -279,7 +284,7 @@ class Handler
 
     /**
      * Return the value for an attribute
-     * Origins from {$attribute.foo} -> attribute('foo')
+     * Origins from {$attribute.content.foo} -> attribute('foo')
      *
      * @param string $name Name of attribute
      * @return mixed
@@ -288,11 +293,50 @@ class Handler
     {
         switch ($name) {
         case 'backend':
-            $class = $this->attr->contentClassAttribute();
-            return $class->attribute(\KeyMedia::FIELD_BACKEND);
+            return $this->backend();
+            break;
+        case 'thumb':
+            return $this->thumb(300,200);
+            break;
+        case 'filesize':
+            return $this->filesize();
+            break;
+        case 'mime_type':
+            return $this->mimeType();
             break;
         }
         $values = $this->values();
         return $values[$name];
+    }
+
+    protected function thumb($width, $height)
+    {
+        $backend = $this->backend();
+        $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
+        $data = json_decode($data);
+
+        $url = 'http://' . $data->host . "/{$width}x{$height}/{$data->id}.jpg";
+        return $url;
+    }
+
+    protected function mimeType()
+    {
+        return '';
+    }
+
+    protected function filesize()
+    {
+        return 100;
+    }
+
+    protected function backend()
+    {
+        if (!$this->_backend)
+        {
+            $class = $this->attr->contentClassAttribute();
+            $id = $class->attribute(\KeyMedia::FIELD_BACKEND);
+            $this->_backend = Backend::first(compact('id'));
+        }
+        return $this->_backend;
     }
 }
