@@ -17,9 +17,9 @@ use \ezr_keymedia\models\Backend;
 // instead of having this happen multiple times
 class Handler
 {
-
     protected $attr;
     protected $_backend;
+    protected $_image;
     protected $attributeValues = false;
     protected $postfix = 0;
 
@@ -276,7 +276,7 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type');
         if (in_array($name, $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -294,16 +294,12 @@ class Handler
         switch ($name) {
         case 'backend':
             return $this->backend();
-            break;
         case 'thumb':
-            return $this->thumb(300,200);
-            break;
+            return $this->image()->thumb(300,200);
         case 'filesize':
-            return $this->filesize();
-            break;
+            return $this->image()->file->size;
         case 'mime_type':
-            return $this->mimeType();
-            break;
+            return $this->image()->file->type;
         }
         $values = $this->values();
         return $values[$name];
@@ -311,7 +307,6 @@ class Handler
 
     protected function thumb($width, $height)
     {
-        $backend = $this->backend();
         $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
         $data = json_decode($data);
 
@@ -329,6 +324,11 @@ class Handler
         return 100;
     }
 
+    /**
+     * Cached loading of the KeyMedia Backend for this Handlers attribute
+     *
+     * @return \ezr_keymedia\models\Backend
+     */
     protected function backend()
     {
         if (!$this->_backend)
@@ -338,5 +338,24 @@ class Handler
             $this->_backend = Backend::first(compact('id'));
         }
         return $this->_backend;
+    }
+
+    /**
+     * Cached loading of the image for this content object attribute
+     *
+     * @return \ezr_keymedia\models\Image
+     */
+    protected function image()
+    {
+        if (!$this->_image)
+        {
+            $backend = $this->backend();
+
+            $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
+            $data = json_decode($data);
+
+            $this->_image = $backend->get($data->id);
+        }
+        return $this->_image;
     }
 }

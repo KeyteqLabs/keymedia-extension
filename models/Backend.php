@@ -113,6 +113,23 @@ class Backend extends \eZPersistentObject
     }
 
     /**
+     * Get a single image information
+     *
+     * @param string $id
+     * @return \ezr_keymedia\models\Image
+     */
+    public function get($id)
+    {
+        if ($con = $this->connection())
+        {
+            $image = new Image($con->media($id));
+            $image->host($this->host);
+            return $image;
+        }
+        return null;
+    }
+
+    /**
      * Simplify results from searches
      *
      * @param array $results

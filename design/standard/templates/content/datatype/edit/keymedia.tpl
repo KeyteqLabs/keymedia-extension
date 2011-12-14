@@ -77,8 +77,8 @@
     {attribute_view_gui image_class=ezini( 'ImageSettings', 'DefaultEditAlias', 'content.ini' ) attribute=$attribute}
 
     <p>
-    {$attribute.content.original.mime_type|wash( xhtml )}
-    {$attribute.content.original.filesize|si( byte )}
+    {$attribute.content.mime_type|wash( xhtml )}
+    {$attribute.content.filesize|si( byte )}
     </p>
 
 </div>

@@ -58,6 +58,17 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     * Return media information for given image id
+     * 
+     * @param string $id
+     * @return object 
+     */
+    public function media($id)
+    {
+        return $this->makeRequest('/media/' . $id . '.json', array())->media;
+    }
+
+    /**
      *
      * Retrieves images matching one or more tags.
      *
