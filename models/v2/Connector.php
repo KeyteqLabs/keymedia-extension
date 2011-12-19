@@ -69,6 +69,27 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     * Add new version
+     *
+     * @param string $id
+     * @param string $slug
+     * @param array $transformation
+     * @return string Relative url to new version
+     */
+    public function addVersion($id, $slug, array $transformation = array())
+    {
+        $payload = array('slug' => $slug);
+
+        if (isset($transformation['size']))
+            $payload['size'] = $transformation['size'];
+        if (isset($transformation['coords']))
+            $payload['coords'] = $transformation['coords'];
+
+        $url = '/media/' . $id . '/versions.json';
+        return $this->makeRequest($url, $payload, 'POST');
+    }
+
+    /**
      *
      * Retrieves images matching one or more tags.
      *
@@ -170,11 +191,23 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
      *
      * @return mixed
      */
-    protected function makeRequest($action, $params)
+    protected function makeRequest($action, array $params = array(), $method = 'GET')
     {
+        $method = strtoupper($method);
+
         $url = $this->getRequestUrl($action, $params);
 
         $ch = curl_init($url);
+        switch ($method)
+        {
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+                break;
+            case 'GET':
+                $url .= '?' . http_build_query($params);
+                break;
+        }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($ch);
         $data = json_decode($result);
@@ -206,8 +239,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             'signature' => $this->sign($this->username, $this->apiKey, $payload)
         );
          */
-
-        if ($payload) $url .= '?' . http_build_query($payload);
 
         return $url;
     }

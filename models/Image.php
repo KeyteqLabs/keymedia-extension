@@ -29,14 +29,24 @@ class Image
      */
     public function __get($key)
     {
-        if ($key === 'id') $key = '_id';
+        switch ($key)
+        {
+            case 'id': $key = '_id'; break;
+            case 'size': return $this->size();
+        }
         return isset($this->$key) ? $this->data->$key : null;
+    }
+
+    public function size()
+    {
+        return array($this->file->width, $this->file->height);
     }
 
     public function __isset($key)
     {
+        $exists = array('size');
         if ($key === 'id') $key = '_id';
-        return isset($this->data->$key);
+        return isset($this->data->$key) ?: in_array($key, $exists);
     }
 
     public function hasAttribute($key)

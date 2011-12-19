@@ -102,29 +102,30 @@ class KeyMedia extends \ezote\lib\Controller
         return $data;
     }
 
-    /***
-     * Render a bunch of templates into an array and return them
-     * Defaults to include `skeleton`
-     *
-     * @param array $templates
-     * @return array
+    /**
+     * eZJSCore method for saving a new scaled version
      */
-    protected static function _templates($http, array $templates = array())
+    public static function saveVersion(array $args = array())
     {
-        $defaults = array();
-        if ($http->variable('skeleton', false))
-            $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
-
-        $templates += $defaults;
-
-        $tpl = \eZTemplate::factory();
-        $result = array();
-        foreach ($templates as $name => $path)
+        list($id, $attributeId, $version) = $args;
+        if ($id && $attributeId && $version)
         {
-            if ($path) $result[$name] = $tpl->fetch($path);
-        }
+            $http = \eZHTTPTool::instance();
 
-        return $result;
+            $coords = $http->variable('coords');
+            $size = $http->variable('size');
+            $name = $http->variable('name');
+
+            // Store information on content object
+            $imageAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
+
+            // @var \ezr_keymedia\models\image\Handler
+            $handler = $imageAttribute->content();
+            $results = $handler->addVersion($name, compact('coords', 'size'));
+
+            $data = compact('results');
+        }
+        return $data;
     }
 
     /**
@@ -171,6 +172,31 @@ class KeyMedia extends \ezote\lib\Controller
             $error = 'Failed upload';
 
         return compact('ok', 'error');
+    }
+
+    /***
+     * Render a bunch of templates into an array and return them
+     * Defaults to include `skeleton`
+     *
+     * @param array $templates
+     * @return array
+     */
+    protected static function _templates($http, array $templates = array())
+    {
+        $defaults = array();
+        if ($http->variable('skeleton', false))
+            $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
+
+        $templates += $defaults;
+
+        $tpl = \eZTemplate::factory();
+        $result = array();
+        foreach ($templates as $name => $path)
+        {
+            if ($path) $result[$name] = $tpl->fetch($path);
+        }
+
+        return $result;
     }
 
     /**

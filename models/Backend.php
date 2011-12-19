@@ -130,6 +130,25 @@ class Backend extends \eZPersistentObject
     }
 
     /**
+     * Create a new version for specified image id
+     *
+     * @param string $id
+     * @param string $name
+     * @param array $transformations
+     * @return string Relative url to new version
+     */
+    public function addVersion($id, $name, array $transformations = array())
+    {
+        // Get connector
+        $connection = $this->connection();
+
+        $data = $connection->addVersion($id, $name, $transformations);
+        if (!isset($data->error))
+            $data->url = join('/', array('', $id, $data->version->slug));
+        return $data;
+    }
+
+    /**
      * Simplify results from searches
      *
      * @param array $results

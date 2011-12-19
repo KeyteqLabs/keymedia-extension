@@ -1,9 +1,18 @@
 window.KeyMediaScaler = Backbone.View.extend({
+    // Holds reference to current selected scale li
     current : null,
+
+    // Will hold the Jcrop API
+    cropper : null,
+
+    trueSize : [],
+
+    // Dimensions of cropping image
     size : {
         w : 830,
         h : 580
     },
+
     initialize : function(options)
     {
         _.bindAll(this, 'render', 'changeScale');
@@ -16,6 +25,7 @@ window.KeyMediaScaler = Backbone.View.extend({
         });
 
         this.versions = options.versions;
+        this.trueSize = options.trueSize;
 
         this.model.bind('scale', this.render);
 
@@ -53,12 +63,24 @@ window.KeyMediaScaler = Backbone.View.extend({
         return this;
     },
 
+    storeVersion : function(selection, scale)
+    {
+        var vanityName = [scale.name, scale.dimension.join('x')].join('-'),
+            coords = [selection.x, selection.y, selection.x2, selection.y2],
+            size = scale.dimension;
+
+        return this.model.addVanityUrl(vanityName, coords, size);
+    },
+
     changeScale : function(e) {
         e.preventDefault();
 
         if (this.current !== null)
         {
             this.current.removeClass('active');
+            // If a previous crop exists, save the coordinates as a new vanity url
+            if (this.cropper)
+                this.storeVersion(this.cropper.tellSelect(), this.current.data('scale'));
         }
 
         this.current = $(e.currentTarget);
@@ -72,17 +94,38 @@ window.KeyMediaScaler = Backbone.View.extend({
 
         // Find initial placement of crop
         // x,y,x2,y2
-        var initial = [
+        var select = [
             x,
             y,
             w - x,
             h - x
         ];
         var ratio = (scale.dimension[0] / scale.dimension[1]);
-        console.log(ratio);
-        $('#ezr-keymedia-scaler-crop').Jcrop({
-            aspectRatio : ratio,
-            setSelect : initial
-        });
+
+        // If an API exists we dont need to build Jcrop
+        // but can just change crop
+        if (this.cropper)
+        {
+            // Change selection to new selection
+            this.cropper.setOptions({
+                setSelect : select,
+                aspectRatio : ratio,
+                minSize : scale.dimension
+            });
+        }
+        else
+        {
+            var context = this, size = this.trueSize;
+            $('#ezr-keymedia-scaler-crop').Jcrop({
+                aspectRatio : ratio,
+                setSelect : select,
+                minSize : scale.dimension
+            }, function(a) {
+                // Store reference to API
+                context.cropper = this;
+                // Set true size of image
+                this.setOptions({trueSize : size});
+            });
+        }
     }
 });

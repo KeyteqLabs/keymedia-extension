@@ -43,6 +43,7 @@
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
 
     <button type="button" class="ezr-keymedia-scale hid"
+        data-size='{$attribute.content.image.size|json}'
         data-versions='{$attribute.content.toscale|json}'>
         {'Scale'|i18n( 'content/edit' )}
     </button>
@@ -67,6 +68,7 @@
         var model = new window.KeyMedia({
             id : container.data('backend'),
             prefix : container.data('prefix'),
+            attributeId : id,
             contentObjectId : container.data('contentobject-id'),
             version : container.data('version')
         });
@@ -83,7 +85,8 @@
                 var data = {
                     imageId : destination.val(),
                     host : container.data('backend-host'),
-                    versions : $(this).data('versions')
+                    versions : $(this).data('versions'),
+                    trueSize : $(e.currentTarget).data('size')
                 };
                 keymedia.scaler(data);
             }).show();

@@ -83,6 +83,7 @@ class Handler
         if ($save)
         {
             $this->attr->setAttribute('data_text', json_encode($save));
+            $this->attributeValues = $save;
             return $this->attr->storeData();
         }
         else
@@ -115,79 +116,61 @@ class Handler
         ) + $extras + $this->values();
 
         $this->values($data);
-        /*
-
-        $settings = new \ezcImageConverterSettings(
-            array(new \ezcImageHandlerSettings('ImageMagick', 'ezcImageImagemagickHandler'))
-        );
-        $converter = new ezcImageConverter($settings);
-        $scaleFilters = array(
-            new ezcImageFilter(
-                'scale',
-                array(
-                    'width' => 300,
-                    'height' => 200,
-                    'direction' => ezcImageGeometryFilters::SCALE_DOWN
-                )
-            )
-        );
-        $converter->createTransformation('thumbnail', $scaleFilters, array('image/png'));
-        $converter->transform('thumbnail', $file->Filename
-*/
 
         return true;
     }
 
-    function imageAlias($aliasName)
+    /**
+     * Create a new version of the currently loaded image attributes image
+     * Will both store the version-information (slug, coords, size) locally
+     * as well as notify KeyMedia about the vanity url to make it actually work
+     *
+     * Usage:
+     * <code>
+     *   $width = 100;
+     *   $height = 100;
+     *   $coords = array($x, $y, $x2, $y2);
+     *   $handler->addVersion('my-slug-500x500', compact('width', 'height', 'coords'));
+     * </code>
+     *
+     * Both `width`, `height` and `coords` are not needed
+     *
+     * @param string $name The postfix to use for the filename
+     * @param array $transformations
+     * @return string Returns the image url
+     */
+    public function addVersion($name, array $transformations = array())
     {
-        $imageManager = eZImageManager::factory();
-        if ( !$imageManager->hasAlias( $aliasName ) )
-        {
-            return null;
-        }
+        // Fetch existing values
+        $data = $this->values();
 
-        $aliasList = $this->aliasList();
-        if ( array_key_exists( $aliasName, $aliasList ) )
-        {
-            return $aliasList[$aliasName];
-        }
-        else
-        {
-            $original = $aliasList['original'];
-            $basename = $original['basename'];
-            if ( $imageManager->createImageAlias( $aliasName, $aliasList,
-                                                  array( 'basename' => $basename ) ) )
-            {
-                $text = $this->displayText( $original['alternative_text'] );
-                $originalFilename = $original['original_filename'];
-                foreach ( $aliasList as $aliasKey => $alias )
-                {
-                    $alias['original_filename'] = $originalFilename;
-                    $alias['text'] = $text;
-                    if ( $alias['url'] )
-                    {
-                        $aliasFile = eZClusterFileHandler::instance( $alias['url'] );
-                        if( $aliasFile->exists() )
-                            $alias['filesize'] = $aliasFile->size();
-                    }
-                    if ( $alias['is_new'] )
-                    {
-                        eZImageFile::appendFilepath( $this->ContentObjectAttributeData['id'], $alias['url'] );
-                    }
-                    $aliasList[$aliasKey] = $alias;
-                }
-                $this->setAliasList( $aliasList );
-                $this->addImageAliases( $aliasList );
-                $aliasList = $this->aliasList();
-                return $aliasList[$aliasName];
-            }
-        }
+        if (!isset($data['id']))
+            throw new \Exception(__CLASS__ . '::' . __METHOD__ . ' called without an image connection made first');
 
-        return null;
-    }
+        $version = eZContentObjectVersion::fetchVersion(
+            $this->attr->attribute('version'),
+            $this->attr->attribute('contentobject_id')
+        );
+        $name = $this->imageName($this->attr, $version, false, $name);
 
-    protected function version($x1, $y1, $x2, $y2)
-    {
+        // Push to backend
+        $backend = $this->backend();
+        $resp = $backend->addVersion($data['id'], $name, $transformations);
+
+        if (isset($resp->error))
+            throw new \Exception('Backend failed: ' . $resp->error);
+
+        // Ensure a versions index exists in the data
+        $data += array('versions' => array());
+
+        $url = $resp->url;
+        $scaling = compact('name', 'url') + $transformations;
+        $data['versions'][$name] = $scaling;
+
+        // Save values
+        $this->values($data);
+
+        return $scaling;
     }
 
     /**
@@ -203,7 +186,7 @@ class Handler
      * @param string $language
      * @return string Normalized name for the image.
     */
-    public function imageName($attr, $version, $language = false)
+    public function imageName($attr, $version, $language = false, $postfix = '')
     {
         // Initialize transformation system
         $trans = eZCharTransform::instance();
