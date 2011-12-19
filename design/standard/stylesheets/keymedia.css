@@ -16,12 +16,14 @@
 }
 
 #ezr-keymedia-modal .content {
-    top: 100px;
+    top: 25px;
+    bottom: 25px;
     z-index: 2;
     position: absolute;
     border-radius: 4px;
     width: 920px;
     left: 50%;
+    overflow-y:scroll;
     margin-left: -460px;
     
     background: #000;
@@ -69,6 +71,7 @@
     height: 120px;
     padding: 0;
     overflow: hidden;
+    background: url(loader.gif) center center no-repeat;
 }
 
 #ezr-keymedia-modal .item a {
@@ -88,10 +91,10 @@
     right: 0;
     padding: 50px 10px;
     margin: 0;
-    background: #fff;
+    background: #000;
     opacity: 0.7;
     position: absolute;
-    color: #000;
+    color: #fff;
     font-weight: bold;
 }
 

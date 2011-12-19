@@ -1,8 +1,8 @@
-{def $searchPlaceholder = 'Search for ...'|i18n( 'content/keymedia' )
+{def $searchPlaceholder = 'Search for…'|i18n( 'content/keymedia' )
     $search = 'Search'|i18n( 'content/keymedia' )
     $close = 'Close'|i18n( 'content/keymedia' )
-    $next = '&gt;'
-    $prev = '&lt;'
+    $next = 'Next 25 &gt;'
+    $prev = '&lt; Previous 25'
 }
 
 <div id="ezr-keymedia-browser">
