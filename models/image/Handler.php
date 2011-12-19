@@ -64,7 +64,7 @@ class Handler
             $this->attr->attribute('contentobject_id')
         );
 
-        $filename = $this->imageName($this->attr, $version);
+        $filename = $this->imageName($this->attr, $version, $this->postfix);
         $filepath = $this->imagePath($this->attr, $version, true);
 
         // Uses out params for $mimeData to reassign some values in the array
@@ -151,11 +151,12 @@ class Handler
             $this->attr->attribute('version'),
             $this->attr->attribute('contentobject_id')
         );
-        $name = $this->imageName($this->attr, $version, false, $name);
+        $filename = $this->imageName($this->attr, $version, false, $name);
+        $filename = mb_strtolower($filename);
 
         // Push to backend
         $backend = $this->backend();
-        $resp = $backend->addVersion($data['id'], $name, $transformations);
+        $resp = $backend->addVersion($data['id'], $filename, $transformations);
 
         if (isset($resp->error))
             throw new \Exception('Backend failed: ' . $resp->error);
@@ -199,7 +200,7 @@ class Handler
         // Finally fall back ona  default name
         $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
 
-        return \eZURLAliasML::convertToAlias($name) . $this->postfix;
+        return \eZURLAliasML::convertToAlias($name) . '-' . $postfix;
     }
 
     /**
@@ -355,10 +356,10 @@ class Handler
         $toScale = array();
         foreach ($data->versions as $version)
         {
-            list($dimension, $name) = explode(',', $version);
-            $dimension = explode('x', $dimension);
+            list($size, $name) = explode(',', $version);
+            $size = explode('x', $size);
             if (!$name) $name = false;
-            $toScale[] = compact('name', 'dimension');
+            $toScale[] = compact('name', 'size');
         }
         return $toScale;
     }

@@ -52,9 +52,8 @@ window.KeyMedia = Backbone.Model.extend({
             data : data,
             dataType : 'json',
             type : 'POST',
-            complete : function(response) {
-                console.log(response);
-                context.trigger('version.create', response);
+            success : function(response) {
+                context.trigger('version.create', response.content);
             }
         });
     }

@@ -121,9 +121,7 @@ class KeyMedia extends \ezote\lib\Controller
 
             // @var \ezr_keymedia\models\image\Handler
             $handler = $imageAttribute->content();
-            $results = $handler->addVersion($name, compact('coords', 'size'));
-
-            $data = compact('results');
+            $data = $handler->addVersion($name, compact('coords', 'size'));
         }
         return $data;
     }
