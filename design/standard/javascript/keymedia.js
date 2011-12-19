@@ -6,6 +6,11 @@
         // $ node of input field
         this.value = options.value;
 
+        this.scalerSize = {
+            w : 830,
+            h : 580
+        };
+
         this.prefix = options.prefix;
         this.id = options.id;
         this.version = options.version;
@@ -67,7 +72,6 @@
             if (typeof settings !== 'object')
                 throw 'Missing scaler settings';
 
-            console.log(settings);
             var data = {
                 versions : settings.versions
             };
@@ -97,8 +101,9 @@
                 scales.append(item);
             }
 
+            var scaler = this.scalerSize;
             this.body.find('img').attr({
-                src : 'http://keymediarevived.raymond.keyteq.no/600x600/' + settings.image + '.jpg'
+                src : 'http://keymediarevived.raymond.keyteq.no/' + scaler.w + 'x' + scaler.h + '/' + settings.image + '.jpg'
             });
             this.eventsScale();
             return;
@@ -106,8 +111,7 @@
 
         this.changeScale = function(e, scale) {
             e.preventDefault();
-            console.log(scale);
-            var w = 600, h = 600;
+            var w = this.scalerSize.w, h = this.scalerSize.h;
             var x = parseInt((w - scale.dimension[0]) / 2, 10);
             var y = parseInt((h - scale.dimension[1]) / 2, 10);
             // x,y,x2,y2
