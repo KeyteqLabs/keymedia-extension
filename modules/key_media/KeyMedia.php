@@ -104,7 +104,7 @@ class KeyMedia extends \ezote\lib\Controller
 
     /***
      * Render a bunch of templates into an array and return them
-     * Defaults to include `skeleton` and `modal`
+     * Defaults to include `skeleton`
      *
      * @param array $templates
      * @return array
@@ -114,8 +114,6 @@ class KeyMedia extends \ezote\lib\Controller
         $defaults = array();
         if ($http->variable('skeleton', false))
             $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
-        if ($http->variable('modal', false))
-            $defaults['modal'] = 'design:parts/modal.tpl';
 
         $templates += $defaults;
 
