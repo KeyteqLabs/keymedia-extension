@@ -5,12 +5,16 @@
 
 {ezscript_require( array(
     'ezjsc::jquery',
+    'libs/underscore-min.js',
+    'libs/backbone-min.js',
     'plupload/plupload.js',
     'plupload/plupload.html4.js',
     'plupload/plupload.html5.js',
 
     'jquery.jcrop.min.js',
-    'keymedia.js'
+    'keymedia.scaler.js',
+    'keymedia.browser.js',
+    'keymedia.js',
 ) )}
 {ezcss_require( array(
     'jquery.jcrop.css',
@@ -57,27 +61,33 @@
     {literal}
     (function(data) {
         var container = $('#keymedia-buttons-' + id);
-        var value = container.find('.image-id');
-        container.data('browser', new window.KeyMediaBrowser({
+        var destination = container.find('.image-id');
+        var model = new window.KeyMedia({
+            id : container.data('backend'),
             prefix : container.data('prefix'),
-            value : value,
-            backend : container.data('backend'),
             contentObjectId : container.data('contentobject-id'),
-            version : container.data('version'),
-            id : id
-        }));
+            version : container.data('version')
+        });
+        var keymedia = new window.KeyMediaView({
+            model : model,
+            destination : destination
+        }).render();
+        keymedia.el.prependTo('body');
+
+        container.data('browser', keymedia);
 
         $('.ezr-keymedia-remote-file', container).click(function(e) {
-            container.data('browser').search();
+            keymedia.search();
+            //model.search();
         });
 
         $('.ezr-keymedia-scale', container).click(function(e) {
             e.preventDefault();
             var data = {
-                image : value.val(),
+                image : destination.val(),
                 versions : $(this).data('versions')
             };
-            container.data('browser').scaler(data);
+            keymedia.scaler(data);
         });
 
         var uploader = new plupload.Uploader({
