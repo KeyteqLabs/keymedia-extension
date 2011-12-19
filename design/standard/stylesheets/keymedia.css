@@ -59,23 +59,27 @@
 
 
 
-
-
 #ezr-keymedia-modal .item {
     float: left;
-    position: relative;
-    text-align: center;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-    width: 160px;
+    width: 180px;
     height: 120px;
-    padding: 0;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+    padding: 3px;
+    position: relative;
     overflow: hidden;
+}
+
+#ezr-keymedia-modal .item .pick {
+    text-align: center;
+    width: 180px;
+    height: 120px;
     background: url(loader.gif) center center no-repeat;
+    vertical-align: middle;
+    display: table-cell;
 }
 
 #ezr-keymedia-modal .item a {
-    display: block;
 }
 #ezr-keymedia-modal .item img {
     margin: 0;
