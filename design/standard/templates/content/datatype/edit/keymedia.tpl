@@ -37,7 +37,7 @@
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
 
     <button type="button" class="ezr-keymedia-scale"
-        data-versions={$attribute.content.toscale|json}>
+        data-versions='{$attribute.content.toscale|json}'>
         {'Scale'|i18n( 'content/edit' )}
     </button>
 
