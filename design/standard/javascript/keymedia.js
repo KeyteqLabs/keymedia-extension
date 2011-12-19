@@ -100,11 +100,7 @@ window.KeyMediaView = Backbone.View.extend({
         settings.model = this.model;
         this.view = new KeyMediaScaler(settings);
 
-        var data = {
-            versions : settings.versions
-        };
-
-        this.model.scale(settings.image, settings.versions);
+        this.model.scale(settings.imageId, settings.versions);
     },
 
     close : function(e) {

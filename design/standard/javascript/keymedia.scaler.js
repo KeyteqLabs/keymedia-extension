@@ -1,4 +1,5 @@
 window.KeyMediaScaler = Backbone.View.extend({
+    current : null,
     size : {
         w : 830,
         h : 580
@@ -9,7 +10,11 @@ window.KeyMediaScaler = Backbone.View.extend({
 
         this.el = $(this.el);
 
-        this.image = options.image;
+        this.image = new KeyMediaImage({
+            id : options.imageId,
+            host : options.host
+        });
+
         this.versions = options.versions;
 
         this.model.bind('scale', this.render);
@@ -18,7 +23,7 @@ window.KeyMediaScaler = Backbone.View.extend({
     },
 
     events : {
-        'click .header a' : 'changeScale'
+        'click .header li' : 'changeScale'
     },
 
     render : function(response) {
@@ -27,27 +32,39 @@ window.KeyMediaScaler = Backbone.View.extend({
             this.el.html(response.content.skeleton);
         }
 
+        this.$('img').attr({
+            src : this.image.thumb(this.size.w, this.size.h, 'jpg')
+        });
+
         var i, scale = $(response.content.scale), item, r;
-        var scales = this.$('.header ul');
+        var ul = this.$('.header ul');
         for (i = 0; i < this.versions.length; i++) {
             r = this.versions[i];
             item = scale.clone();
             item.find('h2').text(r.name);
             item.find('span').text(r.dimension.join('x'));
-            item.find('a').data('scale', r);
-            scales.append(item);
+            item.data('scale', r);
+            ul.append(item);
         }
 
-        var scaler = this.size;
-        this.$('img').attr({
-            src : 'http://keymediarevived.raymond.keyteq.no/' + this.size.w + 'x' + this.size.h + '/' + this.image + '.jpg'
-        });
+        // Enable the first scaling by simulating a click
+        this.$('.header ul').find('a').first().click();
+
         return this;
     },
 
     changeScale : function(e) {
         e.preventDefault();
-        var scale = $(e.currentTarget).data('scale');
+
+        if (this.current !== null)
+        {
+            this.current.removeClass('active');
+        }
+
+        this.current = $(e.currentTarget);
+        this.current.addClass('active');
+
+        var scale = this.current.data('scale');
 
         var w = this.size.w, h = this.size.h;
         var x = parseInt((w - scale.dimension[0]) / 2, 10);

@@ -14,6 +14,7 @@
     'jquery.jcrop.min.js',
     'keymedia.scaler.js',
     'keymedia.browser.js',
+    'keymedia.image.js',
     'keymedia.js',
 ) )}
 {ezcss_require( array(
@@ -35,12 +36,13 @@
 <div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl}
     data-contentobject-id={$attribute.contentobject_id}
     data-backend={$backend.id}
+    data-backend-host='{$backend.host}'
     data-version={$attribute.version}>
 
     <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$attribute.content.image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
 
-    <button type="button" class="ezr-keymedia-scale"
+    <button type="button" class="ezr-keymedia-scale hid"
         data-versions='{$attribute.content.toscale|json}'>
         {'Scale'|i18n( 'content/edit' )}
     </button>
@@ -74,20 +76,22 @@
         }).render();
         keymedia.el.prependTo('body');
 
-        container.data('browser', keymedia);
+        if (destination.val())
+        {
+            $('.ezr-keymedia-scale', container).click(function(e) {
+                e.preventDefault();
+                var data = {
+                    imageId : destination.val(),
+                    host : container.data('backend-host'),
+                    versions : $(this).data('versions')
+                };
+                keymedia.scaler(data);
+            }).show();
+        }
 
         $('.ezr-keymedia-remote-file', container).click(function(e) {
             keymedia.search();
             //model.search();
-        });
-
-        $('.ezr-keymedia-scale', container).click(function(e) {
-            e.preventDefault();
-            var data = {
-                image : destination.val(),
-                versions : $(this).data('versions')
-            };
-            keymedia.scaler(data);
         });
 
         var uploader = new plupload.Uploader({
