@@ -351,6 +351,10 @@ class Handler
     {
         $class = $this->attr->contentClassAttribute();
 
+        // Array of versions in db
+        $values = $this->values() + array('versions' => array());
+        $versions = $values['versions'];
+
         // 1 line = 1 scaling
         $data = json_decode($class->attribute(\KeyMedia::FIELD_JSON));
         $toScale = array();
@@ -359,7 +363,9 @@ class Handler
             list($size, $name) = explode(',', $version);
             $size = explode('x', $size);
             if (!$name) $name = false;
-            $toScale[] = compact('name', 'size');
+            // Lookup key in my versions
+            $key = $name . '-' . implode('x', $size);
+            $toScale[] = isset($versions[$key]) ? $versions[$key] : compact('name', 'size');
         }
         return $toScale;
     }
