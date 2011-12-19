@@ -276,7 +276,7 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'selected', 'thumb', 'filesize', 'mime_type', 'image');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image', 'toscale');
         if (in_array($name, $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -297,6 +297,8 @@ class Handler
                 return $this->backend();
             case 'selected':
                 return $this->selected();
+            case 'toscale':
+                return $this->toScale();
             case 'image':
                 return $image;
             case 'thumb':
@@ -354,6 +356,28 @@ class Handler
     protected function selected()
     {
         return $this->attr->contentClassAttribute()->attribute(\KeyMedia::FIELD_BACKEND);
+    }
+
+    /**
+     * Cached loading of the image for this content object attribute
+     *
+     * @return \ezr_keymedia\models\Image
+     */
+    protected function toScale()
+    {
+        $class = $this->attr->contentClassAttribute();
+
+        // 1 line = 1 scaling
+        $data = json_decode($class->attribute(\KeyMedia::FIELD_JSON));
+        $toScale = array();
+        foreach ($data->versions as $version)
+        {
+            list($dimension, $vanityUrl, $name) = explode(',', $version);
+            $dimension = explode('x', $dimension);
+            if (!$name) $name = false;
+            $toScale[] = compact('name', 'dimension', 'vanityUrl');
+        }
+        return $toScale;
     }
 
     /**

@@ -1,5 +1,6 @@
 {def $base='ContentObjectAttribute'
     $backend = $attribute.content.backend
+    $class_attribute = $attribute.content.class
 }
 
 {ezscript_require( array(
@@ -8,69 +9,13 @@
     'plupload/plupload.html4.js',
     'plupload/plupload.html5.js',
 
+    'jquery.jcrop.min.js',
     'keymedia.js'
 ) )}
-{run-once}
-<style>
-{literal}
-#ezr-keymedia-modal .backdrop {
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    background: black;
-    opacity: 0.7;
-}
-
-#ezr-keymedia-modal .content {
-    z-index: 2;
-    border: 1px solid #fff;
-    background: white;
-    position: absolute;
-    top: 100px;
-    bottom: 100px;
-    right: 100px;
-    left: 100px;
-    opacity: 1;
-}
-
-#ezr-keymedia-modal .item {
-    float: left;
-    position: relative;
-    text-align: center;
-    border: 1px solid #999;
-    width: 160px;
-    height: 120px;
-    padding: 2px;
-    margin: 3px;
-    overflow: hidden;
-}
-#ezr-keymedia-modal .item a {
-    display: block;
-}
-#ezr-keymedia-modal .item img {
-    margin: 0 auto;
-}
-#ezr-keymedia-modal .item:hover .meta {
-    display: block;
-}
-#ezr-keymedia-modal .item .meta {
-    display: none;
-    bottom: 30px;
-    left: 0;
-    margin: 0 auto;
-    background: #fff;
-    opacity: 0.7;
-    position: absolute;
-    width: 160px;
-    overflow: hide;
-}
-{/literal}
-</style>
-{/run-once}
+{ezcss_require( array(
+    'jquery.jcrop.css',
+    'keymedia.css'
+) )}
 
 {* Current image. *}
 <div class="keymedia-image">
@@ -90,6 +35,11 @@
 
     <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$attribute.content.image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
+
+    <button type="button" class="ezr-keymedia-scale"
+        data-versions={$attribute.content.toscale|json}>
+        {'Scale'|i18n( 'content/edit' )}
+    </button>
 
     <button type="button" class="ezr-keymedia-remote-file">
         {'Choose from KeyMedia'|i18n( 'content/edit' )}
@@ -119,6 +69,15 @@
 
         $('.ezr-keymedia-remote-file', container).click(function(e) {
             container.data('browser').search();
+        });
+
+        $('.ezr-keymedia-scale', container).click(function(e) {
+            e.preventDefault();
+            var data = {
+                image : value.val(),
+                versions : $(this).data('versions')
+            };
+            container.data('browser').scaler(data);
         });
 
         var uploader = new plupload.Uploader({

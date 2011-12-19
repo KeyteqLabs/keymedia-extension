@@ -101,45 +101,6 @@ class KeyMedia extends eZDataType
         return true;
     }
 
-    /*!
-     Store the content. Since the content has been stored in function 
-     fetchObjectAttributeHTTPInput(), this function is with empty code.
-    */
-    function storeObjectAttribute( $contentObjectAttribute )
-    {
-    }
-
-    /*!
-     Returns the meta data used for storing search indices.
-    */
-    function metaData( $contentObjectAttribute )
-    {
-        return array();
-    }
-
-    /*!
-     Returns the text.
-    */
-    function title( $contentObjectAttribute, $name = null)
-    {
-        return $this->metaData( $contentObjectAttribute );
-    }
-
-    function isIndexable()
-    {
-        return true;
-    }
-
-    function sortKey( $contentObjectAttribute )
-    {
-        return $this->metaData( $contentObjectAttribute );
-    }
-  
-    function sortKeyType()
-    {
-        return 'integer';
-    }
-
     function hasObjectAttributeContent( $contentObjectAttribute )
     {
         return true;

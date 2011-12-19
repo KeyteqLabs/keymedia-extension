@@ -78,6 +78,58 @@ class KeyMedia extends \ezote\lib\Controller
     }
 
     /**
+     * eZJSCore method for providing scaler GUI tools
+     * @param array $args
+     */
+    public static function scaler($args)
+    {
+        $http = \eZHTTPTool::instance();
+        // $id will be id of image in keymeda
+        $backend = array_pop($args);
+        $id = array_pop($args);
+        if ($backend && $id)
+        {
+            $version = $http->variable('version', array());
+
+            $backend = Backend::first(array('id' => $backend));
+
+            $templates = array(
+                'skeleton' => 'design:parts/scaler.tpl',
+                'scale' => 'design:parts/scale_version.tpl'
+            );
+            $data = compact('item') + self::_templates($http, $templates);
+        }
+        return $data;
+    }
+
+    /***
+     * Render a bunch of templates into an array and return them
+     * Defaults to include `skeleton` and `modal`
+     *
+     * @param array $templates
+     * @return array
+     */
+    protected static function _templates($http, array $templates = array())
+    {
+        $defaults = array();
+        if ($http->variable('skeleton', false))
+            $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
+        if ($http->variable('modal', false))
+            $defaults['modal'] = 'design:parts/modal.tpl';
+
+        $templates += $defaults;
+
+        $tpl = \eZTemplate::factory();
+        $result = array();
+        foreach ($templates as $name => $path)
+        {
+            if ($path) $result[$name] = $tpl->fetch($path);
+        }
+
+        return $result;
+    }
+
+    /**
      * eZJSCore method for browsing KeyMedia
      */
     public static function browse($args)
@@ -92,39 +144,15 @@ class KeyMedia extends \ezote\lib\Controller
             $limit = 25;
             $id = (int) $id;
 
-            $tpl = \eZTemplate::factory();
             $backend = Backend::first(compact('id'));
             $results = $backend->search($q, array(), compact('width', 'height', 'offset', 'limit'));
 
-            if ($http->variable('skeleton', false))
-                $skeleton = $tpl->fetch('design:content/keymedia/browse.tpl');
-
-            if ($http->variable('modal', false))
-                $modal = $tpl->fetch('design:parts/modal.tpl');
-
-            $item = $tpl->fetch('design:parts/keymedia_browser_item.tpl');
-
-            $data = compact('results', 'skeleton', 'modal', 'item');
+            $templates = array(
+                'item' => 'design:parts/keymedia_browser_item.tpl'
+            );
+            $data = compact('results') + self::_templates($http, $templates);
         }
         return $data;
-    }
-
-    /**
-     * Connect KeyMedia image to content object attribute
-     *
-     * @param array $args 1: KeyMedia id, 2: image id
-     */
-    public static function connectImage($args)
-    {
-        $http = eZHTTPTool::instance();
-
-        $mediabase = array_shift($args);
-        $id = array_shift($args);
-        $attributeID = $http->postVariable('AttributeID');
-        $contentObjectVersion = $http->postVariable('ContentObjectVersion');
-        $contentObjectID = $http->postVariable('ContentObjectID');
-
-        return compact('ok', 'error');
     }
 
     /**

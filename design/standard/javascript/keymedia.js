@@ -13,7 +13,7 @@
 
         this.url = function(method, extras) {
             extras = (extras || []);
-            var parts = ['keymedia', method, this.backend];
+            var parts = ['keymedia', method];
             for (var i = 0; i < extras.length; i++)
                 parts.push(extras[i]);
             return this.prefix + '/' + parts.join('::');
@@ -26,19 +26,15 @@
             if (typeof q === 'string')
                 data.q = q;
                 
+            var url = this.url('browse', [this.backend]);
             var callback = this.onSearch, context = this;
-            $.getJSON(this.url('browse'), data, function(response) {
+            $.getJSON(url, data, function(response) {
                 callback.call(context, response);
             });
         };
 
         this.onSearch = function(response) {
-            if (!this.modal && response.content.hasOwnProperty('modal')) {
-                this.modal = $(response.content.modal).prependTo('body');
-                this.modal.find('.content').html(response.content.skeleton);
-            }
-
-            this.body = this.modal.find('.content .body').html('');
+            this.body = this.assureModal(response, '').html('');
 
             var i, tmpl = $(response.content.item), item;
             var results = response.content.results.hits;
@@ -46,7 +42,7 @@
                 item = this.item(results[i], tmpl);
                 this.body.append(item);
             }
-            this.events();
+            this.eventsBrowse();
         };
 
         this.item = function(data, tmpl) {
@@ -66,13 +62,73 @@
             this.close();
         };
 
-        this.close = function(e) {
-            this.modal.remove();
-            this.modal = false;
-            this.body = false;
+        // Open a scaling gui
+        this.scaler = function(settings) {
+            if (typeof settings !== 'object')
+                throw 'Missing scaler settings';
+
+            console.log(settings);
+            var data = {
+                versions : settings.versions
+            };
+            if (!this.modal) {
+                data.modal = true;
+                data.skeleton = true;
+            }
+
+            var url = this.url('scaler', [this.backend, settings.image]);
+            var callback = this.renderScaler, context = this;
+            $.getJSON(url, data, function(response) {
+                callback.call(context, response, settings);
+            });
         };
 
-        this.events = function() {
+        this.renderScaler = function(response, settings) {
+            this.body = this.assureModal(response, '');
+
+            var i, scale = $(response.content.scale), item, r;
+            var scales = this.modal.find('.header ul');
+            for (i = 0; i < settings.versions.length; i++) {
+                r = settings.versions[i];
+                item = scale.clone();
+                item.find('em').text(r.name);
+                item.find('span').text(r.dimension.join('x'));
+                item.find('a').data('scale', r);
+                scales.append(item);
+            }
+
+            this.body.find('img').attr({
+                src : 'http://keymediarevived.raymond.keyteq.no/600x600/' + settings.image + '.jpg'
+            });
+            this.eventsScale();
+            return;
+        };
+
+        this.changeScale = function(e, scale) {
+            e.preventDefault();
+            console.log(scale);
+            var w = 600, h = 600;
+            var x = parseInt((w - scale.dimension[0]) / 2, 10);
+            var y = parseInt((h - scale.dimension[1]) / 2, 10);
+            // x,y,x2,y2
+            var initial = [
+                x,
+                y,
+                w - x,
+                h - x
+            ];
+            $('#ezr-keymedia-scaler-crop').Jcrop({
+                ratio : (scale.dimension[0] / scale.dimension[1]),
+                setSelect : initial
+            });
+        };
+        this.eventsScale = function() {
+            var context = this;
+            this.modal.find('.header a').click(function(e) {
+                context.changeScale.call(context, e, $(this).data('scale'));
+            });
+        };
+        this.eventsBrowse = function() {
             var context = this;
             $('a', this.body).click(function(e) {
                 context.select.call(context, e);
@@ -86,6 +142,26 @@
                 var q = node.prev().val();
                 context.search(q);
             });
+        };
+        // private helper
+        this.assureModal = function(response) {
+            if (!this.modal && response.content.hasOwnProperty('modal')) {
+                this.modal = $(response.content.modal).prependTo('body');
+            }
+            if (this.modal && response.content.hasOwnProperty('skeleton')) {
+                this.modal.find('.content').html(response.content.skeleton);
+            }
+            if (!this.body) {
+                this.body = this.modal.find('.content .body');
+            }
+
+            return this.body;
+        };
+
+        this.close = function(e) {
+            this.modal.remove();
+            this.modal = false;
+            this.body = false;
         };
     };
 }(jQuery));
