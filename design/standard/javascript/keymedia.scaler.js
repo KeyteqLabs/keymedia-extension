@@ -52,6 +52,8 @@ window.KeyMediaScaler = Backbone.View.extend({
         var w = this.size.w, h = this.size.h;
         var x = parseInt((w - scale.dimension[0]) / 2, 10);
         var y = parseInt((h - scale.dimension[1]) / 2, 10);
+
+        // Find initial placement of crop
         // x,y,x2,y2
         var initial = [
             x,
@@ -59,8 +61,10 @@ window.KeyMediaScaler = Backbone.View.extend({
             w - x,
             h - x
         ];
+        var ratio = (scale.dimension[0] / scale.dimension[1]);
+        console.log(ratio);
         $('#ezr-keymedia-scaler-crop').Jcrop({
-            ratio : (scale.dimension[0] / scale.dimension[1]),
+            aspectRatio : ratio,
             setSelect : initial
         });
     }

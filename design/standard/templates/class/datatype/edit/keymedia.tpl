@@ -14,7 +14,6 @@
     <label>{'Scaled versions'|i18n( 'design/standard/class/datatype' )}:</label>
     <textarea rows="5" cols="45" name="ContentClass_versions_{$class_attribute.id}">{$content.versions}</textarea>
     <p>
-    {'1 row = 1 version: 500x500 => vanity-url.
-    Use #slug# to add the generated slug url for the object into the name: #slug#-vanity-url'|i18n( 'design/standard/class/datatype' )}
+    {'1 row = 1 version: 500x500,Hoved'|i18n( 'design/standard/class/datatype' )}
     </p>
 </div>

@@ -372,10 +372,10 @@ class Handler
         $toScale = array();
         foreach ($data->versions as $version)
         {
-            list($dimension, $vanityUrl, $name) = explode(',', $version);
+            list($dimension, $name) = explode(',', $version);
             $dimension = explode('x', $dimension);
             if (!$name) $name = false;
-            $toScale[] = compact('name', 'dimension', 'vanityUrl');
+            $toScale[] = compact('name', 'dimension');
         }
         return $toScale;
     }
