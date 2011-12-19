@@ -52,7 +52,7 @@
     text-decoration: none;
 }
 
-#ezr-keymedia-browser button.close {
+#ezr-keymedia-modal .close {
     float: right;
 }
 
@@ -126,6 +126,18 @@
     color: #000;
 }
 
+#ezr-keymedia-scaler .header ul li a h2 {
+    display: block;
+    margin: 0;
+    font: bold 12px/12px Helvetica, Arial, sans-serif;
+}
+
+#ezr-keymedia-scaler .header ul li a span {
+    display: block;
+    font: normal 10px/10px Helvetica, Arial, sans-serif;
+}
+
+
 #ezr-keymedia-scaler .header ul li.active a {
     background-color: #ffbb00;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#ffbb00), to(#ff8d00));
@@ -135,9 +147,3 @@
     background-image: -o-linear-gradient(top, #ffbb00, #ff8d00);
     background-image: linear-gradient(top, #ffbb00, #ff8d00); 
 }
-
-#ezr-keymedia-scaler .header ul li a span {
-    
-}
-
-    
