@@ -8,6 +8,9 @@
     </metadata>
 
     <dependencies>
+        <requires>
+            <extension name="ezote" />
+	</requires>
         <uses>
             <extension name="ezkp" />
         </uses>
