@@ -15,4 +15,3 @@
 {else}
 <h2>{'No connected KeyMedia sites'|i18n( 'keymedia/dashboard' )}</h2>
 {/if}
-<a href="addConnection">{'Add KeyMedia connection'|i18n( 'keymedia/dashboard' )}</a>
