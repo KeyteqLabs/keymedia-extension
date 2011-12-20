@@ -1,11 +1,16 @@
 # KeyMedia integration for eZ Publish
 
 ## Installation
-First install the required _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
-Then install the sql :
+### Dependencies
+_eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
+
+### Install sql
+
 	mysql -u username -p -h host < sql/mysql/install.sql
 
-Then regenerate autoloads and clear cache.
+### Regenerate autoloads and clear cache
 
-Your now ready to rock!
+	php bin/php/ezpgenerateautoloads.php; php bin/php/ezcache.php --clear-all
+	
+__Your now ready to rock!__
