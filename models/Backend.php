@@ -149,6 +149,35 @@ class Backend extends \eZPersistentObject
     }
 
     /**
+     * Upload a new media via API
+     *
+     * @param string $filepath Local file system path to media file
+     * @param string $filename File name to use in KeyMedia
+     * @param array $tags
+     * @param array $data
+     *          - `attributes`
+     *          - `collection`
+     *
+     * @return \ezr_keymedia\models\Image|false Image object if a successfull upload
+     */
+    public function upload($filepath, $filename, array $tags = array(), array $data = array())
+    {
+        if ($con = $this->connection())
+        {
+            $data += array('attributes' => array());
+            $result = $con->uploadMedia($filepath, $filename, $tags, $data['attributes']);
+            if ($result && isset($result->media))
+            {
+                $image = new Image($result->media);
+                $image->host($this->host);
+                return $image;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Simplify results from searches
      *
      * @param array $results

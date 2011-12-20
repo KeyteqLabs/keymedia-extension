@@ -134,12 +134,10 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
-        $media = '@' . $filename;
-        $payload = compact('media', 'originalName', 'tags', 'attributes');
+        $file = '@' . $filename;
+        $payload = compact('file', 'originalName', 'tags', 'attributes');
 
-        $result = $this->makeRequest($this->getRequestUrl('media'), $payload, 'POST');
-
-        return json_decode($result);
+        return $this->makeRequest('/media.json', $payload, 'POST');
     }
 
     /**
