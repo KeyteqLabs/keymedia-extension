@@ -91,4 +91,46 @@ abstract class ConnectorBase implements ConnectorInterface
     {
         $this->timeout = $timeout;
     }
+
+    /**
+     * Makes a request and returns the result.
+     *
+     * @param $action
+     * @param $params
+     *
+     * @return mixed
+     */
+    protected function makeRequest($action, array $params = array(), $method = 'GET')
+    {
+        $method = strtoupper($method);
+
+        $url = $this->getRequestUrl($action, $params);
+
+        $ch = curl_init($url);
+        switch ($method)
+        {
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+                break;
+            case 'GET':
+                $url .= '?' . http_build_query($params);
+                break;
+        }
+
+        if ($this->callback)
+        {
+            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
+            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
+        }
+
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if (is_numeric($this->timeout))
+            curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+
+        $result = curl_exec($ch);
+        $data = json_decode($result);
+        return $data;
+    }
 }

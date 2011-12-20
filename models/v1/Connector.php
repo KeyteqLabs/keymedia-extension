@@ -90,11 +90,9 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
-        $url = $this->getRequestUrl('upload');
-
         if (file_exists($filename))
         {
-            $postFields = array
+            $payload = array
             (
                 'media' => '@' . $filename,
                 'originalName' => $originalName,
@@ -102,7 +100,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
                 'attributes' => serialize($attributes)
             );
 
-            $result = $this->uploadByCurl($url, $postFields);
+            $result = $this->makeRequest($this->getRequestUrl('upload'), $payload, 'POST');
 
             return json_decode($result);
         }
@@ -126,52 +124,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         $originalName = $_FILES[$fieldname]['name'];
 
         return $this->uploadMedia($filename, $originalName, $tags, $attributes);
-    }
-
-    /**
-     *
-     * Upload alternative by curl.
-     *
-     * @param $url
-     * @param $postFields
-     *
-     * @return mixed
-     */
-    protected function uploadByCurl($url, $postFields)
-    {
-        $ch = curl_init($url);
-
-        if ($this->callback)
-        {
-            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
-            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
-        }
-
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($ch);
-
-        return $result;
-    }
-
-    /**
-     *
-     * Makes a request and returns the result.
-     *
-     * @param $action
-     * @param $params
-     *
-     * @return mixed
-     */
-    protected function makeRequest($action, $params)
-    {
-        $url = $this->getRequestUrl($action, $params);
-
-        return json_decode(file_get_contents($url));
     }
 
     /**

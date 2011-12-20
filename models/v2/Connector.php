@@ -117,7 +117,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
-     *
      * Uploads media to KeyMedia
      *
      * @param $filename
@@ -129,93 +128,21 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
      */
     public function uploadMedia($filename, $originalName, $tags = array(), $attributes = array())
     {
+        if (!file_exists($filename))
+            return null;
+
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
-        $url = $this->getRequestUrl('upload');
+        $media = '@' . $filename;
+        $payload = compact('media', 'originalName', 'tags', 'attributes');
 
-        if (file_exists($filename))
-        {
-            $postFields = array
-            (
-                'media' => '@' . $filename,
-                'originalName' => $originalName,
-                'tags' => serialize($tags),
-                'attributes' => serialize($attributes)
-            );
+        $result = $this->makeRequest($this->getRequestUrl('media'), $payload, 'POST');
 
-            $result = $this->uploadByCurl($url, $postFields);
-
-            return json_decode($result);
-        }
-
-        return null;
+        return json_decode($result);
     }
 
     /**
-     *
-     * Upload alternative by curl.
-     *
-     * @param $url
-     * @param $postFields
-     *
-     * @return mixed
-     */
-    protected function uploadByCurl($url, $postFields)
-    {
-        $ch = curl_init($url);
-
-        if ($this->callback)
-        {
-            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
-            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
-        }
-
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($ch);
-
-        return $result;
-    }
-
-    /**
-     *
-     * Makes a request and returns the result.
-     *
-     * @param $action
-     * @param $params
-     *
-     * @return mixed
-     */
-    protected function makeRequest($action, array $params = array(), $method = 'GET')
-    {
-        $method = strtoupper($method);
-
-        $url = $this->getRequestUrl($action, $params);
-
-        $ch = curl_init($url);
-        switch ($method)
-        {
-            case 'POST':
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-                break;
-            case 'GET':
-                $url .= '?' . http_build_query($params);
-                break;
-        }
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec($ch);
-        $data = json_decode($result);
-        return $data;
-    }
-
-    /**
-     *
      * Builds the url for accessing keymedia.
      *
      * @param $action
@@ -229,16 +156,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
 
         // Ensure it has http://
         if (strpos($url, "http") === false) $url = 'http://' . $url;
-
-        /*
-        $urlArr = parse_url($url);
-        $authUrl = $urlArr['scheme'] . '://' . $urlArr['host'] . $urlArr['path'];
-        $auth = md5($authUrl . $this->apiKey);
-        $payload += array(
-            'username' => $this->username,
-            'signature' => $this->sign($this->username, $this->apiKey, $payload)
-        );
-         */
 
         return $url;
     }
