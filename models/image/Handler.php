@@ -87,10 +87,9 @@ class Handler
      *
      * Usage:
      * <code>
-     *   $width = 100;
-     *   $height = 100;
+     *   $size = array(100,100);
      *   $coords = array($x, $y, $x2, $y2);
-     *   $handler->addVersion('my-slug-500x500', compact('width', 'height', 'coords'));
+     *   $handler->addVersion('my-slug-500x500', compact('size', 'coords'));
      * </code>
      *
      * Both `width`, `height` and `coords` are not needed

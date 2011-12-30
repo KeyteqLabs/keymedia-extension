@@ -58,6 +58,30 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     *
+     * Retrieves images matching one or more tags.
+     *
+     * @param array $tags A list of tags
+     * @param string $operator and (default is or)
+     * @param int $limit
+     * @param int $offset
+     * @param int|false $width
+     * @param int|false $height
+     *
+     * @return mixed
+     */
+    public function searchByTags($tags = array(), $operator = 'or', $limit = 25, $offset = 0, $width = false, $height = false)
+    {
+        $params = compact('tags', 'operator', 'limit', 'offset');
+
+        if ($width !== false) $params['width'] = $width;
+        if ($height !== false) $params['height'] = $height;
+
+        $results = $this->makeRequest('/media.json', $params);
+        if ($results && isset($results->media)) return $results->media;
+    }
+
+    /**
      * Return media information for given image id
      * 
      * @param string $id
@@ -90,33 +114,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
-     *
-     * Retrieves images matching one or more tags.
-     *
-     * @param array $tags A list of tags
-     * @param bool $operator and (default is or)
-     * @param bool $limit
-     * @param bool $offset
-     * @param bool $width
-     * @param bool $height
-     *
-     * @return mixed
-     */
-    public function searchByTags($tags = array(), $operator = false, $limit = false, $offset = false, $width = false, $height = false)
-    {
-        $params = array();
-        $params['tag'] = $tags;
-
-        if ($operator !== false) $params['tagsoperator'] = $operator;
-        if ($limit !== false) $params['limit'] = $limit;
-        if ($offset !== false) $params['offset'] = $offset;
-        if ($width !== false) $params['width'] = $width;
-        if ($height !== false) $params['heigth'] = $height;
-
-        return $this->makeRequest('tag', $params);
-    }
-
-    /**
      * Uploads media to KeyMedia
      *
      * @param $filename
@@ -138,6 +135,32 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         $payload = compact('file', 'originalName', 'tags', 'attributes');
 
         return $this->makeRequest('/media.json', $payload, 'POST');
+    }
+
+    /**
+     * Simplify a result set
+     *
+     * @param object $media
+     * @return object
+     */
+    public function simplify($media)
+    {
+        $parts = explode('.', $media->name);
+        $ending = array_pop($parts);
+        $width = 600;
+        $height = 400;
+        $thumb = (object) array(
+            'url' => 'http://' . $this->mediabaseDomain . '/' . $width . 'x' . $height . '/' . $media->_id . '.jpg'
+        );
+        return (object) array(
+            'id' => $media->_id,
+            'tags' => $media->tags,
+            'filesize' => $media->file->size,
+            'width' => (int) $media->file->width,
+            'height' => (int) $media->file->height,
+            'thumb' => $thumb,
+            'filename' => $media->name
+        );
     }
 
     /**

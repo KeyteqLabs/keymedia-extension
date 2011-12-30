@@ -236,7 +236,7 @@ class KeyMedia extends \ezote\lib\Controller
 
     protected function backends()
     {
-        return eZPersistentObject::fetchObjectList(Backend::definition());
+        return Backend::find();
     }
 
 }

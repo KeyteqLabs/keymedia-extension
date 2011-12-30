@@ -127,6 +127,29 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     * Simplify a result
+     *
+     * @param object $media
+     * @return object
+     */
+    public function simplify($media)
+    {
+        $parts = explode('.', $media->originalFilename);
+        $ending = array_pop($parts);
+        $images = (array) $media->images;
+        $thumb = (object) array_shift($images);
+        return (object) array(
+            'id' => $media->id,
+            'filesize' => $media->bytes,
+            'tags' => $media->tags,
+            'width' => (int) $media->width,
+            'height' => (int) $media->height,
+            'thumb' => $thumb,
+            'filename' => $media->originalFilename
+        );
+    }
+
+    /**
      *
      * Builds the url for accessing keymedia.
      *
