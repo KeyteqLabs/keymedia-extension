@@ -15,7 +15,7 @@ window.KeyMediaScaler = Backbone.View.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'changeScale', 'versionCreated');
+        _.bindAll(this, 'render', 'changeScale', 'versionCreated', 'createOverlay');
 
         this.el = $(this.el);
 
@@ -34,7 +34,37 @@ window.KeyMediaScaler = Backbone.View.extend({
     },
 
     events : {
-        'click .header li' : 'changeScale'
+        'click .header li' : 'changeScale',
+        'mouseenter .header li' : 'overlay'
+    },
+
+    overlay : function(e) {
+        var node = $(e.currentTarget),
+            overlay = node.find('div');
+
+        if (node !== this.current)
+            this.createOverlay(node.find('div'), node.data('scale'));
+    },
+
+    createOverlay : function(node, data) {
+        if (this.cropper) {
+            if (!('coords' in data) || data.coords.length !== 4)
+                return false;
+            var scale = this.cropper.getScaleFactor();
+            var coords = data.coords,
+                x = parseInt(coords.shift() / scale[0], 10),
+                y = parseInt(coords.shift() / scale[1], 10),
+                x2 = parseInt(coords.shift() / scale[0], 10),
+                y2 = parseInt(coords.shift() / scale[1], 10),
+                offset = this.container.position();
+            var css = {
+                'top' : parseInt((offset.top - 0) + y, 10),
+                left : parseInt((offset.left - 0) + x, 10),
+                width : parseInt(x2 - x, 10),
+                height : parseInt(y2 - y, 10)
+            };
+            node.css(css);
+        }
     },
 
     render : function(response) {
@@ -46,6 +76,7 @@ window.KeyMediaScaler = Backbone.View.extend({
         this.$('img').attr({
             src : this.image.thumb(this.size.w, this.size.h, 'jpg')
         });
+        this.container = this.$('#ezr-keymedia-scaler-image');
 
         var i, scale = $(response.content.scale), item, r;
         var ul = this.$('.header ul');
@@ -94,6 +125,7 @@ window.KeyMediaScaler = Backbone.View.extend({
     {
         var menuElement = this.$('#scaled-' + data.name.toLowerCase());
         menuElement.data('scale', data);
+        this.createOverlay(menuElement, data);
     },
 
     changeScale : function(e) {
@@ -128,12 +160,10 @@ window.KeyMediaScaler = Backbone.View.extend({
         }
         else
         {
-            x = parseInt((this.trueSize[0] / 2) - (w / 2), 10);
-            y = parseInt((this.trueSize[1] / 2) - (h / 2), 10);
-            //x = parseInt((w - scale.size[0]) / 2, 10);
-            //y = parseInt((h - scale.size[1]) / 2, 10);
-            x2 = this.trueSize[0] - x;
-            y2 = this.trueSize[1] - y;
+            x = parseInt((this.trueSize[0] - w) / 2, 10);
+            y = parseInt((this.trueSize[1] - h) / 2, 10);
+            x2 = parseInt((this.trueSize[0] + w) / 2, 10);
+            y2 = parseInt((this.trueSize[1] + h) / 2, 10);
         }
         var select = [x,y,x2,y2];
 
