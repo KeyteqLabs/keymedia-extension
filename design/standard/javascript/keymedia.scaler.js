@@ -56,6 +56,10 @@ window.KeyMediaScaler = Backbone.View.extend({
             item.find('h2').text(r.name);
             item.find('span').text(r.size.join('x'));
             item.data('scale', r);
+            if ('url' in r)
+                item.addClass('cropped');
+            else
+                item.addClass('uncropped');
             ul.append(item);
         }
 
