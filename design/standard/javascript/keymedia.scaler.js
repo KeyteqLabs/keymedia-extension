@@ -82,10 +82,12 @@ window.KeyMediaScaler = Backbone.View.extend({
     storeVersion : function(selection, scale)
     {
         var vanityName = scale.name,
-            coords = [selection.x, selection.y, selection.x2, selection.y2],
             size = scale.size;
 
-        return this.model.addVanityUrl(vanityName, coords, size);
+        // Must store scale coords back onto object
+        scale.coords = [selection.x, selection.y, selection.x2, selection.y2];
+
+        return this.model.addVanityUrl(vanityName, scale.coords, size);
     },
 
     versionCreated : function(data)
@@ -96,45 +98,50 @@ window.KeyMediaScaler = Backbone.View.extend({
 
     changeScale : function(e) {
         e.preventDefault();
+        var scale;
 
         if (this.current !== null)
         {
             this.current.removeClass('active');
             // If a previous crop exists, save the coordinates as a new vanity url
-            var scale = this.current.data('scale'), selection = this.cropper.tellSelect();
+            scale = this.current.data('scale'), selection = this.cropper.tellSelect();
             if (this.cropper)
+            {
                 this.storeVersion(selection, scale);
+            }
         }
 
         this.current = $(e.currentTarget);
         this.current.addClass('active');
+        scale = this.current.data('scale');
 
-        var scale = this.current.data('scale');
-
-        var w = this.size.w, h = this.size.h;
-        var x = parseInt((w - scale.size[0]) / 2, 10);
-        var y = parseInt((h - scale.size[1]) / 2, 10);
+        var w = this.size.w, h = this.size.h, x, y, x2, y2;
 
         // Find initial placement of crop
         // x,y,x2,y2
-        var select;
-        if ('coords' in scale)
+        if (scale && 'coords' in scale)
         {
-            select = scale.coords;
+            x = scale.coords.shift() - 0;
+            y = scale.coords.shift() - 0;
+            x2 = scale.coords.shift() - 0;
+            y2 = scale.coords.shift() - 0;
         }
         else
         {
-            select = [
-                x,
-                y,
-                w - x,
-                h - x
-            ];
+            x = parseInt((this.trueSize[0] / 2) - (w / 2), 10);
+            y = parseInt((this.trueSize[1] / 2) - (h / 2), 10);
+            //x = parseInt((w - scale.size[0]) / 2, 10);
+            //y = parseInt((h - scale.size[1]) / 2, 10);
+            x2 = this.trueSize[0] - x;
+            y2 = this.trueSize[1] - y;
         }
+        var select = [x,y,x2,y2];
+
         var ratio = (scale.size[0] / scale.size[1]);
 
         // If an API exists we dont need to build Jcrop
         // but can just change crop
+        var context = this, size = this.trueSize;
         if (this.cropper)
         {
             // Change selection to new selection
@@ -146,16 +153,17 @@ window.KeyMediaScaler = Backbone.View.extend({
         }
         else
         {
-            var context = this, size = this.trueSize;
             $('#ezr-keymedia-scaler-crop').Jcrop({
-                aspectRatio : ratio,
-                setSelect : select,
-                minSize : scale.size
+                trueSize : size
             }, function(a) {
                 // Store reference to API
                 context.cropper = this;
                 // Set true size of image
-                this.setOptions({trueSize : size});
+                this.setOptions({
+                    aspectRatio : ratio,
+                    setSelect : select,
+                    minSize : scale.size
+                });
             });
         }
     }
