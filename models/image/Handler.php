@@ -219,6 +219,88 @@ class Handler
         return $url;
     }
 
+    public function media($format)
+    {
+
+        $availableFormats = json_decode($this->attr->DataText, true);
+
+
+        if (!is_array($availableFormats))
+            throw new \Exception("Image attribute does not contain any information.");
+
+        if (!isset($format)){
+
+            $version = null;
+            foreach($availableFormats['versions'] as $key => $value){
+
+                if (isset($value->url))
+                {
+                    $version = $value;
+                    break;
+                }
+            }
+
+        }
+        else
+        {
+            if (is_array($format))
+            {
+                $mediaUrl = $this->thumb($format[0], $format[1]);
+            }
+            else {
+               $version = $availableFormats['versions'][$format];
+            }
+        }
+        $data = $this->image()->attribute('data');
+
+        $mediaInfo = array(
+
+            'url' => $mediaUrl,
+            'width' => $version['width'],
+            'height' => $version['height'],
+            'ratio' => $version['width']/$version['height'],
+            'mime-type' => $data->file->type,
+            'type' => preg_match('/image/', $data->file->type) ? 'image' : '',
+            'original' => array(
+                'url' => $data->file->url,
+                'size' => $data->file->size,
+                'width' => $data->file->width,
+                'height' => $data->file->height,
+                'name' => $data->file->name,
+                'ratio' => $data->file->ratio
+            )
+        );
+
+        if (strlen($mediaUrl) > 0)
+            return $mediaUrl;
+
+
+        if (isset($version)){
+
+            $ext = '';
+            switch($data->file->type)
+            {
+                case 'image/png' :
+                    $ext ='.png';
+                    break;
+                case 'image/gif' :
+                    $ext ='.gif';
+                    break;
+                default :
+                    $ext = '.jpg';
+            }
+            $mediaUrl = "http://" . $this->image()->host()   . $version['url'] . $ext;
+
+            $mediaInfo['url'] = $mediaUrl;
+
+            return $mediaInfo;
+        }
+        else {
+            throw new \Exception("Unable to generate version.");
+        }
+
+    }
+
     protected function mimeType()
     {
         return '';
