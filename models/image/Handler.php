@@ -224,16 +224,25 @@ class Handler
 
         $availableFormats = json_decode($this->attr->DataText, true);
 
-
         if (!is_array($availableFormats))
             throw new \Exception("Image attribute does not contain any information.");
+
+        $data = $this->image()->attribute('data');
+        $originalImageInfo =  array(
+                'url' => $data->file->url,
+                'size' => $data->file->size,
+                'width' => $data->file->width,
+                'height' => $data->file->height,
+                'name' => $data->file->name,
+                'ratio' => $data->file->ratio
+            );
 
         if (!isset($format)){
 
             $version = null;
             foreach($availableFormats['versions'] as $key => $value){
 
-                if (isset($value->url))
+                if (isset($value['url']))
                 {
                     $version = $value;
                     break;
@@ -243,16 +252,36 @@ class Handler
         }
         else
         {
+
             if (is_array($format))
             {
                 $mediaUrl = $this->thumb($format[0], $format[1]);
+                $version = array();
             }
             else {
-               $version = $availableFormats['versions'][$format];
+                $version = $availableFormats['versions'][$format];
+
+                // No vesrion available - we need to autogenerate
+                if (!isset($version))
+                {
+
+                    list($versionWidth, $versionHeight) = $this->formatSize($format);
+                    $bestFit = \ezr_keymedia\models\Image::fitToBox($versionWidth, $versionHeight, $originalImageInfo['width'], $originalImageInfo['height']);
+
+                    $bestFit['size'] = array($versionWidth, $versionHeight);
+
+                    // Autocreate the best fit version
+                    self::addVersion($format, $bestFit);
+
+                    $availableFormats = json_decode($this->attr->DataText, true);
+                    $version = $availableFormats['versions'][$format];
+
+                }
+
             }
         }
-        $data = $this->image()->attribute('data');
 
+        // Build simple reply array
         $mediaInfo = array(
 
             'url' => $mediaUrl,
@@ -261,21 +290,12 @@ class Handler
             'ratio' => $version['width']/$version['height'],
             'mime-type' => $data->file->type,
             'type' => preg_match('/image/', $data->file->type) ? 'image' : '',
-            'original' => array(
-                'url' => $data->file->url,
-                'size' => $data->file->size,
-                'width' => $data->file->width,
-                'height' => $data->file->height,
-                'name' => $data->file->name,
-                'ratio' => $data->file->ratio
-            )
+            'format' => $format,
+            'coords' => $version['coords'],
+            'original' => $originalImageInfo,
         );
 
-        if (strlen($mediaUrl) > 0)
-            return $mediaUrl;
-
-
-        if (isset($version)){
+        if (isset($version) && !isset($mediaUrl)){
 
             $ext = '';
             switch($data->file->type)
@@ -296,9 +316,23 @@ class Handler
             return $mediaInfo;
         }
         else {
-            throw new \Exception("Unable to generate version.");
+            //throw new \Exception("Unable to generate version.");
         }
 
+    }
+
+    protected function formatSize($format){
+        $versions = $this->toScale();
+        $currentFormatSize = null;
+        foreach ($versions AS $versionItem)
+        {
+            // TEMP
+            $slug = strtolower($format) . "-" . join('x', $versionItem['size']);
+            if ($versionItem['name'] == $slug)
+                $currentVersionSize = $versionItem['size'];
+        }
+
+        return $currentVersionSize;
     }
 
     protected function mimeType()
