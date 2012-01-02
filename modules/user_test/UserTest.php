@@ -78,8 +78,8 @@ class UserTest
             $tags = array_filter(explode(',', $http->variable('tags')));
             $backend = Backend::first(array('id' => $http->variable('backend', 1)));
 
-            $result = $backend->upload($file['tmp_name'], $file['name'], $tags);
-            var_dump($result);
+            $image = $backend->upload($file['tmp_name'], $file['name'], $tags);
+            print_r($image);
         }
         require_once('upload.tpl.php');
         \eZExecution::cleanExit();

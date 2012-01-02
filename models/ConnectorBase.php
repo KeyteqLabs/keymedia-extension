@@ -108,13 +108,13 @@ abstract class ConnectorBase implements ConnectorInterface
 
         $url = $this->getRequestUrl($action, $params);
 
-        if ($header = $this->signHeader($params))
-            $headers += $header;
-
         $ch = curl_init($url);
         switch ($method)
         {
             case 'POST':
+                // Cant send arrays using curl, makes no sense in http
+                foreach ($params as &$v)
+                    $v = is_array($v) ? implode(',', $v) : $v;
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                 break;
@@ -122,6 +122,9 @@ abstract class ConnectorBase implements ConnectorInterface
                 $url .= '?' . http_build_query($params);
                 break;
         }
+
+        if ($header = $this->signHeader($params))
+            $headers += $header;
 
         if ($this->callback)
         {
@@ -139,5 +142,17 @@ abstract class ConnectorBase implements ConnectorInterface
 
         $result = curl_exec($ch);
         return json_decode($result);
+    }
+
+    /**
+     * Find mime type for given local filename
+     *
+     * @param string $filename
+     * @return string
+     */
+    protected function mime($filename)
+    {
+        $info = new \finfo(FILEINFO_MIME_TYPE);
+        return $info->file($filename);
     }
 }

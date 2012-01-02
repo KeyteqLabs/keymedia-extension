@@ -148,6 +148,8 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             set_time_limit($this->timeout + 10);
 
         $file = '@' . $filename;
+        $file .= ';type=' . $this->mime($filename);
+        // Must send mime type along
         $payload = compact('file', 'name', 'tags', 'attributes');
 
         return $this->makeRequest('/media.json', $payload, 'POST');
