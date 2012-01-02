@@ -25,26 +25,49 @@
     left: 50%;
     overflow-y:scroll;
     margin-left: -460px;
-    
     background: #000;
-    padding: 10px;
+    font: normal 14px/14px Helvetica, Arial, sans-serif;
 }
 
 #ezr-keymedia-scaler .header, #ezr-keymedia-browser .header {
     float: left;
     margin: 0;
-    padding: 10px 0;
+    padding: 10px;
     width: 100%;
 }
+
+#ezr-keymedia-browser .header {
+    border-bottom: 1px solid #555;
+}
+
 
 #ezr-keymedia-scaler .body, #ezr-keymedia-browser .body {
     clear: both;
 }
 
 #ezr-keymedia-browser input {
-    border-radius: 4px;
-    padding: 4px;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin: 0;
+    padding: 3px 7px;
     border: 0;
+    font: normal 14px/14px Helvetica, Arial, sans-serif;
+}
+
+#ezr-keymedia-browser input:focus {
+    outline: none;
+}
+
+#ezr-keymedia-browser button.search {
+    border: 0;
+    border-radius: 10px;
+    padding: 0 12px;
+    font: normal 12px/22px Helvetica, Arial, sans-serif;
+    background: orange;
+    margin: -4px 0 0 -3px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 #ezr-keymedia-browser a {
@@ -52,10 +75,23 @@
     text-decoration: none;
 }
 
+#ezr-keymedia-browser .prev, #ezr-keymedia-browser .next { display: none; }
+
 #ezr-keymedia-modal .close {
     float: right;
+    color: #222;
+    background: #fff;
+    border: 0;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 5px 17px;
+    margin: -10px 10px 0 0;
+    font: normal 12px/12px Helvetica, Arial, sans-serif;
 }
 
+#ezr-keymedia-modal .close:hover {
+    background: #eee;
+}
 
 
 /* Browse media */
@@ -70,6 +106,10 @@
     position: relative;
     overflow: hidden;
 }
+
+    #ezr-keymedia-modal .item:first-child {
+        border-left: 1px solid #333;
+    }
 
 #ezr-keymedia-modal .item .pick {
     text-align: center;
@@ -86,7 +126,22 @@
     margin: 0;
 }
 #ezr-keymedia-modal .item:hover .meta {
-    display: block;
+display:-moz-box;
+-moz-box-orient:horizontal;
+-moz-box-pack:center;
+-moz-box-align:center;
+
+/* Safari and Chrome */
+display:-webkit-box;
+-webkit-box-orient:horizontal;
+-webkit-box-pack:center;
+-webkit-box-align:center;
+
+/* W3C */
+display:box;
+box-orient:horizontal;
+box-pack:center;
+box-align:center;
 }
 #ezr-keymedia-modal .item .meta {
     display: none;
@@ -94,20 +149,20 @@
     left: 0;
     top: 0;
     right: 0;
-    padding: 50px 10px;
+    padding: 0 10px;
     margin: 0;
     background: #000;
     opacity: 0.7;
     position: absolute;
     color: #fff;
-    font-weight: bold;
+    font: normal 12px/18px Helvetica, Arial, sans-serif;
 }
 
 
 
 
 
-/* Scale media */
+/* Scale and crop media */
 
 #ezr-keymedia-scaler .header ul {
     list-style-type: none;
@@ -125,16 +180,17 @@
     background: #b3b3b3;
     border-radius: 4px;
     height: 30px;
-    padding: 4px 15px 4px 4px;
+    padding: 6px 15px 0 7px;
     font: normal 11px/11px Helvetica, Arial, sans-serif;
     text-decoration: none;
     color: #000;
+    border: 1px dotted transparent;
 }
 
 #ezr-keymedia-scaler .header ul li a h2 {
     display: block;
     margin: 0;
-    font: bold 12px/12px Helvetica, Arial, sans-serif;
+    font: bold 12px/14px Helvetica, Arial, sans-serif;
 }
 
 #ezr-keymedia-scaler .header ul li a span {
@@ -142,15 +198,32 @@
     font: normal 10px/10px Helvetica, Arial, sans-serif;
 }
 
+#ezr-keymedia-scaler .header ul li.uncropped a {
+    background: transparent;
+    border-color: #ccc;
+    color: #ccc;
+}
 
-#ezr-keymedia-scaler .header ul li.active a {
+#ezr-keymedia-scaler .header ul li.uncropped a:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+
+#ezr-keymedia-scaler .header ul li.cropped a:hover {
+    background: #fff;
+}
+
+#ezr-keymedia-scaler .header ul li.active a, #ezr-keymedia-scaler .header ul li.active a:hover {
     background-color: #ffbb00;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#ffbb00), to(#ff8d00));
     background-image: -webkit-linear-gradient(top, #ffbb00, #ff8d00);
     background-image: -moz-linear-gradient(top, #ffbb00, #ff8d00);
     background-image: -ms-linear-gradient(top, #ffbb00, #ff8d00);
     background-image: -o-linear-gradient(top, #ffbb00, #ff8d00);
-    background-image: linear-gradient(top, #ffbb00, #ff8d00); 
+    background-image: linear-gradient(top, #ffbb00, #ff8d00);
+    color: #000;
+    border-color: transparent;
 }
 
 
