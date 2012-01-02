@@ -91,4 +91,68 @@ abstract class ConnectorBase implements ConnectorInterface
     {
         $this->timeout = $timeout;
     }
+
+    /**
+     * Makes a request and returns the result.
+     *
+     * @param $action
+     * @param $params
+     *
+     * @return mixed
+     */
+    protected function makeRequest($action, array $params = array(), $method = 'GET')
+    {
+        $headers = array();
+        $method = strtoupper($method);
+        $params = array_filter($params);
+
+        $url = $this->getRequestUrl($action, $params);
+
+        $ch = curl_init($url);
+        switch ($method)
+        {
+            case 'POST':
+                // Cant send arrays using curl, makes no sense in http
+                foreach ($params as &$v)
+                    $v = is_array($v) ? implode(',', $v) : $v;
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+                break;
+            case 'GET':
+                $url .= '?' . http_build_query($params);
+                break;
+        }
+
+        if ($header = $this->signHeader($params))
+            $headers += $header;
+
+        if ($this->callback)
+        {
+            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
+            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
+        }
+
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if (is_numeric($this->timeout))
+            curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+
+        if ($headers)
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        return json_decode($result);
+    }
+
+    /**
+     * Find mime type for given local filename
+     *
+     * @param string $filename
+     * @return string
+     */
+    protected function mime($filename)
+    {
+        $info = new \finfo(FILEINFO_MIME_TYPE);
+        return $info->file($filename);
+    }
 }

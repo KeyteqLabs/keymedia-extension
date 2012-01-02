@@ -18,6 +18,7 @@ namespace ezr_keymedia\modules\user_test;
 
 use \stdClass;
 use \eZHTTPTool;
+use \ezr_keymedia\models\Backend;
 use \ezr_keymedia\models\v1\Connector as V1;
 use \ezr_keymedia\models\v2\Connector as V2;
 
@@ -26,25 +27,17 @@ class UserTest
     /** @var Connector API-Connector */
     protected $api;
 
+    /** @var array List of backends */
+    protected $backends;
+
     /**
      * Initializes the api-connector.
      */
     public function __construct()
     {
+        $this->backends = Backend::find();
         $this->api = new V1('keymedia', 'keymedia_test', 'keymedia.raymond.keyteq.no');
         $this->api->setProgressCallback(array($this, 'callback'));
-    }
-
-    /**
-     * Executes the test.
-     */
-    public function execute()
-    {
-        $this->uploadTest();
-
-        //$this->searchTest();
-
-        \eZExecution::cleanExit();
     }
 
     public function tags()
@@ -53,36 +46,43 @@ class UserTest
 
         $form = new stdClass;
         $form->action = $_SERVER['SCRIPT_URI'];
+        $backends = $this->backends;
+        $result = array();
 
         if ($tags = $http->variable('tags', false))
         {
             $operator = $http->variable('operator', 'and');
             $tags = array_filter(explode(',', $tags));
-            $result = $this->api->searchByTags($tags, strtolower($operator));
-            foreach ($result as &$r)
-            {
-                $images = (array) $r->images;
-                $r->image = current($images);
-            }
+
+            $backend = Backend::first(array('id' => $http->variable('backend', 1)));
+            if (count($tags) === 1)
+                $tags = array_shift($tags);
+            $result = $backend->tagged($tags, compact('operator', 'limit'));
         }
         require_once('tags.tpl.php');
         \eZExecution::cleanExit();
     }
 
-    protected function searchTest()
+    public function upload()
     {
-        $result = $this->api->search('bity');
+        $http = eZHTTPTool::instance();
 
-        var_dump($result);
-    }
+        $form = new stdClass;
+        $form->action = $_SERVER['SCRIPT_URI'];
+        $backends = $this->backends;
+        $result = array();
 
-    protected function uploadTest()
-    {
-        $attributes = array('ok' => 'nei', 'godtbilde' => 'tja', 'ugyldigattributt' => 'hmm?');
+        $file = isset($_FILES['media']) ? $_FILES['media'] : false;
+        if ($file)
+        {
+            $tags = array_filter(explode(',', $http->variable('tags')));
+            $backend = Backend::first(array('id' => $http->variable('backend', 1)));
 
-        $result = $this->api->uploadMedia($_FILES['media']['tmp_name'], $_FILES['media']['name'], array('tag1', 'tag2'), $attributes);
-
-        var_dump($result);
+            $image = $backend->upload($file['tmp_name'], $file['name'], $tags);
+            print_r($image);
+        }
+        require_once('upload.tpl.php');
+        \eZExecution::cleanExit();
     }
 
     /**
@@ -100,18 +100,5 @@ class UserTest
         trigger_error($b);
         trigger_error($c);
         trigger_error($d);
-    }
-
-    /**
-     * Dummy form.
-     */
-    public function viewForm()
-    {
-        $form = new \stdClass(array(
-            'action' => '/eng/ezote/delegate/ezkpmedia/UserTest/execute'
-        ));
-        require_once('form.tpl.php');
-
-        \eZExecution::cleanExit();
     }
 }

@@ -34,11 +34,53 @@ class KeyMedia extends \ezote\lib\Controller
     public function dashboard()
     {
         $data = array();
-        $data['backends'] = eZPersistentObject::fetchObjectList(Backend::definition());
+        $data['backends'] = $this->backends();
         return self::response(
             $data,
             array(
                 'template' => 'design:dashboard/dashboard.tpl',
+                'left_menu' => 'design:dashboard/left_menu.tpl',
+                'pagelayout' => static::LAYOUT
+            )
+        );
+    }
+
+    public function connection($id = null)
+    {
+        // Edit existing
+        if ($id)
+        {
+            $backend = Backend::first(compact('id'));
+        }
+
+        if ($this->http->method('post'))
+        {
+            if (!isset($backend)) $backend = Backend::create();
+
+            $ezhttp = $this->http->ez();
+
+            $username = $ezhttp->variable('username', false);
+            $host = $ezhttp->variable('host', false);
+            $api_key = $ezhttp->variable('api_key', false);
+            $api_version = $ezhttp->variable('api_version', false);
+
+            $data = compact('id', 'username', 'host', 'api_key', 'api_version');
+
+            $this->save($backend, $data);
+
+            if ($redirectTo = $ezhttp->variable('redirect_to', false))
+            {
+                $id = $backend->attribute('id');
+                header("Location: {$redirectTo}/{$id}");
+            }
+        }
+
+        $backends = $this->backends();
+        return self::response(
+            compact('backend', 'backends'),
+            array(
+                'template' => 'design:dashboard/connection.tpl',
+                'left_menu' => 'design:dashboard/left_menu.tpl',
                 'pagelayout' => static::LAYOUT
             )
         );
@@ -47,34 +89,17 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * Add new mediabase connection
      */
-    public function addConnection()
+    protected function save($backend, array $data = array())
     {
-        $data = array();
-        if ($this->http->method('post'))
-        {
-            $ezhttp = $this->http->ez();
-            $username = $ezhttp->variable('username', false);
-            $host = $ezhttp->variable('host', false);
-            $api_key = $ezhttp->variable('api_key', false);
-            $redirectTo = $ezhttp->variable('redirect_to', false);
+        $keys = array('id', 'host', 'username', 'api_key', 'api_version');
 
-            $data = compact('username', 'host', 'api_key');
-            $backend = Backend::create($data);
-            $backend->store();
-            if ($redirectTo)
-            {
-                $id = $backend->id;
-                header("Location: {$redirectTo}?added={$id}");
-            }
+        foreach ($keys as $key)
+        {
+            if (isset($data[$key]))
+                $backend->setAttribute($key, $data[$key]);
         }
 
-        return self::response(
-            $data,
-            array(
-                'template' => 'design:dashboard/add_connection.tpl',
-                'pagelayout' => static::LAYOUT
-            )
-        );
+        return $backend->store();
     }
 
     /**
@@ -102,29 +127,28 @@ class KeyMedia extends \ezote\lib\Controller
         return $data;
     }
 
-    /***
-     * Render a bunch of templates into an array and return them
-     * Defaults to include `skeleton`
-     *
-     * @param array $templates
-     * @return array
+    /**
+     * eZJSCore method for saving a new scaled version
      */
-    protected static function _templates($http, array $templates = array())
+    public static function saveVersion(array $args = array())
     {
-        $defaults = array();
-        if ($http->variable('skeleton', false))
-            $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
-
-        $templates += $defaults;
-
-        $tpl = \eZTemplate::factory();
-        $result = array();
-        foreach ($templates as $name => $path)
+        list($id, $attributeId, $version) = $args;
+        if ($id && $attributeId && $version)
         {
-            if ($path) $result[$name] = $tpl->fetch($path);
-        }
+            $http = \eZHTTPTool::instance();
 
-        return $result;
+            $coords = $http->variable('coords');
+            $size = $http->variable('size');
+            $name = $http->variable('name');
+
+            // Store information on content object
+            $imageAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
+
+            // @var \ezr_keymedia\models\image\Handler
+            $handler = $imageAttribute->content();
+            $data = $handler->addVersion($name, compact('coords', 'size'));
+        }
+        return $data;
     }
 
     /**
@@ -167,10 +191,35 @@ class KeyMedia extends \ezote\lib\Controller
 
         $imageAttribute = eZContentObjectAttribute::fetch($attributeID, $contentObjectVersion);
         $handler = $imageAttribute->content();
-        if (!$ok = $handler->uploadFile($httpFile))
-            $error = 'Failed upload';
+        if (!$image = $handler->uploadFile($httpFile))
+            return array('error' => 'Failed upload');
 
-        return compact('ok', 'error');
+        return array('image' => array('id' => $image->id));
+    }
+
+    /***
+     * Render a bunch of templates into an array and return them
+     * Defaults to include `skeleton`
+     *
+     * @param array $templates
+     * @return array
+     */
+    protected static function _templates($http, array $templates = array())
+    {
+        $defaults = array();
+        if ($http->variable('skeleton', false))
+            $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
+
+        $templates += $defaults;
+
+        $tpl = \eZTemplate::factory();
+        $result = array();
+        foreach ($templates as $name => $path)
+        {
+            if ($path) $result[$name] = $tpl->fetch($path);
+        }
+
+        return $result;
     }
 
     /**
@@ -183,6 +232,11 @@ class KeyMedia extends \ezote\lib\Controller
     public static function getCacheTime($functionName)
     {
         return -1;
+    }
+
+    protected function backends()
+    {
+        return Backend::find();
     }
 
 }

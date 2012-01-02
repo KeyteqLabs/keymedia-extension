@@ -2,6 +2,8 @@
 
 namespace ezr_keymedia\models;
 
+use \stdclass;
+
 class Backend extends \eZPersistentObject
 {
     protected $connectors = array(
@@ -105,11 +107,63 @@ class Backend extends \eZPersistentObject
                 $options['limit'], $options['offset'], $options['width'], $options['height'],
                 $criteria['externalId']
             );
-
-            return $options['format'] === 'simple' ? $this->simplify($results) : $results;
+            return $this->_format($results, $options['format']);
         }
 
         return false;
+    }
+
+    /**
+     * Find media tagged by $tagged
+     *
+     * Example:
+     * <code>
+     *     $imagesOfCatsWithDogs = $backend->tagged(array('cat','dog'), array('operator' => 'and'));
+     * </code>
+     *
+     * @param array|string $tagged An array of tags, or string for a single tag
+     * @param array $options Options to control look-up strategy
+     *      - `operator` string _or_ or _and_. Defaults to _and_
+     *      - `limit` int Limit number of hits
+     * @return array|false
+     */
+    public function tagged($tagged, array $options = array())
+    {
+        $options += array(
+            'operator' => 'or',
+            'limit' => 25,
+            'offset' => 0,
+            'format' => 'simple'
+        );
+
+        // Backwards compliance for old behaviour
+        $options += array(
+            'width' => false,
+            'height' => false
+        );
+
+        $tagged = (array) $tagged;
+
+        if ($con = $this->connection())
+        {
+            $results = $con->searchByTags(
+                $tagged, $options['operator'], $options['limit'],
+                $options['offset'], $options['width'], $options['height']
+            );
+            return $this->_format($results, $options['format']);
+        }
+    }
+    /**
+     * Format results equally for all getter methods
+     *
+     * @param object $results
+     * @param string $format
+     * @return object
+     */
+    protected function _format($results, $format = 'simple')
+    {
+        $results->hits = $format === 'simple' ? $this->simplify($results->hits) : $results->hits;
+        return $results;
     }
 
     /**
@@ -130,6 +184,54 @@ class Backend extends \eZPersistentObject
     }
 
     /**
+     * Create a new version for specified image id
+     *
+     * @param string $id
+     * @param string $name
+     * @param array $transformations
+     * @return string Relative url to new version
+     */
+    public function addVersion($id, $name, array $transformations = array())
+    {
+        // Get connector
+        $connection = $this->connection();
+
+        $data = $connection->addVersion($id, $name, $transformations);
+        if (!isset($data->error))
+            $data->url = join('/', array('', $id, $data->version->slug));
+        return $data;
+    }
+
+    /**
+     * Upload a new media via API
+     *
+     * @param string $filepath Local file system path to media file
+     * @param string $filename File name to use in KeyMedia
+     * @param array $tags
+     * @param array $data
+     *          - `attributes`
+     *          - `collection`
+     *
+     * @return \ezr_keymedia\models\Image|false Image object if a successfull upload
+     */
+    public function upload($filepath, $filename, array $tags = array(), array $data = array())
+    {
+        if ($con = $this->connection())
+        {
+            $data += array('attributes' => array());
+            $result = $con->uploadMedia($filepath, $filename, $tags, $data['attributes']);
+            if ($result && isset($result->media))
+            {
+                $image = new Image($result->media);
+                $image->host($this->host);
+                return $image;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Simplify results from searches
      *
      * @param array $results
@@ -137,25 +239,11 @@ class Backend extends \eZPersistentObject
      */
     protected function simplify($results)
     {
-        $results->hits = $results->media;
-        unset($results->media);
-        foreach ($results->hits as &$r)
-        {
-            $parts = explode('.', $r->name);
-            $ending = array_pop($parts);
-            $r = array(
-                'id' => $r->_id,
-                //'shared' => $r->shared,
-                'filesize' => $r->file->size,
-                'width' => (int) $r->file->width,
-                'height' => (int) $r->file->height,
-                'thumb' => array(
-                    'url' => 'http://' . $this->host . '/160x120/' . $r->_id . '.' . $ending
-                ),
-                'filename' => $r->name
-            );
-        }
-        return $results;
+        $con = $this->connection();
+        $formatted = array();
+        foreach ($results as $media)
+            $formatted[] = $con->simplify($media);
+        return $formatted;
     }
 
     /**

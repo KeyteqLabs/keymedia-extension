@@ -54,7 +54,44 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if ($collection !== false) $params['collection'] = $collection;
         if ($externalId !== false) $params['externalId'] = $externalId;
 
-        return $this->makeRequest('/media.json', $params);
+        $results = $this->makeRequest('/media.json', $params);
+        if ($results && isset($results->media))
+        {
+            $hits = $results->media;
+            $total = $results->total;
+            return (object) compact('hits', 'total');
+        }
+        return false;
+    }
+
+    /**
+     *
+     * Retrieves images matching one or more tags.
+     *
+     * @param array $tags A list of tags
+     * @param string $operator and (default is or)
+     * @param int $limit
+     * @param int $offset
+     * @param int|false $width
+     * @param int|false $height
+     *
+     * @return mixed
+     */
+    public function searchByTags($tags = array(), $operator = 'or', $limit = 25, $offset = 0, $width = false, $height = false)
+    {
+        $params = compact('tags', 'operator', 'limit', 'offset');
+
+        if ($width !== false) $params['width'] = $width;
+        if ($height !== false) $params['height'] = $height;
+
+        $results = $this->makeRequest('/media.json', $params);
+        if ($results && isset($results->media))
+        {
+            $hits = $results->media;
+            $total = $results->total;
+            return (object) compact('hits', 'total');
+        }
+        return false;
     }
 
     /**
@@ -69,34 +106,30 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     * Add new version
      *
-     * Retrieves images matching one or more tags.
-     *
-     * @param array $tags A list of tags
-     * @param bool $operator and (default is or)
-     * @param bool $limit
-     * @param bool $offset
-     * @param bool $width
-     * @param bool $height
-     *
-     * @return mixed
+     * @param string $id
+     * @param string $slug
+     * @param array $transformation
+     * @return string Relative url to new version
      */
-    public function searchByTags($tags = array(), $operator = false, $limit = false, $offset = false, $width = false, $height = false)
+    public function addVersion($id, $slug, array $transformation = array())
     {
-        $params = array();
-        $params['tag'] = $tags;
+        $payload = array('slug' => $slug);
 
-        if ($operator !== false) $params['tagsoperator'] = $operator;
-        if ($limit !== false) $params['limit'] = $limit;
-        if ($offset !== false) $params['offset'] = $offset;
-        if ($width !== false) $params['width'] = $width;
-        if ($height !== false) $params['heigth'] = $height;
+        if (isset($transformation['size']))
+        {
+            list($width, $height) = $transformation['size'];
+            $payload += compact('width', 'height');
+        }
+        if (isset($transformation['coords']))
+            $payload['coords'] = implode(',', $transformation['coords']);
 
-        return $this->makeRequest('tag', $params);
+        $url = '/media/' . $id . '/versions.json';
+        return $this->makeRequest($url, $payload, 'POST');
     }
 
     /**
-     *
      * Uploads media to KeyMedia
      *
      * @param $filename
@@ -106,83 +139,71 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
      *
      * @return mixed|null
      */
-    public function uploadMedia($filename, $originalName, $tags = array(), $attributes = array())
+    public function uploadMedia($filename, $name, $tags = array(), $attributes = array())
     {
+        if (!file_exists($filename))
+            return null;
+
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
-        $url = $this->getRequestUrl('upload');
+        $file = '@' . $filename;
+        $file .= ';type=' . $this->mime($filename);
+        // Must send mime type along
+        $payload = compact('file', 'name', 'tags', 'attributes');
 
-        if (file_exists($filename))
+        return $this->makeRequest('/media.json', $payload, 'POST');
+    }
+
+    /**
+     * Simplify a result set
+     *
+     * @param object $media
+     * @return object
+     */
+    public function simplify($media)
+    {
+        $parts = explode('.', $media->name);
+        $ending = array_pop($parts);
+        $width = 160;
+        $height = 120;
+        $thumb = (object) array(
+            'url' => 'http://' . $this->mediabaseDomain . '/' . $width . 'x' . $height . '/' . $media->_id . '.jpg'
+        );
+        return (object) array(
+            'id' => $media->_id,
+            'tags' => $media->tags,
+            'filesize' => $media->file->size,
+            'width' => (int) $media->file->width,
+            'height' => (int) $media->file->height,
+            'thumb' => $thumb,
+            'filename' => $media->name
+        );
+    }
+
+    protected function signHeader(&$payload)
+    {
+        // Alphabetic sort
+        ksort($payload);
+
+        $secret = $this->apiKey;
+        $message = '';
+        foreach ($payload as $k => $v)
         {
-            $postFields = array
-            (
-                'media' => '@' . $filename,
-                'originalName' => $originalName,
-                'tags' => serialize($tags),
-                'attributes' => serialize($attributes)
-            );
-
-            $result = $this->uploadByCurl($url, $postFields);
-
-            return json_decode($result);
+            if (!is_array($v) && substr($v,0,1) !== '@')
+                $message .= $k.$v;
         }
 
-        return null;
+        $signature = hash_hmac('sha1', $message, $secret);
+
+        return array(
+            "X-Keymedia-Username: {$this->username}",
+            "X-Keymedia-Signature: {$signature}"
+        );
+
     }
 
     /**
-     *
-     * Upload alternative by curl.
-     *
-     * @param $url
-     * @param $postFields
-     *
-     * @return mixed
-     */
-    protected function uploadByCurl($url, $postFields)
-    {
-        $ch = curl_init($url);
-
-        if ($this->callback)
-        {
-            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
-            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
-        }
-
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($ch);
-
-        return $result;
-    }
-
-    /**
-     *
-     * Makes a request and returns the result.
-     *
-     * @param $action
-     * @param $params
-     *
-     * @return mixed
-     */
-    protected function makeRequest($action, $params)
-    {
-        $url = $this->getRequestUrl($action, $params);
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec($ch);
-        $data = json_decode($result);
-        return $data;
-    }
-
-    /**
-     *
      * Builds the url for accessing keymedia.
      *
      * @param $action
@@ -196,18 +217,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
 
         // Ensure it has http://
         if (strpos($url, "http") === false) $url = 'http://' . $url;
-
-        /*
-        $urlArr = parse_url($url);
-        $authUrl = $urlArr['scheme'] . '://' . $urlArr['host'] . $urlArr['path'];
-        $auth = md5($authUrl . $this->apiKey);
-        $payload += array(
-            'username' => $this->username,
-            'signature' => $this->sign($this->username, $this->apiKey, $payload)
-        );
-         */
-
-        if ($payload) $url .= '?' . http_build_query($payload);
 
         return $url;
     }

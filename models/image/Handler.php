@@ -28,54 +28,33 @@ class Handler
         $this->attr = $attribute;
     }
 
-
     /**
-     * Initializes the content object attribute with the uploaded HTTP file
+     * Upload image to KeyMedia and connect to this attribute afterwards
      *
-     * @param eZHTTPFile $file The uploaded image
+     * @param eZHTTPFile|string $file The uploaded image or a local file
+     * @param array $tags Tags to add to image in KeyMedia
      * @param string $alt Alternative image text
      *
-     * @return bool
+     * @return \ezr_keymedia\models\Image|false
      */
-    public function uploadFile(eZHTTPFile $file, $alt = '')
+    public function uploadFile($file, array $tags = array(), $alt = '')
     {
-        /**
-         * Procedure:
-         *
-         * 1: Increase serial number (appended on filename if needed)
-         * 2: Get mime data
-         * 3: Clear old aliases
-         * 4: Get storage name
-         */
-        $this->postfix++;
-
-        $mimeData = eZMimeType::findByFileContents($file->attribute('filename'));
-        if (!$mimeData['is_valid'])
-        {
-            $mimeData = eZMimeType::findByName($file->attribute('mime_type'));
-            if (!$mimeData['is_valid'])
-                $mimeData = eZMimeType::findByURL($file->attribute('original_filename'));
-        }
-
         //$this->removeAliases( $attr );
+
+        if ($file instanceof \eZHTTPFile)
+            $filepath = $file->Filename;
+        elseif (is_string($file))
+            $filepath = $file;
 
         $version = eZContentObjectVersion::fetchVersion(
             $this->attr->attribute('version'),
             $this->attr->attribute('contentobject_id')
         );
 
-        $filename = $this->imageName($this->attr, $version);
-        $filepath = $this->imagePath($this->attr, $version, true);
+        $filename = $this->imageName($this->attr, $version, $this->postfix);
 
-        // Uses out params for $mimeData to reassign some values in the array
-        // TODO Patch this in ezpublish and pull request it
-        eZMimeType::changeBaseName($mimeData, $filename);
-        eZMimeType::changeDirectoryPath($mimeData, $filepath);
-
-        $file->store(false, false, $mimeData);
-
-        //$originalFilename = $file->attribute('original_filename');
-        return $this->store($file, $mimeData, array('source' => 'computer'));
+        $data = array('title' => $alt);
+        return $this->backend()->upload($filepath, $filename, $tags, $data);
     }
 
     protected function values($save = false)
@@ -83,6 +62,7 @@ class Handler
         if ($save)
         {
             $this->attr->setAttribute('data_text', json_encode($save));
+            $this->attributeValues = $save;
             return $this->attr->storeData();
         }
         else
@@ -99,95 +79,58 @@ class Handler
             return $this->attributeValues;;
         }
     }
-    protected function store($file, $mimeData, array $extras = array())
-    {
-        $data = array();
-        $data['original'] = array(
-            'filename' => $file->Filename,
-            'originalFilane' => $file->OriginalFilename,
-            'url' => $mimeData['url'],
-            'size' => $file->Size,
-            'mime' => array(
-                'full' => $file->Type,
-                'category' => $file->MimeCategory,
-                'ending' => $file->MimePart
-            )
-        ) + $extras + $this->values();
 
+    /**
+     * Create a new version of the currently loaded image attributes image
+     * Will both store the version-information (slug, coords, size) locally
+     * as well as notify KeyMedia about the vanity url to make it actually work
+     *
+     * Usage:
+     * <code>
+     *   $size = array(100,100);
+     *   $coords = array($x, $y, $x2, $y2);
+     *   $handler->addVersion('my-slug-500x500', compact('size', 'coords'));
+     * </code>
+     *
+     * Both `width`, `height` and `coords` are not needed
+     *
+     * @param string $name The postfix to use for the filename
+     * @param array $transformations
+     * @return string Returns the image url
+     */
+    public function addVersion($name, array $transformations = array())
+    {
+        // Fetch existing values
+        $data = $this->values();
+
+        if (!isset($data['id']))
+            throw new \Exception(__CLASS__ . '::' . __METHOD__ . ' called without an image connection made first');
+
+        $version = eZContentObjectVersion::fetchVersion(
+            $this->attr->attribute('version'),
+            $this->attr->attribute('contentobject_id')
+        );
+        $filename = $this->imageName($this->attr, $version, false, $name);
+        $filename = mb_strtolower($filename);
+
+        // Push to backend
+        $backend = $this->backend();
+        $resp = $backend->addVersion($data['id'], $filename, $transformations);
+
+        if (isset($resp->error))
+            throw new \Exception('Backend failed: ' . $resp->error);
+
+        // Ensure a versions index exists in the data
+        $data += array('versions' => array());
+
+        $url = $resp->url;
+        $scaling = compact('name', 'url') + $transformations;
+        $data['versions'][$name] = $scaling;
+
+        // Save values
         $this->values($data);
-        /*
 
-        $settings = new \ezcImageConverterSettings(
-            array(new \ezcImageHandlerSettings('ImageMagick', 'ezcImageImagemagickHandler'))
-        );
-        $converter = new ezcImageConverter($settings);
-        $scaleFilters = array(
-            new ezcImageFilter(
-                'scale',
-                array(
-                    'width' => 300,
-                    'height' => 200,
-                    'direction' => ezcImageGeometryFilters::SCALE_DOWN
-                )
-            )
-        );
-        $converter->createTransformation('thumbnail', $scaleFilters, array('image/png'));
-        $converter->transform('thumbnail', $file->Filename
-*/
-
-        return true;
-    }
-
-    function imageAlias($aliasName)
-    {
-        $imageManager = eZImageManager::factory();
-        if ( !$imageManager->hasAlias( $aliasName ) )
-        {
-            return null;
-        }
-
-        $aliasList = $this->aliasList();
-        if ( array_key_exists( $aliasName, $aliasList ) )
-        {
-            return $aliasList[$aliasName];
-        }
-        else
-        {
-            $original = $aliasList['original'];
-            $basename = $original['basename'];
-            if ( $imageManager->createImageAlias( $aliasName, $aliasList,
-                                                  array( 'basename' => $basename ) ) )
-            {
-                $text = $this->displayText( $original['alternative_text'] );
-                $originalFilename = $original['original_filename'];
-                foreach ( $aliasList as $aliasKey => $alias )
-                {
-                    $alias['original_filename'] = $originalFilename;
-                    $alias['text'] = $text;
-                    if ( $alias['url'] )
-                    {
-                        $aliasFile = eZClusterFileHandler::instance( $alias['url'] );
-                        if( $aliasFile->exists() )
-                            $alias['filesize'] = $aliasFile->size();
-                    }
-                    if ( $alias['is_new'] )
-                    {
-                        eZImageFile::appendFilepath( $this->ContentObjectAttributeData['id'], $alias['url'] );
-                    }
-                    $aliasList[$aliasKey] = $alias;
-                }
-                $this->setAliasList( $aliasList );
-                $this->addImageAliases( $aliasList );
-                $aliasList = $this->aliasList();
-                return $aliasList[$aliasName];
-            }
-        }
-
-        return null;
-    }
-
-    protected function version($x1, $y1, $x2, $y2)
-    {
+        return $scaling;
     }
 
     /**
@@ -203,7 +146,7 @@ class Handler
      * @param string $language
      * @return string Normalized name for the image.
     */
-    public function imageName($attr, $version, $language = false)
+    public function imageName($attr, $version, $language = false, $postfix = '')
     {
         // Initialize transformation system
         $trans = eZCharTransform::instance();
@@ -216,55 +159,9 @@ class Handler
         // Finally fall back ona  default name
         $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
 
-        return \eZURLAliasML::convertToAlias($name) . $this->postfix;
-    }
-
-    /**
-     * The path is calculated by using information from the current object and version.
-     * If the object is in the node tree it will contain a path that matches the node path,
-     * if not it will be placed in the versioned storage repository.
-     *
-     * @param object $attr The attribute
-     * @param object $version The version object
-     * @param bool $isImageOwner
-     * @return string The storage path for the image.
-     */
-    public function imagePath($attr, $version, $isImageOwner = null)
-    {
-        $ini = eZINI::instance('image.ini');
-        $useVersion = false;
-        if ($isImageOwner === null)
-            $isImageOwner = $this->isImageOwner();
-
-        if ($version->attribute('status') === eZContentObjectVersion::STATUS_PUBLISHED || !$isImageOwner)
-        {
-            $contentObject = $version->attribute('contentobject');
-            if ($mainNode = $contentObject->attribute('main_node'))
-            {
-                $contentImageSubtree = $ini->variable('FileSettings', 'PublishedImages');
-                $pathString = $mainNode->pathWithNames();
-                $pathString = function_exists('mb_strtolower') ? mb_strtolower($pathString) : strtolower($pathString);
-                $pathString = $contentImageSubtree . '/' . $pathString;
-            }
-            else
-            {
-                $contentImageSubtree = $ini->variable('FileSettings', 'VersionedImages');
-                $pathString = $contentImageSubtree;
-                $useVersion = true;
-            }
-        }
-        else
-        {
-            $contentImageSubtree = $ini->variable('FileSettings', 'VersionedImages');
-            $pathString = $contentImageSubtree;
-            $useVersion = true;
-        }
-
-        $identifierString = $attr->attribute('id') . ($useVersion ? '/' : '-');
-        $identifierString .= $attr->attribute('version') . '-' . $attr->attribute('language_code');
-
-        $imagePath = eZSys::storageDirectory() . '/' . $pathString . '/' . $identifierString;
-        return $imagePath;
+        $name = \eZURLAliasML::convertToAlias($name);
+        if ($postfix) $name .= '-' . $postfix;
+        return $name;
     }
 
     /**
@@ -367,15 +264,20 @@ class Handler
     {
         $class = $this->attr->contentClassAttribute();
 
+        // Array of versions in db
+        $values = $this->values() + array('versions' => array());
+        $versions = $values['versions'];
+
         // 1 line = 1 scaling
         $data = json_decode($class->attribute(\KeyMedia::FIELD_JSON));
         $toScale = array();
         foreach ($data->versions as $version)
         {
-            list($dimension, $name) = explode(',', $version);
-            $dimension = explode('x', $dimension);
-            if (!$name) $name = false;
-            $toScale[] = compact('name', 'dimension');
+            list($size, $name) = explode(',', $version);
+            $size = explode('x', $size);
+            // Lookup key in my versions
+            $name = strtolower($name . '-' . implode('x', $size));
+            $toScale[] = isset($versions[$name]) ? $versions[$name] : compact('name', 'size');
         }
         return $toScale;
     }

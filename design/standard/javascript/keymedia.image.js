@@ -8,7 +8,7 @@ window.KeyMediaImage = Backbone.Model.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'thumb', 'addVanityUrl', 'domain');
+        _.bindAll(this, 'thumb', 'domain');
     },
 
     domain : function()
@@ -24,8 +24,5 @@ window.KeyMediaImage = Backbone.Model.extend({
     thumb : function(width, height, filetype) {
         filetype = (filetype || 'jpg');
         return this.domain() + '/' + width + 'x' + height + '/' + this.id + '.' + filetype;
-    },
-
-    addVanityUrl : function(image, versions) {
     }
 });
