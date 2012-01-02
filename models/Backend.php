@@ -107,8 +107,7 @@ class Backend extends \eZPersistentObject
                 $options['limit'], $options['offset'], $options['width'], $options['height'],
                 $criteria['externalId']
             );
-
-            return $options['format'] === 'simple' ? $this->simplify($results) : $results;
+            return $this->_format($results, $options['format']);
         }
 
         return false;
@@ -151,9 +150,20 @@ class Backend extends \eZPersistentObject
                 $tagged, $options['operator'], $options['limit'],
                 $options['offset'], $options['width'], $options['height']
             );
-
-            return $options['format'] === 'simple' ? $this->simplify($results) : $results;
+            return $this->_format($results, $options['format']);
         }
+    }
+    /**
+     * Format results equally for all getter methods
+     *
+     * @param object $results
+     * @param string $format
+     * @return object
+     */
+    protected function _format($results, $format = 'simple')
+    {
+        $results->hits = $format === 'simple' ? $this->simplify($results->hits) : $results->hits;
+        return $results;
     }
 
     /**

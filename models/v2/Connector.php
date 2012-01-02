@@ -54,7 +54,14 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if ($collection !== false) $params['collection'] = $collection;
         if ($externalId !== false) $params['externalId'] = $externalId;
 
-        return $this->makeRequest('/media.json', $params);
+        $results = $this->makeRequest('/media.json', $params);
+        if ($results && isset($results->media))
+        {
+            $hits = $results->media;
+            $total = $results->total;
+            return (object) compact('hits', 'total');
+        }
+        return false;
     }
 
     /**
@@ -78,7 +85,13 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if ($height !== false) $params['height'] = $height;
 
         $results = $this->makeRequest('/media.json', $params);
-        if ($results && isset($results->media)) return $results->media;
+        if ($results && isset($results->media))
+        {
+            $hits = $results->media;
+            $total = $results->total;
+            return (object) compact('hits', 'total');
+        }
+        return false;
     }
 
     /**
@@ -105,9 +118,12 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         $payload = array('slug' => $slug);
 
         if (isset($transformation['size']))
-            $payload['size'] = $transformation['size'];
+        {
+            list($width, $height) = $transformation['size'];
+            $payload += compact('width', 'height');
+        }
         if (isset($transformation['coords']))
-            $payload['coords'] = $transformation['coords'];
+            $payload['coords'] = implode(',', $transformation['coords']);
 
         $url = '/media/' . $id . '/versions.json';
         return $this->makeRequest($url, $payload, 'POST');
@@ -147,8 +163,8 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     {
         $parts = explode('.', $media->name);
         $ending = array_pop($parts);
-        $width = 600;
-        $height = 400;
+        $width = 160;
+        $height = 120;
         $thumb = (object) array(
             'url' => 'http://' . $this->mediabaseDomain . '/' . $width . 'x' . $height . '/' . $media->_id . '.jpg'
         );

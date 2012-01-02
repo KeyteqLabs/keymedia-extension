@@ -102,16 +102,21 @@ abstract class ConnectorBase implements ConnectorInterface
      */
     protected function makeRequest($action, array $params = array(), $method = 'GET')
     {
+        $headers = array();
         $method = strtoupper($method);
+        $params = array_filter($params);
 
         $url = $this->getRequestUrl($action, $params);
+
+        if ($header = $this->signHeader($params))
+            $headers += $header;
 
         $ch = curl_init($url);
         switch ($method)
         {
             case 'POST':
                 curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                 break;
             case 'GET':
                 $url .= '?' . http_build_query($params);
@@ -129,8 +134,10 @@ abstract class ConnectorBase implements ConnectorInterface
         if (is_numeric($this->timeout))
             curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
+        if ($headers)
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
         $result = curl_exec($ch);
-        $data = json_decode($result);
-        return $data;
+        return json_decode($result);
     }
 }

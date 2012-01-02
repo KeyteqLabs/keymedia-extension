@@ -65,24 +65,28 @@ window.KeyMediaScaler = Backbone.View.extend({
         return this;
     },
 
+    versionName : function(item)
+    {
+        return [item.name, item.size.join('x')].join('-').toLowerCase();
+    },
+
     scaledId : function(item)
     {
-        var name = [item.name, item.size.join('x')].join('-');
-        return 'scaled-' + name.toLowerCase();
+        return 'scaled-' + item.name;
     },
 
     storeVersion : function(selection, scale)
     {
-        var vanityName = [scale.name, scale.size.join('x')].join('-'),
+        var vanityName = scale.name,
             coords = [selection.x, selection.y, selection.x2, selection.y2],
             size = scale.size;
+        console.log('storeVersion', vanityName, coords, size);
 
         return this.model.addVanityUrl(vanityName, coords, size);
     },
 
     versionCreated : function(data)
     {
-        console.log(this, this.scaledId(data));
         var menuElement = this.$('#scaled-' + data.name.toLowerCase());
         menuElement.data('scale', data);
     },

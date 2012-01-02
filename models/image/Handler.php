@@ -275,10 +275,9 @@ class Handler
         {
             list($size, $name) = explode(',', $version);
             $size = explode('x', $size);
-            if (!$name) $name = false;
             // Lookup key in my versions
-            $key = $name . '-' . implode('x', $size);
-            $toScale[] = isset($versions[$key]) ? $versions[$key] : compact('name', 'size');
+            $name = strtolower($name . '-' . implode('x', $size));
+            $toScale[] = isset($versions[$name]) ? $versions[$name] : compact('name', 'size');
         }
         return $toScale;
     }
