@@ -80,7 +80,6 @@ window.KeyMediaScaler = Backbone.View.extend({
         var vanityName = scale.name,
             coords = [selection.x, selection.y, selection.x2, selection.y2],
             size = scale.size;
-        console.log('storeVersion', vanityName, coords, size);
 
         return this.model.addVanityUrl(vanityName, coords, size);
     },
