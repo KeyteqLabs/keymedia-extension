@@ -139,7 +139,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
      *
      * @return mixed|null
      */
-    public function uploadMedia($filename, $originalName, $tags = array(), $attributes = array())
+    public function uploadMedia($filename, $name, $tags = array(), $attributes = array())
     {
         if (!file_exists($filename))
             return null;
@@ -148,7 +148,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             set_time_limit($this->timeout + 10);
 
         $file = '@' . $filename;
-        $payload = compact('file', 'originalName', 'tags', 'attributes');
+        $payload = compact('file', 'name', 'tags', 'attributes');
 
         return $this->makeRequest('/media.json', $payload, 'POST');
     }
@@ -177,6 +177,28 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             'thumb' => $thumb,
             'filename' => $media->name
         );
+    }
+
+    protected function signHeader(&$payload)
+    {
+        // Alphabetic sort
+        ksort($payload);
+
+        $secret = $this->apiKey;
+        $message = '';
+        foreach ($payload as $k => $v)
+        {
+            if (!is_array($v) && substr($v,0,1) !== '@')
+                $message .= $k.$v;
+        }
+
+        $signature = hash_hmac('sha1', $message, $secret);
+
+        return array(
+            "X-Keymedia-Username: {$this->username}",
+            "X-Keymedia-Signature: {$signature}"
+        );
+
     }
 
     /**

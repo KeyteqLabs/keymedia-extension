@@ -181,4 +181,8 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
 
         return $url;
     }
+    protected function signHeader()
+    {
+        return false;
+    }
 }

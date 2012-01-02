@@ -63,20 +63,26 @@ class UserTest
         \eZExecution::cleanExit();
     }
 
-    protected function searchTest()
+    public function upload()
     {
-        $result = $this->api->search('bity');
+        $http = eZHTTPTool::instance();
 
-        var_dump($result);
-    }
+        $form = new stdClass;
+        $form->action = $_SERVER['SCRIPT_URI'];
+        $backends = $this->backends;
+        $result = array();
 
-    protected function uploadTest()
-    {
-        $attributes = array('ok' => 'nei', 'godtbilde' => 'tja', 'ugyldigattributt' => 'hmm?');
+        $file = isset($_FILES['media']) ? $_FILES['media'] : false;
+        if ($file)
+        {
+            $tags = array_filter(explode(',', $http->variable('tags')));
+            $backend = Backend::first(array('id' => $http->variable('backend', 1)));
 
-        $result = $this->api->uploadMedia($_FILES['media']['tmp_name'], $_FILES['media']['name'], array('tag1', 'tag2'), $attributes);
-
-        var_dump($result);
+            $result = $backend->upload($file['tmp_name'], $file['name'], $tags);
+            var_dump($result);
+        }
+        require_once('upload.tpl.php');
+        \eZExecution::cleanExit();
     }
 
     /**
