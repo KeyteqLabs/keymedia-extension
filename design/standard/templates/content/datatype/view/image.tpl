@@ -1,0 +1,1 @@
+<img src="{$media.url}" class="{$class}" width="{$media.width}" height="{$media.height}" title="{$title}" />
