@@ -219,14 +219,21 @@ class Handler
         return $url;
     }
 
-    public function media($format)
+    /**
+     * @throws \Exception
+     * @param string|array|null $format
+     * @return array
+     */
+    public function media($format=null)
     {
 
         $availableFormats = json_decode($this->attr->DataText, true);
 
-        if (!is_array($availableFormats))
+        // If format array, go on and just rescale
+        if (!is_array($availableFormats) && !is_array($format))
             throw new \Exception("Image attribute does not contain any information.");
 
+        // Fetch image data and build original part of return array
         $data = $this->image()->attribute('data');
         $originalImageInfo =  array(
                 'url' => $data->file->url,
@@ -237,9 +244,11 @@ class Handler
                 'ratio' => $data->file->ratio
             );
 
+        // Init version to null
+        $version = null;
+
         if (!isset($format)){
 
-            $version = null;
             foreach($availableFormats['versions'] as $key => $value){
 
                 if (isset($value['url']))
@@ -252,7 +261,7 @@ class Handler
         }
         else
         {
-
+            // Create a simple rescale
             if (is_array($format))
             {
                 $mediaUrl = $this->thumb($format[0], $format[1]);
@@ -261,7 +270,7 @@ class Handler
             else {
                 $version = $availableFormats['versions'][$format];
 
-                // No vesrion available - we need to autogenerate
+                // No version available - we need to autogenerate
                 if (!isset($version))
                 {
 
@@ -281,6 +290,8 @@ class Handler
             }
         }
 
+        $typeArr = explode('/', $data->file->type);
+
         // Build simple reply array
         $mediaInfo = array(
 
@@ -289,11 +300,14 @@ class Handler
             'height' => $version['height'],
             'ratio' => $version['width']/$version['height'],
             'mime-type' => $data->file->type,
-            'type' => preg_match('/image/', $data->file->type) ? 'image' : '',
+            'type' => array_shift($typeArr),
             'format' => $format,
             'coords' => $version['coords'],
             'original' => $originalImageInfo,
         );
+
+        if (isset($mediaUrl))
+            return $mediaInfo;
 
         if (isset($version) && !isset($mediaUrl)){
 
