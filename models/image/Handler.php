@@ -157,7 +157,7 @@ class Handler
         // Use version name of default to name
         $name = $version->versionName($language) ?: $version->name($language);
         // Finally fall back ona  default name
-        $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
+        $name = $name ?: \ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
 
         $name = \eZURLAliasML::convertToAlias($name);
         if ($postfix) $name .= '-' . $postfix;
@@ -226,12 +226,11 @@ class Handler
      */
     public function media($format=null)
     {
-
         $availableFormats = json_decode($this->attr->DataText, true);
 
         // If format array, go on and just rescale
-        if (!is_array($availableFormats) && !is_array($format))
-            throw new \Exception("Image attribute does not contain any information.");
+        if (isset($format) && !is_array($availableFormats) && !is_array($format))
+            return null; //throw new \Exception("Image attribute does not contain any information.");
 
         // Fetch image data and build original part of return array
         $data = $this->image()->attribute('data');
@@ -240,7 +239,7 @@ class Handler
                 'size' => $data->file->size,
                 'width' => $data->file->width,
                 'height' => $data->file->height,
-                'name' => $data->file->name,
+                'name' => isset($data->file->name) ? $data->file->name : null,
                 'ratio' => $data->file->ratio
             );
 
@@ -291,20 +290,29 @@ class Handler
         }
 
         $typeArr = explode('/', $data->file->type);
+          $mediaInfo = array(
+                'mime-type' => $data->file->type,
+                'type' => array_shift($typeArr),
+                'format' => $format,
+                'original' => $originalImageInfo
+            );
+        if (isset($mediaUrl))
+        {
+            $mediaInfo['url'] = $mediaUrl;
+        }
+        else
+        {
+            // Build simple reply array
+            $mediaInfo = array_merge($mediaInfo,array(
 
-        // Build simple reply array
-        $mediaInfo = array(
+                'width' => $version['size'][0],
+                'height' => $version['size'][1],
+                'ratio' => $version['size'][0]/$version['size'][1],
 
-            'url' => $mediaUrl,
-            'width' => $version['width'],
-            'height' => $version['height'],
-            'ratio' => $version['width']/$version['height'],
-            'mime-type' => $data->file->type,
-            'type' => array_shift($typeArr),
-            'format' => $format,
-            'coords' => $version['coords'],
-            'original' => $originalImageInfo,
-        );
+                'coords' => $version['coords'],
+
+            ));
+        }
 
         if (isset($mediaUrl))
             return $mediaInfo;
