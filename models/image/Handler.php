@@ -157,7 +157,7 @@ class Handler
         // Use version name of default to name
         $name = $version->versionName($language) ?: $version->name($language);
         // Finally fall back ona  default name
-        $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
+        $name = $name ?: \ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
 
         $name = \eZURLAliasML::convertToAlias($name);
         if ($postfix) $name .= '-' . $postfix;
@@ -217,6 +217,144 @@ class Handler
 
         $url = 'http://' . $data->host . "/{$width}x{$height}/{$data->id}.jpg";
         return $url;
+    }
+
+    /**
+     * @throws \Exception
+     * @param string|array|null $format
+     * @return array
+     */
+    public function media($format=null)
+    {
+        $availableFormats = json_decode($this->attr->DataText, true);
+
+        // If format array, go on and just rescale
+        if (isset($format) && !is_array($availableFormats) && !is_array($format))
+            return null; //throw new \Exception("Image attribute does not contain any information.");
+
+        // Fetch image data and build original part of return array
+        $data = $this->image()->attribute('data');
+        $originalImageInfo =  array(
+                'url' => $data->file->url,
+                'size' => $data->file->size,
+                'width' => $data->file->width,
+                'height' => $data->file->height,
+                'name' => isset($data->file->name) ? $data->file->name : null,
+                'ratio' => $data->file->ratio
+            );
+
+        // Init version to null
+        $version = null;
+
+        if (!isset($format)){
+
+            foreach($availableFormats['versions'] as $key => $value){
+
+                if (isset($value['url']))
+                {
+                    $version = $value;
+                    break;
+                }
+            }
+
+        }
+        else
+        {
+            // Create a simple rescale
+            if (is_array($format))
+            {
+                $mediaUrl = $this->thumb($format[0], $format[1]);
+                $version = array();
+            }
+            else {
+                $version = $availableFormats['versions'][$format];
+
+                // No version available - we need to autogenerate
+                if (!isset($version))
+                {
+
+                    list($versionWidth, $versionHeight) = $this->formatSize($format);
+                    $bestFit = \ezr_keymedia\models\Image::fitToBox($versionWidth, $versionHeight, $originalImageInfo['width'], $originalImageInfo['height']);
+
+                    $bestFit['size'] = array($versionWidth, $versionHeight);
+
+                    // Autocreate the best fit version
+                    self::addVersion($format, $bestFit);
+
+                    $availableFormats = json_decode($this->attr->DataText, true);
+                    $version = $availableFormats['versions'][$format];
+
+                }
+
+            }
+        }
+
+        $typeArr = explode('/', $data->file->type);
+          $mediaInfo = array(
+                'mime-type' => $data->file->type,
+                'type' => array_shift($typeArr),
+                'format' => $format,
+                'original' => $originalImageInfo
+            );
+        if (isset($mediaUrl))
+        {
+            $mediaInfo['url'] = $mediaUrl;
+        }
+        else
+        {
+            // Build simple reply array
+            $mediaInfo = array_merge($mediaInfo,array(
+
+                'width' => $version['size'][0],
+                'height' => $version['size'][1],
+                'ratio' => $version['size'][0]/$version['size'][1],
+
+                'coords' => $version['coords'],
+
+            ));
+        }
+
+        if (isset($mediaUrl))
+            return $mediaInfo;
+
+        if (isset($version) && !isset($mediaUrl)){
+
+            $ext = '';
+            switch($data->file->type)
+            {
+                case 'image/png' :
+                    $ext ='.png';
+                    break;
+                case 'image/gif' :
+                    $ext ='.gif';
+                    break;
+                default :
+                    $ext = '.jpg';
+            }
+            $mediaUrl = "http://" . $this->image()->host()   . $version['url'] . $ext;
+
+            $mediaInfo['url'] = $mediaUrl;
+
+            return $mediaInfo;
+        }
+        else {
+            //throw new \Exception("Unable to generate version.");
+        }
+
+    }
+
+    protected function formatSize($format){
+        $versions = $this->toScale();
+        $currentFormatSize = null;
+        foreach ($versions AS $versionItem)
+        {
+            // TEMP
+            $slug = strtolower($format) . "-" . join('x', $versionItem['size']);
+            if ($versionItem['name'] == $slug)
+                $currentVersionSize = $versionItem['size'];
+        }
+
+        return $currentVersionSize;
     }
 
     protected function mimeType()
