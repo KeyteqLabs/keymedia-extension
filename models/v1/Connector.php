@@ -71,7 +71,10 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if ($width !== false) $params['width'] = $width;
         if ($height !== false) $params['heigth'] = $height;
 
-        return $this->makeRequest('tag', $params);
+        $hits = $this->makeRequest('tag', $params);
+        // TODO T'is a lie
+        $total = count($hits);
+        return (object) compact('hits', 'total');
     }
 
     /**

@@ -162,7 +162,7 @@ class Backend extends \eZPersistentObject
      */
     protected function _format($results, $format = 'simple')
     {
-        $results->hits = $format === 'simple' ? $this->simplify($results->hits) : $results->hits;
+        $results->hits = ($format === 'simple') ? $this->simplify($results->hits) : $results->hits;
         return $results;
     }
 

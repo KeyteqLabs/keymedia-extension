@@ -15,10 +15,10 @@
             <input type="submit" name="submit" value="Search" />
         </form>
         <ul>
-            <?php foreach ($result as $r):?>
+            <?php foreach ($result->hits as $r):?>
             <li>
                 <h2><?php echo join($r->tags, ', '); ?></h2>
-                <img src="<?php echo $r->thumb->url; ?>" width="600" height="400" />
+                <img src="<?php echo $r->thumb->url; ?>" width="<?php echo $r->thumb->width; ?>" height="<?php echo $r->thumb->height; ?>" />
             </li>
             <?php endforeach; ?>
         </ul>
