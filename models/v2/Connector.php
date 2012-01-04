@@ -184,8 +184,6 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     protected function signHeader(&$payload)
     {
         // Alphabetic sort
-        ksort($payload);
-
         $secret = $this->apiKey;
         $message = '';
         foreach ($payload as $k => $v)
