@@ -12,6 +12,7 @@
     'plupload/plupload.html5.js',
 
     'jquery.jcrop.min.js',
+    'keymedia.scalebox.js',
     'keymedia.scaler.js',
     'keymedia.browser.js',
     'keymedia.image.js',

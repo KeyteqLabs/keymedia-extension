@@ -79,7 +79,8 @@ window.KeyMediaScaler = Backbone.View.extend({
         this.container = this.$('#ezr-keymedia-scaler-image');
 
         var i, scale = $(response.content.scale), item, r;
-        var ul = this.$('.header ul');
+        var ul = this.$('.header ul'), box;
+        var outerBounds = this.outerBounds(this.versions, 4, 40);
         for (i = 0; i < this.versions.length; i++) {
             r = this.versions[i];
             item = scale.clone();
@@ -91,13 +92,38 @@ window.KeyMediaScaler = Backbone.View.extend({
                 item.addClass('cropped');
             else
                 item.addClass('uncropped');
+
             ul.append(item);
+
+            box = new window.KeyMediaScaleBox({
+                el : item.find('p'),
+                model : r.size,
+                outer : outerBounds
+            }).render();
         }
 
         // Enable the first scaling by simulating a click
         this.$('.header ul').find('a').first().click();
 
         return this;
+    },
+
+    // Calculate outer bounds for preview boxes
+    outerBounds : function(versions, gt, lt)
+    {
+        var i, w, h, min = {w:0,h:0}, max = {w:0,h:0};
+        for (i = 0; i < versions.length; i++) {
+            w = parseInt(versions[i].size[0]);
+            h = parseInt(versions[i].size[1]);
+
+            if (w > max.w) max.w = w;
+            if (h > max.h) max.h = h;
+
+            if (min.w === 0 || w < min.w) min.w = w;
+            if (min.h === 0 || h < min.h) min.h = h;
+        }
+
+        return { max : max, min : min };
     },
 
     versionName : function(item)
