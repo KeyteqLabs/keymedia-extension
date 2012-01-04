@@ -172,10 +172,9 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
 
         $auth = md5($authUrl . $this->apiKey);
 
-        $params['username'] = $this->username;
-        $params['auth'] = $auth;
+        $username = $this->username;
 
-        $queryString = http_build_query($params);
+        $queryString = http_build_query(compact('username', 'auth'));
 
         if (strpos($url, '?') === false)
             $url .= '?' . $queryString;

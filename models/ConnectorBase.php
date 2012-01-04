@@ -108,7 +108,7 @@ abstract class ConnectorBase implements ConnectorInterface
 
         $url = $this->getRequestUrl($action, $params);
 
-        $ch = curl_init($url);
+        $ch = curl_init();
         switch ($method)
         {
             case 'POST':
@@ -119,9 +119,11 @@ abstract class ConnectorBase implements ConnectorInterface
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                 break;
             case 'GET':
-                $url .= '?' . http_build_query($params);
+                $joiner = strpos($url, '?') ? '&' : '?';
+                $url .= $joiner . http_build_query($params);
                 break;
         }
+        curl_setopt($ch, CURLOPT_URL, $url);
 
         if ($header = $this->signHeader($params))
             $headers += $header;
