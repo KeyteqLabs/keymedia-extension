@@ -125,7 +125,7 @@ window.KeyMediaScaler = Backbone.View.extend({
     {
         var menuElement = this.$('#scaled-' + data.name.toLowerCase());
         menuElement.data('scale', data);
-        this.createOverlay(menuElement, data);
+        this.createOverlay(menuElement.find('.overlay'), data);
     },
 
     changeScale : function(e) {
