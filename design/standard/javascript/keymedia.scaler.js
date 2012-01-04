@@ -52,10 +52,10 @@ window.KeyMediaScaler = Backbone.View.extend({
                 return false;
             var scale = this.cropper.getScaleFactor();
             var coords = data.coords,
-                x = parseInt(coords.shift() / scale[0], 10),
-                y = parseInt(coords.shift() / scale[1], 10),
-                x2 = parseInt(coords.shift() / scale[0], 10),
-                y2 = parseInt(coords.shift() / scale[1], 10),
+                x = parseInt(coords[0] / scale[0], 10),
+                y = parseInt(coords[1] / scale[1], 10),
+                x2 = parseInt(coords[2] / scale[0], 10),
+                y2 = parseInt(coords[3] / scale[1], 10),
                 offset = this.container.position();
             var css = {
                 'top' : parseInt((offset.top - 0) + y, 10),

@@ -225,11 +225,12 @@
 }
 
 
-#ezr-keymedia-scaler .header ul li:hover .overlay { opacity: 1 }
+#ezr-keymedia-scaler .header ul li:hover .overlay { display: block; opacity:1; }
 #ezr-keymedia-scaler .header ul li.active:hover .overlay,
-#ezr-keymedia-scaler .header ul li.uncropped:hover .overlay { opacity: 0 }
+#ezr-keymedia-scaler .header ul li.uncropped:hover .overlay { display: none; }
 
 #ezr-keymedia-scaler .overlay {
+    display: none;
     opacity: 0;
     position: absolute;
     z-index: 700;
@@ -239,7 +240,6 @@
     -o-transition: opacity 0.1s ease;
     transition: opacity 0.1s ease;
 }
-
 
 
 

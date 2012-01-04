@@ -24,7 +24,8 @@
 
 {* Current image. *}
 <div class="keymedia-image">
-    {attribute_view_gui image_class=ezini( 'ImageSettings', 'DefaultEditAlias', 'content.ini' ) attribute=$attribute}
+    {def $size=ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )}
+    {attribute_view_gui format=array($size,$size) attribute=$attribute}
 
     <p>
     {$attribute.content.mime_type|wash( xhtml )}
