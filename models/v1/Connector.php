@@ -69,7 +69,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         if ($limit !== false) $params['limit'] = $limit;
         if ($offset !== false) $params['offset'] = $offset;
         if ($width !== false) $params['width'] = $width;
-        if ($height !== false) $params['heigth'] = $height;
+        if ($height !== false) $params['height'] = $height;
 
         $hits = $this->makeRequest('tag', $params);
         // TODO T'is a lie
