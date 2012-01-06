@@ -114,8 +114,8 @@ abstract class ConnectorBase implements ConnectorInterface
         {
             case 'POST':
                 // Cant send arrays using curl, makes no sense in http
-                foreach ($params as &$v)
-                    $v = is_array($v) ? implode(',', $v) : $v;
+                foreach ($params as $k => $v)
+                    $params[$k] = is_array($v) ? implode(',', $v) : $v;
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                 break;

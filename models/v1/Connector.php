@@ -78,6 +78,20 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     * Put tags on an existing media
+     *
+     * @param $id
+     * @param array $tags
+     *
+     * @return object
+     */
+    public function tagMedia($id, $tags = array())
+    {
+        $payload = compact('tags');
+        return $this->makeRequest($id, $payload, 'POST');
+    }
+
+    /**
      *
      * Uploads media to KeyMedia
      *
@@ -95,13 +109,10 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
 
         if (file_exists($filename))
         {
-            $payload = array
-            (
-                'media' => '@' . $filename,
-                'originalName' => $originalName,
-                'tags' => serialize($tags),
-                'attributes' => serialize($attributes)
-            );
+            $media = '@' . $filename;
+            $payload = compact('media', 'originalName');
+            if ($tags) $payload['tags'] = serialize($tags);
+            if ($attributes) $payload['attributes'] = serialize($attributes);
 
             return $this->makeRequest('upload', $payload, 'POST');
         }

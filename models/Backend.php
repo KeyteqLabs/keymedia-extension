@@ -153,6 +153,34 @@ class Backend extends \eZPersistentObject
             return $this->_format($results, $options['format']);
         }
     }
+
+    /**
+     * Tag a media
+     *
+     * @param array $criteria
+     * @param array $tags
+     * @return 
+     */
+    public function tag(array $criteria = array(), $tags = array())
+    {
+        if ($con = $this->connection())
+        {
+            $payload = compact('tags');
+            if (!isset($criteria['id']))
+                throw new Exception('The only supported criteria is the id field');
+
+            $result = $con->tagMedia($criteria['id'], $tags);
+            if ($result && isset($result->media))
+            {
+                $image = new Image($result->media);
+                $image->host($this->host);
+                return $image;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Format results equally for all getter methods
      *
