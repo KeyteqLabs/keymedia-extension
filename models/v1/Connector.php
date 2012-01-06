@@ -103,9 +103,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
                 'attributes' => serialize($attributes)
             );
 
-            $result = $this->makeRequest('upload', $payload, 'POST');
-
-            return json_decode($result);
+            return $this->makeRequest('upload', $payload, 'POST');
         }
 
         return null;
