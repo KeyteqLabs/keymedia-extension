@@ -24,7 +24,7 @@ class Image
      */
     public function __construct($data = array())
     {
-        $this->data = $data;
+        $this->data = (object) $data;
     }
 
     /**
@@ -40,7 +40,7 @@ class Image
             case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
         }
-        return isset($this->$key) ? $this->data[$key] : null;
+        return isset($this->$key) ? $this->data->$key : null;
     }
 
     public function size()
@@ -52,7 +52,7 @@ class Image
     {
         $exists = array('size');
         if ($key === 'id') $key = $this->idAttribute();
-        return isset($this->data[$key]) ?: in_array($key, $exists);
+        return isset($this->data->$key) ?: in_array($key, $exists);
     }
 
     public function hasAttribute($key)
@@ -198,9 +198,9 @@ class Image
     {
         if (!$this->_idAttribute)
         {
-            if (isset($this->data['id']))
+            if (isset($this->data->id))
                 $this->_idAttribute = 'id';
-            elseif (isset($this->data['_id']))
+            elseif (isset($this->data->_id))
                 $this->_idAttribute = '_id';
         }
 
