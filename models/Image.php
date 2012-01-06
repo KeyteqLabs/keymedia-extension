@@ -11,6 +11,12 @@ class Image
     protected $data = array();
 
     /**
+     * Caches id attribute
+     * @var string|null
+     */
+    protected $_idAttribute = null;
+
+    /**
      * Find the first object matching criteria (id lookups)
      *
      * @param array $criteria
@@ -31,10 +37,10 @@ class Image
     {
         switch ($key)
         {
-            case 'id': $key = '_id'; break;
+            case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
         }
-        return isset($this->$key) ? $this->data->$key : null;
+        return isset($this->$key) ? $this->data[$key] : null;
     }
 
     public function size()
@@ -45,8 +51,8 @@ class Image
     public function __isset($key)
     {
         $exists = array('size');
-        if ($key === 'id') $key = '_id';
-        return isset($this->data->$key) ?: in_array($key, $exists);
+        if ($key === 'id') $key = $this->idAttribute();
+        return isset($this->data[$key]) ?: in_array($key, $exists);
     }
 
     public function hasAttribute($key)
@@ -180,6 +186,25 @@ class Image
                 $x,$y,$x + $width,$y + $height,
             )
         );
+
+    }
+
+    /**
+     * Figure out what attribute is the id attribute
+     *
+     * @return string
+     */
+    protected function idAttribute()
+    {
+        if (!$this->_idAttribute)
+        {
+            if (isset($this->data['id']))
+                $this->_idAttribute = 'id';
+            elseif (isset($this->data['_id']))
+                $this->_idAttribute = '_id';
+        }
+
+        return $this->_idAttribute;
 
     }
 }
