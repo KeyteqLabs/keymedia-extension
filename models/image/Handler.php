@@ -233,7 +233,8 @@ class Handler
             return null; //throw new \Exception("Image attribute does not contain any information.");
 
         // Fetch image data and build original part of return array
-        $data = $this->image()->attribute('data');
+        if (!($image = $this->image())) return null;
+        $data = $image->attribute('data');
         $originalImageInfo =  array(
                 'url' => $data->file->url,
                 'size' => $data->file->size,
