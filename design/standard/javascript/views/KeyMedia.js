@@ -2,7 +2,11 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
     // Holds current active subview
     view : null,
 
+    _init : false,
+
     destination : null,
+
+    container : false,
 
     initialize : function(options)
     {
@@ -13,8 +17,20 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
         this.el = $(this.el);
 
-        this.modal = new ezrKeyMedia.views.Modal;
-        this.modal.el.prependTo('body');
+        if ('container' in options) {
+            this.container = options.container;
+        }
+        else {
+            this.container = new ezrKeyMedia.views.Modal;
+            this.container.el.prependTo('body');
+        }
+
+        if ('scaler' in options)
+            this.scaler = options.scaler;
+        if ('search' in options)
+            this.search = options.search;
+
+        if (this._init) this._init();
 
         return this;
     },
@@ -30,7 +46,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
     render : function()
     {
-        this.modal.render();
+        this.container.render();
         this.enableUpload();
         this.delegateEvents();
         return this;
@@ -68,7 +84,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         this.view = new ezrKeyMedia.views.Browser({
             model : this.model,
             saveTo : this.destination,
-            el : this.modal.show().contentEl
+            el : this.container.show().contentEl
         });
 
         this.model.search('', {skeleton:true});
@@ -83,7 +99,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
             trueSize : node.data('size'),
             host : this.el.data('backend-host'),
             model : this.model,
-            el : this.modal.show().contentEl
+            el : this.container.show().contentEl
         };
         this.view = new ezrKeyMedia.views.Scaler(settings);
 
