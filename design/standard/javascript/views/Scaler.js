@@ -1,4 +1,4 @@
-window.KeyMediaScaler = Backbone.View.extend({
+ezrKeyMedia.views.Scaler = Backbone.View.extend({
     // Holds reference to current selected scale li
     current : null,
 
@@ -19,7 +19,7 @@ window.KeyMediaScaler = Backbone.View.extend({
 
         this.el = $(this.el);
 
-        this.image = new KeyMediaImage({
+        this.image = new ezrKeyMedia.models.Image({
             id : options.imageId,
             host : options.host
         });
@@ -95,7 +95,7 @@ window.KeyMediaScaler = Backbone.View.extend({
 
             ul.append(item);
 
-            box = new window.KeyMediaScaleBox({
+            box = new ezrKeyMedia.views.Scalebox({
                 el : item.find('p'),
                 model : r.size,
                 outer : outerBounds

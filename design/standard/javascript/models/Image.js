@@ -1,4 +1,4 @@
-window.KeyMediaImage = Backbone.Model.extend({
+ezrKeyMedia.models.Image = Backbone.Model.extend({
     defaults : function() {
         return {
             id : '',

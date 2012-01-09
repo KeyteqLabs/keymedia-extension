@@ -1,4 +1,4 @@
-window.KeyMediaBrowser = Backbone.View.extend({
+ezrKeyMedia.Browser = Backbone.View.extend({
     initialize : function(options)
     {
         _.bindAll(this, 'render', 'item', 'select');

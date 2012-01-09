@@ -1,4 +1,4 @@
-window.KeyMediaScaleBox = Backbone.View.extend({
+ezrKeyMedia.views.Scalebox = Backbone.View.extend({
     outerBounds : null,
 
     initialize : function(options)
