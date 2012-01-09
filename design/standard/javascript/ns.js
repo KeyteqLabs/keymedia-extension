@@ -1,4 +1,5 @@
-// Just contains the javascript namespace
+// Namespace declarations
+// Prepares namespace for objects to be placed into later
 
 ezrKeyMedia = {
     models : {},

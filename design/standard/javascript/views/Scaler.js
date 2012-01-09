@@ -13,6 +13,9 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         h : 580
     },
 
+    tagName : 'div',
+    className : 'scaler',
+
     initialize : function(options)
     {
         _.bindAll(this, 'render', 'changeScale', 'versionCreated', 'createOverlay');

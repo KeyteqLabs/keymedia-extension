@@ -18,6 +18,7 @@
     'models/KeyMedia.js',
     'models/Image.js',
 
+    'views/Modal.js',
     'views/KeyMedia.js',
     'views/Scalebox.js',
     'views/Scaler.js',
