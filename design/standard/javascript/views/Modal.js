@@ -12,6 +12,7 @@ ezrKeyMedia.views.Modal = Backbone.View.extend({
     initialize : function(options)
     {
         _.bindAll(this, 'render');
+        this.el = $(this.el);
         return this;
     },
 
