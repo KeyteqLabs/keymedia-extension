@@ -193,8 +193,10 @@ class KeyMedia extends \ezote\lib\Controller
         $handler = $imageAttribute->content();
         if (!$image = $handler->uploadFile($httpFile))
             return array('error' => 'Failed upload');
-
-        return array('image' => array('id' => $image->id));
+        return array(
+            'image' => $image->data(),
+            'ok' => true
+        );
     }
 
     /***

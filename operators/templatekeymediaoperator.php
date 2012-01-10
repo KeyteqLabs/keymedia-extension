@@ -61,6 +61,7 @@ class TemplateKeymediaOperator
     {
         $attr = $namedParameters['attribute'];
         $format = $namedParameters['format'];
+        $format = $format ?: array(300, 200);
 
         switch ($operatorName)
         {

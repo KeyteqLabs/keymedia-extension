@@ -251,7 +251,8 @@ class Backend extends \eZPersistentObject
             if ($result && isset($result->media))
             {
                 $image = new Image($result->media);
-                $image->host($this->host);
+                $host = isset($result->host) ? $result->host : $this->host;
+                $image->host($host);
                 return $image;
             }
         }

@@ -8,7 +8,7 @@ class Image
      * Image values
      * @var array
      */
-    protected $data = array();
+    protected $_data = array();
 
     /**
      * Caches id attribute
@@ -24,7 +24,7 @@ class Image
      */
     public function __construct($data = array())
     {
-        $this->data = (object) $data;
+        $this->_data = (object) $data;
     }
 
     /**
@@ -40,9 +40,14 @@ class Image
             case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
         }
-        return isset($this->$key) ? $this->data->$key : null;
+        return isset($this->$key) ? $this->_data->$key : null;
     }
 
+    /**
+     * Return size information in an array(width, height)
+     *
+     * @return array Dimensions, like {300, 200}
+     */
     public function size()
     {
         return array($this->file->width, $this->file->height);
@@ -52,7 +57,7 @@ class Image
     {
         $exists = array('size');
         if ($key === 'id') $key = $this->idAttribute();
-        return isset($this->data->$key) ?: in_array($key, $exists);
+        return isset($this->_data->$key) ?: in_array($key, $exists);
     }
 
     public function hasAttribute($key)
@@ -72,8 +77,8 @@ class Image
 
     public function host($host = null)
     {
-        if (is_string($host)) $this->_host = $host;
-        return $this->_host;
+        if (is_string($host)) $this->_data->host = $host;
+        return $this->_data->host;
     }
 
     /**
@@ -190,6 +195,23 @@ class Image
     }
 
     /**
+     * Fetch image data
+     *
+     * @return object
+     */
+    public function data()
+    {
+        $idAttribute = $this->idAttribute();
+        $data = $this->_data;
+        if ($idAttribute !== 'id')
+        {
+            $data->id = $this->_data->$idAttribute;
+            unset($data->$idAttribute);
+        }
+        return $data;
+    }
+
+    /**
      * Figure out what attribute is the id attribute
      *
      * @return string
@@ -198,9 +220,9 @@ class Image
     {
         if (!$this->_idAttribute)
         {
-            if (isset($this->data->id))
+            if (isset($this->_data->id))
                 $this->_idAttribute = 'id';
-            elseif (isset($this->data->_id))
+            elseif (isset($this->_data->_id))
                 $this->_idAttribute = '_id';
         }
 

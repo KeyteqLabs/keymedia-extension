@@ -83,22 +83,8 @@ class KeyMedia extends eZDataType
     {
         // Get value of connected image id
         $id = $http->variable($base . '_image_id_' . $attribute->attribute('id'));
-        $host = $http->variable($base . '_host_' . $attribute->attribute('id'));
-
-        // If old version has a different id with crops defined
-        // we should not maintain those crops (?)
-        $old = $attribute->attribute(self::FIELD_VALUE);
-
-        if (strlen($old) > 0) $data = json_decode($old);
-        else $data = new \stdClass;
-
-        if ($id !== $data->id || !isset($data->id))
-        {
-            $data = $id ? compact('id', 'host') : array();
-            $attribute->setAttribute(self::FIELD_VALUE, json_encode($data));
-        }
-
-        return true;
+        $handler = new Handler($attribute);
+        return $handler->setImage($id, $host);
     }
 
     function hasObjectAttributeContent( $contentObjectAttribute )

@@ -71,6 +71,14 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         });
 
         this.uploader.init();
+        var destination = this.destination;
+        this.uploader.bind('FileUploaded', function(up, file, info) {
+            var data = {};
+            if ('response' in info) data = JSON.parse(info.response);
+            var id = data.content.image.id;
+            console.log(destination, id);
+            destination.val(id);
+        });
         this.uploader.bind('FilesAdded', function(up, files)
         {
             up.start();

@@ -27,4 +27,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $imageUnder->id);
         $this->assertEquals(2, $imageObject->id);
     }
+
+    public function testSetHost()
+    {
+        $image = new Image((object) array(
+            'id' => 1
+        ));
+        $host = 'example.com';
+        $image->host($host);
+        $data = $image->data();
+        $this->assertEquals($host, $data->host);
+        $this->assertEquals($host, $image->host());
+    }
 }

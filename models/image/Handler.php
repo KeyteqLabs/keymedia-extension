@@ -23,6 +23,17 @@ class Handler
     protected $attributeValues = false;
     protected $postfix = 0;
 
+    /**
+     * Construct a new handler, wrapping an ezContentObjectAttribute instance
+     *
+     * @param eZContentObjectAttribute $attribute
+     */
+    public function __construct($attribute = false)
+    {
+        if ($attribute)
+            $this->parseContentObjectAttribute($attribute);
+    }
+
     public function parseContentObjectAttribute($attribute)
     {
         $this->attr = $attribute;
@@ -54,7 +65,10 @@ class Handler
         $filename = $this->imageName($this->attr, $version, $this->postfix);
 
         $data = array('title' => $alt);
-        return $this->backend()->upload($filepath, $filename, $tags, $data);
+        $image = $this->backend()->upload($filepath, $filename, $tags, $data);
+        $this->setImage($image->id, $image->host());
+
+        return $image;
     }
 
     protected function values($save = false)
@@ -220,11 +234,29 @@ class Handler
     }
 
     /**
+     * Update the image set in db for the ContentObjectAttribute loaded
+     * in the handler at the moment.
+     *
+     * @param string $id Remote id from KeyMedia
+     * @param string $host Host that will serve the image later on
+     * @return bool
+     */
+    public function setImage($id, $host)
+    {
+        $data = $this->values();
+
+        if ($id && (!isset($data->id) || $id !== $data->id))
+            $this->values(compact('id', 'host'));
+
+        return true;
+    }
+
+    /**
      * @throws \Exception
      * @param string|array|null $format
      * @return array
      */
-    public function media($format=null)
+    public function media($format = array(300, 200))
     {
         $availableFormats = json_decode($this->attr->DataText, true);
 
@@ -234,8 +266,9 @@ class Handler
 
         // Fetch image data and build original part of return array
         if (!($image = $this->image())) return null;
-        $data = $image->attribute('data');
-        $originalImageInfo =  array(
+        if ($data = $image->data())
+        {
+            $originalImageInfo =  array(
                 'url' => $data->file->url,
                 'size' => $data->file->size,
                 'width' => $data->file->width,
@@ -243,11 +276,12 @@ class Handler
                 'name' => isset($data->file->name) ? $data->file->name : null,
                 'ratio' => $data->file->ratio
             );
+        }
 
         // Init version to null
         $version = null;
 
-        if (!isset($format)){
+        if (!isset($format)) {
 
             foreach($availableFormats['versions'] as $key => $value){
 
@@ -291,12 +325,12 @@ class Handler
         }
 
         $typeArr = explode('/', $data->file->type);
-          $mediaInfo = array(
-                'mime-type' => $data->file->type,
-                'type' => array_shift($typeArr),
-                'format' => $format,
-                'original' => $originalImageInfo
-            );
+        $mediaInfo = array(
+            'mime-type' => $data->file->type,
+            'type' => array_shift($typeArr),
+            'format' => $format,
+            'original' => $originalImageInfo
+        );
         if (isset($mediaUrl))
         {
             $mediaInfo['url'] = $mediaUrl;
