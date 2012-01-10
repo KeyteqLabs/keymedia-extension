@@ -1,3 +1,6 @@
+{if not( is_set( $format ) )}
+    {def $format = array(300,200)}
+{/if}
 {def $media = keymedia($attribute,$format)}
 
 {if eq($attribute.content.id, 0)|not}    
