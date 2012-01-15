@@ -10,6 +10,7 @@ ezrKeyMedia.views.Browser = Backbone.View.extend({
         this.el = $(this.el);
 
         this.saveTo = options.saveTo;
+        this.saveHostTo = options.saveHostTo;
 
         return this;
     },
@@ -23,6 +24,7 @@ ezrKeyMedia.views.Browser = Backbone.View.extend({
         e.preventDefault();
         var node = $(e.currentTarget);
         this.saveTo.val(node.data('id'));
+        this.saveHostTo.val(node.data('host'));
         this.$('.close').click();
     },
 
@@ -60,7 +62,10 @@ ezrKeyMedia.views.Browser = Backbone.View.extend({
 
     item : function(data, tmpl) {
         var node = tmpl.clone();
-        node.find('a').data('id', data.id);
+        node.find('a').data({
+            id : data.id,
+            host : data.host
+        });
         node.find('img').attr('src', data.thumb.url);
         node.find('.meta').text(data.filename + ' (' + data.filesize + ')');
         if (data.shared) node.find('.share').addClass('shared');

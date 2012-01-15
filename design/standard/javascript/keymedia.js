@@ -11,7 +11,8 @@ $(function() {
         var keymedia = new ezrKeyMedia.views.KeyMedia({
             el : container,
             model : model,
-            destination : container.find('.image-id')
+            destination : container.find('.image-id'),
+            host : container.find('.image-host')
         }).render();
     });
 });

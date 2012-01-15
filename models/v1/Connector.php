@@ -157,7 +157,8 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             'width' => (int) $media->width,
             'height' => (int) $media->height,
             'thumb' => $thumb,
-            'filename' => $media->originalFilename
+            'filename' => $media->originalFilename,
+            'host' => $this->mediabaseDomain
         );
     }
 

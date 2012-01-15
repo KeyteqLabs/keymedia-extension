@@ -5,6 +5,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
     _init : false,
 
     destination : null,
+    host : null,
 
     container : false,
 
@@ -14,6 +15,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
         // DOM node to store selected image id into
         this.destination = options.destination;
+        this.host = options.host;
 
         this.el = $(this.el);
 
@@ -69,13 +71,12 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         });
 
         this.uploader.init();
-        var destination = this.destination;
+        var destination = this.destination, host = this.host;
         this.uploader.bind('FileUploaded', function(up, file, info) {
             var data = {};
             if ('response' in info) data = JSON.parse(info.response);
-            var id = data.content.image.id;
-            console.log(destination, id);
-            destination.val(id);
+            destination.val(data.content.image.id);
+            host.val(data.content.image.host);
         });
         this.uploader.bind('FilesAdded', function(up, files)
         {
@@ -90,6 +91,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         this.view = new ezrKeyMedia.views.Browser({
             model : this.model,
             saveTo : this.destination,
+            saveHostTo : this.host,
             el : this.container.show().contentEl
         });
 
@@ -105,7 +107,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
             imageId : this.destination.val(),
             versions : node.data('versions'),
             trueSize : node.data('size'),
-            host : this.el.data('backend-host'),
+            host : this.host.val(),
             model : this.model,
             el : this.container.show().contentEl
         };

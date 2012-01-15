@@ -168,7 +168,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         $width = 160;
         $height = 120;
         $thumb = (object) array(
-            'url' => 'http://' . $this->mediabaseDomain . '/' . $width . 'x' . $height . '/' . $media->_id . '.jpg'
+            'url' => 'http://' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.jpg'
         );
         return (object) array(
             'id' => $media->_id,
@@ -177,7 +177,8 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             'width' => (int) $media->file->width,
             'height' => (int) $media->file->height,
             'thumb' => $thumb,
-            'filename' => $media->name
+            'filename' => $media->name,
+            'host' => $media->host
         );
     }
 
