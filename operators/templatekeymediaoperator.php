@@ -66,8 +66,8 @@ class TemplateKeymediaOperator
         switch ($operatorName)
         {
             case 'keymedia':
-
-                $operatorValue = $attr->content()->media($format);
+                $handler = $attr->content();
+                $operatorValue = $handler->media($format);
                 break;
         }
     }

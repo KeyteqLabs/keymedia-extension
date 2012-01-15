@@ -202,7 +202,7 @@ class Image
     public function data()
     {
         $idAttribute = $this->idAttribute();
-        $data = $this->_data;
+        $data = clone $this->_data;
         if ($idAttribute !== 'id')
         {
             $data->id = $this->_data->$idAttribute;

@@ -269,7 +269,6 @@ class Handler
         if ($data = $image->data())
         {
             $originalImageInfo =  array(
-                'url' => $data->file->url,
                 'size' => $data->file->size,
                 'width' => $data->file->width,
                 'height' => $data->file->height,
@@ -281,45 +280,36 @@ class Handler
         // Init version to null
         $version = null;
 
-        if (!isset($format)) {
-
-            foreach($availableFormats['versions'] as $key => $value){
-
-                if (isset($value['url']))
-                {
-                    $version = $value;
-                    break;
-                }
-            }
+        if (!isset($format))
+        {
+            $urls = array_filter($availableFormats['versions'], function($v) {
+                return isset($v['url']);
+            });
+            $version = array_shift($urls);
 
         }
-        else
+        elseif (is_array($format))
         {
-            // Create a simple rescale
-            if (is_array($format))
+            $mediaUrl = $this->thumb($format[0], $format[1]);
+            $version = array();
+        }
+        else {
+            $version = $availableFormats['versions'][$format];
+
+            // No version available - we need to autogenerate
+            if (!isset($version))
             {
-                $mediaUrl = $this->thumb($format[0], $format[1]);
-                $version = array();
-            }
-            else {
+
+                list($versionWidth, $versionHeight) = $this->formatSize($format);
+                $bestFit = \ezr_keymedia\models\Image::fitToBox($versionWidth, $versionHeight, $originalImageInfo['width'], $originalImageInfo['height']);
+
+                $bestFit['size'] = array($versionWidth, $versionHeight);
+
+                // Autocreate the best fit version
+                self::addVersion($format, $bestFit);
+
+                $availableFormats = json_decode($this->attr->DataText, true);
                 $version = $availableFormats['versions'][$format];
-
-                // No version available - we need to autogenerate
-                if (!isset($version))
-                {
-
-                    list($versionWidth, $versionHeight) = $this->formatSize($format);
-                    $bestFit = \ezr_keymedia\models\Image::fitToBox($versionWidth, $versionHeight, $originalImageInfo['width'], $originalImageInfo['height']);
-
-                    $bestFit['size'] = array($versionWidth, $versionHeight);
-
-                    // Autocreate the best fit version
-                    self::addVersion($format, $bestFit);
-
-                    $availableFormats = json_decode($this->attr->DataText, true);
-                    $version = $availableFormats['versions'][$format];
-
-                }
 
             }
         }
@@ -338,7 +328,7 @@ class Handler
         else
         {
             // Build simple reply array
-            $mediaInfo = array_merge($mediaInfo,array(
+            $mediaInfo = array_merge($mediaInfo, array(
 
                 'width' => $version['size'][0],
                 'height' => $version['size'][1],

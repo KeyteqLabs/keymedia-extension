@@ -205,7 +205,7 @@ class Backend extends \eZPersistentObject
         if ($con = $this->connection())
         {
             $image = new Image($con->media($id));
-            $image->host($this->host);
+            if (!$image->host()) $image->host($this->host);
             return $image;
         }
         return null;

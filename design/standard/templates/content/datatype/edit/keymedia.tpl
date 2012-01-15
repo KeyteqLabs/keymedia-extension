@@ -1,6 +1,7 @@
 {def $base='ContentObjectAttribute'
-    $backend = $attribute.content.backend
-    $class_attribute = $attribute.content.class
+    $handler = $attribute.content
+    $backend = $handler.backend
+    $class_attribute = $handler.class
 }
 
 {ezscript_require( array(

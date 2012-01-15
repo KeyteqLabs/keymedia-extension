@@ -28,6 +28,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $imageObject->id);
     }
 
+    public function testDataMethodRespectsIdAttribute()
+    {
+        $image = new Image(array(
+            '_id' => 2
+        ));
+        $data = $image->data();
+        $this->assertEquals(2, $data->id);
+        $this->assertEquals(2, $image->id);
+    }
+
     public function testSetHost()
     {
         $image = new Image((object) array(
