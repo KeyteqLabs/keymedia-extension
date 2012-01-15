@@ -82,7 +82,9 @@ class KeyMedia extends eZDataType
     function fetchObjectAttributeHTTPInput( $http, $base, $attribute )
     {
         // Get value of connected image id
-        $id = $http->variable($base . '_image_id_' . $attribute->attribute('id'));
+        $attributeId = $attribute->attribute('id');
+        $id = $http->variable($base . '_image_id_' . $attributeId);
+        $host = $http->variable($base . '_host_' . $attributeId);
         $handler = new Handler($attribute);
         return $handler->setImage($id, $host);
     }

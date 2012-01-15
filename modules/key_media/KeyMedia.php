@@ -122,7 +122,7 @@ class KeyMedia extends \ezote\lib\Controller
                 'skeleton' => 'design:parts/scaler.tpl',
                 'scale' => 'design:parts/scale_version.tpl'
             );
-            $data = compact('item') + self::_templates($http, $templates);
+            $data = self::_templates($http, $templates);
         }
         return $data;
     }

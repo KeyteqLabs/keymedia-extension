@@ -38,8 +38,8 @@
     {attribute_view_gui format=array($size,$size) attribute=$attribute}
 
     <p>
-    {$attribute.content.mime_type|wash( xhtml )}
-    {$attribute.content.filesize|si( byte )}
+    {$handler.mime_type|wash( xhtml )}
+    {$handler.filesize|si( byte )}
     </p>
 
 </div>
@@ -51,12 +51,12 @@
     data-backend-host='{$backend.host}'
     data-version={$attribute.version}>
 
-    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$attribute.content.image.id}" class="image-id" />
+    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$handler.image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" />
 
     <button type="button" class="ezr-keymedia-scale hid"
-        data-size='{$attribute.content.image.size|json}'
-        data-versions='{$attribute.content.toscale|json}'>
+        data-size='{$handler.image.size|json}'
+        data-versions='{$handler.toscale|json}'>
         {'Scale'|i18n( 'content/edit' )}
     </button>
 

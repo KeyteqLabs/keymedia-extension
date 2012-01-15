@@ -39,10 +39,10 @@ ezrKeyMedia.views.Modal = Backbone.View.extend({
     },
 
     close : function(e) {
+        this.trigger('close');
         this.el.hide();
         if (this.view !== null)
             this.view.remove();
-        this.trigger('close');
     }
 });
 

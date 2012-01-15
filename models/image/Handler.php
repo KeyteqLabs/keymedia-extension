@@ -224,13 +224,19 @@ class Handler
         }
     }
 
+    /**
+     * Build a thumb string for the currently selected image
+     *
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
     protected function thumb($width, $height)
     {
-        $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
-        $data = json_decode($data);
-
-        $url = 'http://' . $data->host . "/{$width}x{$height}/{$data->id}.jpg";
-        return $url;
+        $data = $this->values();
+        $host = $data['host'];
+        $id = $data['id'];
+        return 'http://' . $host . "/{$width}x{$height}/{$id}.jpg";
     }
 
     /**
@@ -340,7 +346,9 @@ class Handler
         }
 
         if (isset($mediaUrl))
+        {
             return $mediaInfo;
+        }
 
         if (isset($version) && !isset($mediaUrl)){
 

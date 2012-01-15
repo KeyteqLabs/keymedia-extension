@@ -1,4 +1,6 @@
 ezrKeyMedia.models.Image = Backbone.Model.extend({
+    prefix : '',
+
     defaults : function() {
         return {
             id : '',
@@ -9,6 +11,8 @@ ezrKeyMedia.models.Image = Backbone.Model.extend({
     initialize : function(options)
     {
         _.bindAll(this, 'thumb', 'domain');
+        if ('prefix' in options)
+            this.prefix = options.prefix;
     },
 
     domain : function()
@@ -17,7 +21,7 @@ ezrKeyMedia.models.Image = Backbone.Model.extend({
     },
 
     url : function(method, extra) {
-        return this.domain() + '/media/' + this.id + '.json';
+        return this.prefix + '/' + ['keymedia', 'image', this.id].join('::');
     },
 
     // Generate thumb url for a given size

@@ -10,7 +10,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'search', 'events');
+        _.bindAll(this, 'render', 'search', 'close');
 
         // DOM node to store selected image id into
         this.destination = options.destination;
@@ -25,6 +25,8 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
             this.container.el.prependTo('body');
         }
 
+        this.container.bind('close', this.close);
+
         if ('scaler' in options)
             this.scaler = options.scaler;
         if ('search' in options)
@@ -35,13 +37,9 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         return this;
     },
 
-    events : function() {
-        var events = {
-            'click .ezr-keymedia-remote-file' : 'search'
-        };
-        if (this.destination && this.destination.val())
-            events['click .ezr-keymedia-scale'] = 'scaler';
-        return events;
+    events : {
+        'click .ezr-keymedia-remote-file' : 'search',
+        'click .ezr-keymedia-scale' : 'scaler'
     },
 
     render : function()
@@ -100,6 +98,8 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
     // Open a scaling gui
     scaler : function(e) {
+        if (!(this.destination && this.destination.val())) return false;
+
         var node = $(e.currentTarget);
         settings = {
             imageId : this.destination.val(),
@@ -112,6 +112,13 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         this.view = new ezrKeyMedia.views.Scaler(settings);
 
         this.model.scale(settings.imageId, settings.versions);
+    },
+
+    close : function() {
+        if (this.view && 'close' in this.view)
+        {
+            this.view.close();
+        }
     }
 });
 

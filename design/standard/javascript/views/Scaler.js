@@ -164,11 +164,15 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         if (this.current !== null)
         {
             this.current.removeClass('active');
-            // If a previous crop exists, save the coordinates as a new vanity url
-            scale = this.current.data('scale'), selection = this.cropper.tellSelect();
-            if (this.cropper)
+
+            if (this.cropper !== null)
             {
-                this.storeVersion(selection, scale);
+                // If a previous crop exists, save the coordinates as a new vanity url
+                scale = this.current.data('scale');
+                if (this.cropper && scale)
+                {
+                    this.storeVersion(this.cropper.tellSelect(), scale);
+                }
             }
         }
 
@@ -182,10 +186,10 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         // x,y,x2,y2
         if (scale && 'coords' in scale)
         {
-            x = scale.coords.shift() - 0;
-            y = scale.coords.shift() - 0;
-            x2 = scale.coords.shift() - 0;
-            y2 = scale.coords.shift() - 0;
+            x = scale.coords[0] - 0;
+            y = scale.coords[1] - 0;
+            x2 = scale.coords[2] - 0;
+            y2 = scale.coords[3] - 0;
         }
         else
         {
@@ -212,7 +216,7 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         }
         else
         {
-            $('#ezr-keymedia-scaler-crop').Jcrop({
+            this.$('#ezr-keymedia-scaler-crop').Jcrop({
                 trueSize : size
             }, function(a) {
                 // Store reference to API
@@ -224,6 +228,18 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
                     minSize : scale.size
                 });
             });
+        }
+    },
+
+    close : function() {
+        if (this.cropper) {
+            this.cropper.destroy();
+            this.cropper = null;
+            this.current = null;
+            this.delegateEvents([]);
+            this.model.unbind('scale');
+            this.model.unbind('version.create');
+            this.el.html('');
         }
     }
 });
