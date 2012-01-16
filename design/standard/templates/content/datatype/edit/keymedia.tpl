@@ -56,19 +56,15 @@
     <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
 
-    <button type="button" class="ezr-keymedia-scale hid"
+    <input type="button" class="ezr-keymedia-scale hid button"
         data-size='{$image.size|json}'
-        data-versions='{$handler.toscale|json}'>
-        {'Scale'|i18n( 'content/edit' )}
-    </button>
+        data-versions='{$handler.toscale|json}'
+        value="{'Scale'|i18n( 'content/edit' )}">
 
-    <button type="button" class="ezr-keymedia-remote-file">
-        {'Choose from KeyMedia'|i18n( 'content/edit' )}
-    </button>
+    <input type="button" class="ezr-keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">
 
-    <button type="button" class="ezr-keymedia-local-file" id="ezr-keymedia-local-file-{$attribute.id}">
-        {'Choose from computer'|i18n( 'content/edit' )}
-    </button>
+    <input type="button" class="ezr-keymedia-local-file button" id="ezr-keymedia-local-file-{$attribute.id}"
+        value="{'Choose from computer'|i18n( 'content/edit' )}">
 
     <div id="ezr-keymedia-progress-{$attribute.id}"></div>
 </div>
