@@ -8,16 +8,14 @@ ezrKeyMedia.views.Scalebox = Backbone.View.extend({
 
     render : function()
     {
-        var w = 36, h = 36, min = 8;
+        var w = 26, h = 26, min = 8;
         var size = this.boxSize(this.model, w, h, min);
 
         var css = {
             width : size[0],
             height : size[1],
             'margin-left' : parseInt(((w - size[0]) / 2), 10),
-            'margin-top' : parseInt(((h - size[1]) / 2), 10),
-            border : '1px solid red',
-            float : 'left'
+            'margin-top' : parseInt(((h - size[1]) / 2), 10)
         };
 
         this.el.css(css);

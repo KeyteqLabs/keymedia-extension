@@ -1,7 +1,7 @@
 <li>
-    <p></p>
     <a>
-        <h2></h2>
+        <p></p>
+        <h2></h2><br />
         <span></span>
     </a>
     <div class="overlay"></div>
