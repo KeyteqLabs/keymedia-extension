@@ -5,7 +5,6 @@
     $image = $handler.image
     $backend = $handler.backend
     $class_attribute = $handler.class
-    $size = ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )
 }
 
 {ezscript_require( array(
@@ -28,24 +27,12 @@
     'views/Scalebox.js',
     'views/Scaler.js',
     'views/Browser.js',
+    'views/Upload.js',
 
     'keymedia.js',
 ) )}
 
-<div class="keymedia-image">
-    <div class="image-wrap">
-        {attribute_view_gui format=array($size,$size) attribute=$attribute}
-    </div>
-
-    <div class="image-meta">
-        <ul>
-            <li>{'Title'|i18n( 'content/edit' )}: {$image.name|wash}</li>
-            <li>{'Tags'|i18n( 'content/edit' )}: {$image.tags|implode(',')}</li>
-            <li>{'Modified'|i18n( 'content/edit' )}: {$image.modified|datetime('iso8601')}</li>
-            <li>{'Size'|i18n( 'content/edit' )}: {$handler.filesize|si( byte )}</li>
-        </ul>
-    </div>
-</div>
+{include uri="design:parts/edit_preview.tpl" attribute=$attribute}
 
 <div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl} class="keymedia-buttons"
     data-id={$attribute.id}
@@ -63,8 +50,12 @@
 
     <input type="button" class="ezr-keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">
 
-    <input type="button" class="ezr-keymedia-local-file button" id="ezr-keymedia-local-file-{$attribute.id}"
-        value="{'Choose from computer'|i18n( 'content/edit' )}">
+    <div class="ezr-keymedia-local-file-container" id="ezr-keymedia-local-file-container-{$attribute.id}">
+        <input type="button" class="ezr-keymedia-local-file button" id="ezr-keymedia-local-file-{$attribute.id}"
+            value="{'Choose from computer'|i18n( 'content/edit' )}">
+    </div>
 
-    <div id="ezr-keymedia-progress-{$attribute.id}"></div>
+    <div class="upload-progress hid" id="ezr-keymedia-progress-{$attribute.id}">
+        <div class="progress"></div>
+    </div>
 </div>

@@ -178,6 +178,27 @@ class KeyMedia extends \ezote\lib\Controller
     }
 
     /**
+     * eZJSCore method for selecting a KeyMedia image
+     */
+    public static function select($args)
+    {
+        $http = \eZHTTPTool::instance();
+        if ($id = array_pop($args))
+        {
+            $q = $http->variable('q', '');
+
+            $backend = Backend::first(compact('id'));
+            $results = $backend->search($q, array(), compact('width', 'height', 'offset', 'limit'));
+
+            $templates = array(
+                'item' => 'design:parts/keymedia_browser_item.tpl'
+            );
+            $data = compact('results') + self::_templates($http, $templates);
+        }
+        return $data;
+    }
+
+    /**
      * Upload an image from disk
      */
     public static function upload()
@@ -189,12 +210,16 @@ class KeyMedia extends \ezote\lib\Controller
         $contentObjectVersion = $http->postVariable('ContentObjectVersion');
         $contentObjectID = $http->postVariable('ContentObjectID');
 
-        $imageAttribute = eZContentObjectAttribute::fetch($attributeID, $contentObjectVersion);
-        $handler = $imageAttribute->content();
+        $attribute = eZContentObjectAttribute::fetch($attributeID, $contentObjectVersion);
+        $handler = $attribute->content();
         if (!$image = $handler->uploadFile($httpFile))
             return array('error' => 'Failed upload');
+
+        $tpl = \eZTemplate::factory();
+        $tpl->setVariable('attribute', $attribute);
         return array(
             'image' => $image->data(),
+            'html' => $tpl->fetch('design:parts/edit_preview.tpl'),
             'ok' => true
         );
     }

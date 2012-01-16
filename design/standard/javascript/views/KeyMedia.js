@@ -11,7 +11,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'search', 'close');
+        _.bindAll(this, 'render', 'search', 'close', 'enableUpload');
 
         // DOM node to store selected image id into
         this.destination = options.destination;
@@ -53,36 +53,19 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
     },
 
     enableUpload : function() {
-        var attrId = this.model.get('attributeId');
-        this.uploader = new plupload.Uploader({
-            runtimes : 'html5,html4',
-            browse_button : 'ezr-keymedia-local-file-' + attrId,
-            container : 'ezr-keymedia-progress-' + attrId,
-            max_file_size : '10mb',
-            url : this.el.data('prefix') + '/keymedia::upload',
-            multipart_params : {
-                'AttributeID' : attrId,
-                'ContentObjectVersion' : this.el.data('version'),
-                'ContentObjectID' : this.el.data('contentobject-id')
+        var saveId = this.destination, saveHost = this.host;
+        this.upload = new ezrKeyMedia.views.Upload({
+            model : this.model,
+            uploaded : function(id, host) {
+                saveId.val(id);
+                saveHost.val(host);
             },
-            headers : {
-                'Accept' : 'application/json, text/javascript, */*; q=0.01'
-            }
+            el : $(this.el).parent(),
+            prefix : this.el.data('prefix'),
+            version : this.el.data('version'),
+            objectId : this.el.data('contentobject-id')
         });
-
-        this.uploader.init();
-        var destination = this.destination, host = this.host;
-        this.uploader.bind('FileUploaded', function(up, file, info) {
-            var data = {};
-            if ('response' in info) data = JSON.parse(info.response);
-            destination.val(data.content.image.id);
-            host.val(data.content.image.host);
-        });
-        this.uploader.bind('FilesAdded', function(up, files)
-        {
-            up.start();
-        });
-
+        this.upload.render();
         return this;
     },
 

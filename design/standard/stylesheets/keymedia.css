@@ -4,6 +4,17 @@
     width: 100%;
 }
 
+.keymedia-buttons .upload-progress {
+    height: 5px;
+    width: 300px;
+    border: 1px solid black;
+}
+.keymedia-buttons .progress {
+    height: 5px;
+    width : 0%;
+    background: red;
+}
+
 #ezr-keymedia-modal .backdrop {
     z-index: 1;
     position: absolute;
