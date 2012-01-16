@@ -11,10 +11,10 @@ class Image
     protected $_data = array();
 
     /**
-     * Caches id attribute
-     * @var string|null
+     * Cached id attribute
+     * @var string|false
      */
-    protected $_idAttribute = null;
+    protected $_idAttribute = false;
 
     /**
      * Find the first object matching criteria (id lookups)
@@ -28,7 +28,7 @@ class Image
     }
 
     /**
-     * Get value from image
+     * Return the value of an attribute in this image
      * 
      * @param string $key Key to get
      * @return mixed
@@ -44,6 +44,57 @@ class Image
     }
 
     /**
+     * Return the value of an attribute
+     * This is used in eZ templates for dynamic resolving of attributes:
+     * `{$object.property}` turns into `$object->attribute('property')`
+     *
+     * Acts as an alias to __get
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function attribute($key)
+    {
+        return $this->$key;
+    }
+
+    /**
+     * Check if a value exists in the data for this object
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        $exists = array('size');
+        if ($key === 'id') $key = $this->idAttribute();
+        return isset($this->_data->$key) ?: in_array($key, $exists);
+    }
+
+    /**
+     * Alias for __isset as needed for eZ templates
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function hasAttribute($key)
+    {
+        return isset($this->$key);
+    }
+
+    /**
+     * Build thumb string for current image with given width and height
+     * 
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    public function thumb($width, $height)
+    {
+        return 'http://' . $this->host() . "/{$width}x{$height}/{$this->_id}.jpg";
+    }
+
+    /**
      * Return size information in an array(width, height)
      *
      * @return array Dimensions, like {300, 200}
@@ -53,28 +104,12 @@ class Image
         return array($this->file->width, $this->file->height);
     }
 
-    public function __isset($key)
-    {
-        $exists = array('size');
-        if ($key === 'id') $key = $this->idAttribute();
-        return isset($this->_data->$key) ?: in_array($key, $exists);
-    }
-
-    public function hasAttribute($key)
-    {
-        return isset($this->$key);
-    }
-    public function attribute($key)
-    {
-        return $this->$key;
-    }
-
-    public function thumb($width, $height)
-    {
-        $url = 'http://' . $this->host() . "/{$width}x{$height}/{$this->_id}.jpg";
-        return $url;
-    }
-
+    /**
+     * Get or set the host to use for image urls
+     *
+     * @param string|null $host
+     * @return string
+     */
     public function host($host = null)
     {
         if (is_string($host)) $this->_data->host = $host;

@@ -1,7 +1,11 @@
+{ezcss( array('jquery.jcrop.css', 'keymedia.css') )}
+
 {def $base='ContentObjectAttribute'
     $handler = $attribute.content
+    $image = $handler.image
     $backend = $handler.backend
     $class_attribute = $handler.class
+    $size = ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )
 }
 
 {ezscript_require( array(
@@ -27,21 +31,20 @@
 
     'keymedia.js',
 ) )}
-{ezcss( array(
-    'jquery.jcrop.css',
-    'keymedia.css'
-) )}
 
-{* Current image. *}
 <div class="keymedia-image">
-    {def $size=ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )}
-    {attribute_view_gui format=array($size,$size) attribute=$attribute}
+    <div class="image-wrap">
+        {attribute_view_gui format=array($size,$size) attribute=$attribute}
+    </div>
 
-    <p>
-    {$handler.mime_type|wash( xhtml )}
-    {$handler.filesize|si( byte )}
-    </p>
-
+    <div class="image-meta">
+        <ul>
+            <li>{'Title'|i18n( 'content/edit' )}: {$image.name|wash}</li>
+            <li>{'Tags'|i18n( 'content/edit' )}: {$image.tags|implode(',')}</li>
+            <li>{'Modified'|i18n( 'content/edit' )}: {$image.modified|datetime('iso8601')}</li>
+            <li>{'Size'|i18n( 'content/edit' )}: {$handler.filesize|si( byte )}</li>
+        </ul>
+    </div>
 </div>
 
 <div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl} class="keymedia-buttons"
@@ -51,12 +54,12 @@
     data-backend-host='{$backend.host}'
     data-version={$attribute.version}>
 
-    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$handler.image.id}" class="image-id" />
+    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" 
         class="image-host" />
 
     <button type="button" class="ezr-keymedia-scale hid"
-        data-size='{$handler.image.size|json}'
+        data-size='{$image.size|json}'
         data-versions='{$handler.toscale|json}'>
         {'Scale'|i18n( 'content/edit' )}
     </button>
