@@ -329,7 +329,8 @@ class Handler
         );
         if (isset($mediaUrl))
         {
-            $mediaInfo['url'] = $mediaUrl;
+            $url = $mediaUrl;
+            return compact('url') + $mediaInfo;
         }
         else
         {
@@ -343,11 +344,6 @@ class Handler
                 'coords' => $version['coords'],
 
             ));
-        }
-
-        if (isset($mediaUrl))
-        {
-            return $mediaInfo;
         }
 
         if (isset($version) && !isset($mediaUrl)){
