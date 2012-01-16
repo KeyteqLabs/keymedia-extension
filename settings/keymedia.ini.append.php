@@ -1,4 +1,4 @@
 <?php /*
 [KeyMedia]
-EditSize=300
+EditSize=400
 */
