@@ -106,6 +106,19 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
     }
 
     /**
+     * Put tags on an existing media
+     *
+     * @param $id
+     * @param array $tags
+     *
+     * @return object
+     */
+    public function tagMedia($id, $tags = array())
+    {
+        return $this->makeRequest('/media/' . $id . '.json', compact('tags'), 'PUT');
+    }
+
+    /**
      * Add new version
      *
      * @param string $id

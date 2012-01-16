@@ -89,7 +89,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         settings = {
             imageId : this.destination.val(),
             versions : node.data('versions'),
-            trueSize : node.data('size'),
+            trueSize : node.data('truesize'),
             host : this.host.val(),
             model : this.model,
             el : this.container.show().contentEl

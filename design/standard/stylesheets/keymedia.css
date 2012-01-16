@@ -1,3 +1,6 @@
+.keymedia-buttons .upload-progress.hid {
+    display: none;
+}
 .image-wrap {
     float: left;
     margin: 0 15px 10px 0;

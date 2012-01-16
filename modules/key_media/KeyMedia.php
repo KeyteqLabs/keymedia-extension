@@ -224,6 +224,25 @@ class KeyMedia extends \ezote\lib\Controller
         );
     }
 
+
+    /**
+     * eZJSCore method for adding tags to a remote media
+     */
+    public static function tag(array $args = array())
+    {
+        list($backendId, $id) = $args;
+        if ($backendId && $id)
+        {
+            $http = \eZHTTPTool::instance();
+            $tags = (array) $http->variable('tags');
+
+            $backend = Backend::first(array('id' => $backendId));
+            $image = $backend->tag(compact('id'), (array) $tags);
+            return $image->data();
+        }
+        return false;
+    }
+
     /***
      * Render a bunch of templates into an array and return them
      * Defaults to include `skeleton`

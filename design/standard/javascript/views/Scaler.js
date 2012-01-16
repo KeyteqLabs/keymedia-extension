@@ -29,6 +29,7 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
 
         this.versions = options.versions;
         this.trueSize = options.trueSize;
+        this.boxSize = options.size;
 
         this.model.bind('scale', this.render);
         this.model.bind('version.create', this.versionCreated);

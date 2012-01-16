@@ -5,6 +5,7 @@
     $image = $handler.image
     $backend = $handler.backend
     $class_attribute = $handler.class
+    $size = ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )
 }
 
 {ezscript_require( array(
@@ -28,13 +29,15 @@
     'views/Scaler.js',
     'views/Browser.js',
     'views/Upload.js',
+    'views/Tagger.js',
 
     'keymedia.js',
 ) )}
-
+<div class="keymedia-type">
 {include uri="design:parts/edit_preview.tpl" attribute=$attribute}
 
-<div id="keymedia-buttons-{$attribute.id}" data-prefix={'/ezjscore/call'|ezurl} class="keymedia-buttons"
+<div id="keymedia-buttons-{$attribute.id}" class="keymedia-buttons"
+    data-prefix={'/ezjscore/call'|ezurl}
     data-id={$attribute.id}
     data-contentobject-id={$attribute.contentobject_id}
     data-backend={$backend.id}
@@ -44,7 +47,7 @@
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
 
     <input type="button" class="ezr-keymedia-scale hid button"
-        data-size='{$image.size|json}'
+        data-truesize='{$image.size|json}'
         data-versions='{$handler.toscale|json}'
         value="{'Scale'|i18n( 'content/edit' )}">
 
@@ -58,4 +61,5 @@
     <div class="upload-progress hid" id="ezr-keymedia-progress-{$attribute.id}">
         <div class="progress"></div>
     </div>
+</div>
 </div>
