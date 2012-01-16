@@ -15,19 +15,19 @@
 
     {if $image}
     <div class="image-meta">
-        <ul>
-            <li>{'Title'|i18n( 'content/edit' )}: {$image.name|wash}</li>
-            <li class="tags">
-                <span>{'Tags'|i18n( 'content/edit' )}:</span>
-                <p>{$image.tags|implode(',')}</p>
-
-                <input type="text" class="hid tagedit" />
-                <input type="button" class="button ezr-keymedia-tagger" id="ezr-keymedia-tagger-{$attribute.id}"
-                    value="{'Add tags'|i18n( 'content/edit' )}">
-            </li>
-            <li>{'Modified'|i18n( 'content/edit' )}: {$image.modified|datetime('iso8601')}</li>
-            <li>{'Size'|i18n( 'content/edit' )}: {$handler.filesize|si( byte )}</li>
-        </ul>
+        <h3>{$image.name|wash}</h3>
+        <div class="tagger">
+            <h4>{'Tags'|i18n( 'content/edit' )}</h4>
+            <input type="text" class="tagedit" />
+            <input type="button" class="button tagit" id="ezr-keymedia-tagger-{$attribute.id}"
+                value="{'Add tag'|i18n( 'content/edit' )}">
+            <ul>
+            </ul>
+        </div>
+        <p>
+        {'Modified'|i18n( 'content/edit' )}: {$image.modified|datetime('iso8601')},
+        {'Size'|i18n( 'content/edit' )}: {$handler.filesize|si( byte )}
+        </p>
     </div>
     {/if}
 </div>

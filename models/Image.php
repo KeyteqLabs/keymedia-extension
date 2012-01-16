@@ -55,6 +55,7 @@ class Image
      */
     public function attribute($key)
     {
+        if ($key === 'data') return $this->data();
         return $this->$key;
     }
 
@@ -79,7 +80,8 @@ class Image
      */
     public function hasAttribute($key)
     {
-        return isset($this->$key);
+        $special = array('data');
+        return isset($this->$key) ?: in_array($key, $special);
     }
 
     /**

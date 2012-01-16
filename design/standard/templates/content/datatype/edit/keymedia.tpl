@@ -33,7 +33,7 @@
 
     'keymedia.js',
 ) )}
-<div class="keymedia-type">
+<div class="keymedia-type" data-bootstrap-image='{$image.data|json}'>
 {include uri="design:parts/edit_preview.tpl" attribute=$attribute}
 
 <div id="keymedia-buttons-{$attribute.id}" class="keymedia-buttons"

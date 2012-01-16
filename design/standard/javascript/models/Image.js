@@ -10,7 +10,7 @@ ezrKeyMedia.models.Image = Backbone.Model.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'thumb', 'domain', 'tag');
+        _.bindAll(this, 'thumb', 'domain', 'removeTag', 'addTag');
         if ('prefix' in options)
             this.prefix = options.prefix;
     },
@@ -24,12 +24,11 @@ ezrKeyMedia.models.Image = Backbone.Model.extend({
         return this.prefix + '/' + ['keymedia', 'image', this.id].join('::');
     },
 
-    tag : function(tags)
+    saveAttr : function()
     {
         var backend = this.get('backend');
         var url = this.get('prefix') + '/' + ['keymedia', 'tag', backend, this.id].join('::'),
-            data = {tags:tags},
-            context = this;
+            context = this, data = this.attributes;
 
         $.ajax({
             url : url,
@@ -37,10 +36,24 @@ ezrKeyMedia.models.Image = Backbone.Model.extend({
             dataType : 'json',
             type : 'POST',
             success : function(response) {
-                console.log(response.content);
                 context.set(response.content);
             }
         });
+    },
+
+    addTag : function(tag) {
+        var tags = this.get('tags');
+        tags.push(tag);
+        this.set({tags : _.uniq(tags)}, {silent:true});
+        return this;
+    },
+
+    removeTag : function(rmTag) {
+        var tags = _(this.get('tags')).filter(function(tag) {
+            return tag !== rmTag;
+        });
+        this.set({tags : tags}, {silent:true});
+        return this;
     },
 
     // Generate thumb url for a given size

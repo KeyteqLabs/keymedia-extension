@@ -15,6 +15,44 @@
         list-style-type: none
     }
 
+    .tagger {
+        overflow: auto;
+        width: 100%;
+    }
+
+        .tagger h4 {
+            font-size: 14px;
+        }
+
+        .tagger ul {
+            margin-top: 10px;
+        }
+
+        .tagger li {
+            background: -moz-linear-gradient(center top , #5D7DB1, #445C89) repeat scroll 0 0 padding-box #516E9E;
+            text-decoration: none;
+            border: 1px solid black;
+            border-radius: 6px 6px 6px 6px;
+            color: #000000;
+            display: block;
+            float: left;
+            font-size: 12px;
+            font-weight: normal;
+            height: 12px;
+            margin: 0 8px 5px 0;
+            padding: 2px 0 3px 6px;
+        }
+
+        .tagger li .remove a{
+            color: white;;
+            font-weight: bold;
+            text-decoration: none;
+            height: 14px;
+            margin: -2px -1px 0 5px;
+            padding: 2px 7px 0 5px;
+            text-align: center;
+        }
+
 .keymedia-buttons {
     clear: both;
 }

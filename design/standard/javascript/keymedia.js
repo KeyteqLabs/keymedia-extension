@@ -9,19 +9,28 @@ $(function() {
             contentObjectId : container.data('contentobject-id'),
             version : container.data('version')
         });
-        var keymedia = new ezrKeyMedia.views.KeyMedia({
+        var image = new ezrKeyMedia.models.Image({
+            id : container.find('.image-id').val(),
+            backend : container.data('backend'),
+            prefix : container.data('prefix')
+        });
+        var controller = new ezrKeyMedia.views.KeyMedia({
             el : container,
             model : model,
             destination : container.find('.image-id'),
             host : container.find('.image-host')
         }).render();
         var tagger = new ezrKeyMedia.views.Tagger({
-            el : wrapper,
-            model : new ezrKeyMedia.models.Image({
-                id : container.find('.image-id').val(),
-                backend : container.data('backend'),
-                prefix : container.data('prefix')
-            })
+            el : wrapper.find('.tagger'),
+            model : image
         }).render();
+        if (wrapper.data('bootstrap-image'))
+            image.set(wrapper.data('bootstrap-image'));
+        wrapper.data('objects', {
+            image : image,
+            tagger : tagger,
+            model : model,
+            controller : controller
+        });
     });
 });
