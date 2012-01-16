@@ -51,12 +51,10 @@
     data-id={$attribute.id}
     data-contentobject-id={$attribute.contentobject_id}
     data-backend={$backend.id}
-    data-backend-host='{$backend.host}'
     data-version={$attribute.version}>
 
     <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />
-    <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$backend.host}" 
-        class="image-host" />
+    <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
 
     <button type="button" class="ezr-keymedia-scale hid"
         data-size='{$image.size|json}'
