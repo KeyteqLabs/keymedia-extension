@@ -12,9 +12,6 @@ use \eZSys;
 use \eZImageShellHandler;
 use \ezr_keymedia\models\Backend;
 
-// TODO When parsing a content attribute do an API call to
-// the KeyMedia and get more image information (crops, filesize etc)
-// instead of having this happen multiple times
 class Handler
 {
     protected $attr;
@@ -31,12 +28,7 @@ class Handler
     public function __construct($attribute = false)
     {
         if ($attribute)
-            $this->parseContentObjectAttribute($attribute);
-    }
-
-    public function parseContentObjectAttribute($attribute)
-    {
-        $this->attr = $attribute;
+            $this->attr = $attribute;
     }
 
     /**
@@ -253,10 +245,23 @@ class Handler
      */
     public function setImage($id, $host, $ending = 'jpg')
     {
-        $data = $this->values();
-        if (!isset($data['id']) || $id !== $data['id'])
+        if (!$this->hasImage($id))
             $this->values(compact('id', 'host', 'ending'));
         return true;
+    }
+
+    /**
+     * Check if Handlers attribute has image set
+     *
+     * @param string|null $id
+     * @return bool
+     */
+    public function hasImage($id = null)
+    {
+        $values = $this->values();
+        if (!($hasId = isset($values['id'])))
+            return false;
+        return $id ? $id === $values['id'] : false;
     }
 
     /**

@@ -1,7 +1,6 @@
 <?php
 
 use \ezr_keymedia\models\Backend;
-
 use \ezr_keymedia\models\image\Handler;
 
 class KeyMedia extends eZDataType
@@ -90,22 +89,30 @@ class KeyMedia extends eZDataType
         return $handler->setImage($id, $host, $ending);
     }
 
-    function hasObjectAttributeContent( $contentObjectAttribute )
+    /**
+     * Check if attribute has content
+     * Called before {$attribute.content} in templates delegates to
+     * `objectAttributeContent` to actuall fetch the content
+     *
+     * @param object $attribute
+     * @return bool
+     */
+    public function hasObjectAttributeContent($attribute)
     {
-        return true;
+        $handler = $this->objectAttributeContent($attribute);
+        return $handler->hasImage();
     }
 
     /**
      * Fetch content contained in this attribute when its stored
+     * This method is triggered when a template states {$attribute.content}
      *
      * @param object $attribute
-     * @return mixed
+     * @return \ezr_keymedia\models\image\Handler
      */
-    function objectAttributeContent($attribute)
+    public function objectAttributeContent($attribute)
     {
-        $handler = new Handler;
-        $handler->parseContentObjectAttribute($attribute);
-        return $handler;
+        return new Handler($attribute);
     }
 
     /**
