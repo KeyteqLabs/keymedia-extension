@@ -87,10 +87,9 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         var outerBounds = this.outerBounds(this.versions, 4, 40);
         for (i = 0; i < this.versions.length; i++) {
             r = this.versions[i];
-            name = ('title' in r) ? r.title : r.name;
             item = scale.clone();
             item.attr('id', this.scaledId(r));
-            item.find('h2').text(name);
+            item.find('h2').text(r.name);
             item.find('span').text(r.size.join('x'));
             item.data('scale', r);
             if ('url' in r)

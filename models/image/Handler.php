@@ -177,6 +177,7 @@ class Handler
 
         $name = \eZURLAliasML::convertToAlias($name);
         if ($postfix) $name .= '-' . $postfix;
+        $name .= implode('-', array('', $attr->ContentObjectID, $attr->Version));
         return $name;
     }
 
@@ -443,22 +444,12 @@ class Handler
         foreach ($data->versions as $version)
         {
             list($size, $name) = explode(',', $version);
-            $title = $name;
             $size = explode('x', $size);
             // Lookup key in my versions
-            $name = $this->escapeName($name);
             $row = isset($versions[$name]) ? $versions[$name] : array();
-            $toScale[] = $row + compact('name', 'size', 'title');
+            $toScale[] = $row + compact('name', 'size');
         }
         return $toScale;
-    }
-
-    // TODO Move into Image
-    protected function escapeName($name)
-    {
-        $name = preg_replace('/[.,_]/', '-', $name);
-        $name .= implode('-', array('', $this->attr->ContentObjectID, $this->attr->ID));
-        return strtolower($name);
     }
 
     /**
