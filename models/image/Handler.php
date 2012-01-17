@@ -253,10 +253,8 @@ class Handler
     public function setImage($id, $host, $ending = 'jpg')
     {
         $data = $this->values();
-
-        if ($id && (!isset($data->id) || $id !== $data->id))
+        if (!isset($data['id']) || $id !== $data['id'])
             $this->values(compact('id', 'host', 'ending'));
-
         return true;
     }
 
