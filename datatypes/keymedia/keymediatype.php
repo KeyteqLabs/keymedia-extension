@@ -85,8 +85,9 @@ class KeyMedia extends eZDataType
         $attributeId = $attribute->attribute('id');
         $id = $http->variable($base . '_image_id_' . $attributeId);
         $host = $http->variable($base . '_host_' . $attributeId);
+        $ending = $http->variable($base . '_ending_' . $attributeId);
         $handler = new Handler($attribute);
-        return $handler->setImage($id, $host);
+        return $handler->setImage($id, $host, $ending);
     }
 
     function hasObjectAttributeContent( $contentObjectAttribute )

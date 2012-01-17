@@ -18,7 +18,8 @@ $(function() {
             el : container,
             model : model,
             destination : container.find('.image-id'),
-            host : container.find('.image-host')
+            host : container.find('.image-host'),
+            ending : container.find('.image-ending')
         }).render();
         var tagger = new ezrKeyMedia.views.Tagger({
             el : wrapper.find('.tagger'),

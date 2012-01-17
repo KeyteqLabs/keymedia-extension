@@ -39,6 +39,7 @@ class Image
         {
             case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
+            case 'ending': return $this->ending();
         }
         return isset($this->$key) ? $this->_data->$key : null;
     }
@@ -67,7 +68,7 @@ class Image
      */
     public function __isset($key)
     {
-        $exists = array('size');
+        $exists = array('size', 'ending');
         if ($key === 'id') $key = $this->idAttribute();
         return isset($this->_data->$key) ?: in_array($key, $exists);
     }
@@ -115,7 +116,18 @@ class Image
     public function host($host = null)
     {
         if (is_string($host)) $this->_data->host = $host;
-        return $this->_data->host;
+        return isset($this->host) ? $this->_data->host : '';
+    }
+
+    /**
+     * Get a file ending to use for this image
+     * Defaults to jpg if no ending is found
+     */
+    public function ending()
+    {
+        if (isset($this->scalesTo))
+            return $this->scalesTo->ending;
+        return 'jpg';
     }
 
     /**

@@ -8,6 +8,7 @@
     $size = ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )
 }
 
+{run-once}
 {ezscript_require( array(
     'ezjsc::jquery',
     'libs/underscore-min.js',
@@ -33,6 +34,7 @@
 
     'keymedia.js',
 ) )}
+{/run-once}
 <div class="keymedia-type" data-bootstrap-image='{$image.data|json}'>
 {include uri="design:parts/edit_preview.tpl" attribute=$attribute}
 
@@ -45,6 +47,7 @@
 
     <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />
     <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
+    <input type="hidden" name="{$base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending" />
 
     <input type="button" class="ezr-keymedia-scale hid button"
         data-truesize='{$image.size|json}'

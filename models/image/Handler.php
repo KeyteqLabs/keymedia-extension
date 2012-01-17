@@ -63,10 +63,12 @@ class Handler
         );
 
         $filename = $this->imageName($this->attr, $version, $this->postfix);
+        $nameParts = explode('.', $filename);
+        $ending = array_pop($nameParts);
 
         $data = array('title' => $alt);
         $image = $this->backend()->upload($filepath, $filename, $tags, $data);
-        $this->setImage($image->id, $image->host());
+        $this->setImage($image->id, $image->host(), $image->ending());
 
         return $image;
     }
@@ -235,8 +237,9 @@ class Handler
     {
         $data = $this->values();
         $host = $data['host'];
+        $ending = isset($data['ending']) ? $data['ending'] : 'jpg';
         $id = $data['id'];
-        return 'http://' . $host . "/{$width}x{$height}/{$id}.jpg";
+        return 'http://' . $host . "/{$width}x{$height}/{$id}.{$ending}";
     }
 
     /**
@@ -247,12 +250,12 @@ class Handler
      * @param string $host Host that will serve the image later on
      * @return bool
      */
-    public function setImage($id, $host)
+    public function setImage($id, $host, $ending = 'jpg')
     {
         $data = $this->values();
 
         if ($id && (!isset($data->id) || $id !== $data->id))
-            $this->values(compact('id', 'host'));
+            $this->values(compact('id', 'host', 'ending'));
 
         return true;
     }

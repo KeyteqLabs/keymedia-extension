@@ -9,8 +9,7 @@ ezrKeyMedia.views.Browser = Backbone.View.extend({
         this.model.bind('search', this.render);
         this.el = $(this.el);
 
-        this.saveTo = options.saveTo;
-        this.saveHostTo = options.saveHostTo;
+        this.onSelect = options.onSelect;
 
         return this;
     },
@@ -23,8 +22,7 @@ ezrKeyMedia.views.Browser = Backbone.View.extend({
     select : function(e) {
         e.preventDefault();
         var node = $(e.currentTarget);
-        this.saveTo.val(node.data('id'));
-        this.saveHostTo.val(node.data('host'));
+        this.onSelect(node.data('id'), node.data('host'), node.data('ending'));
         this.$('.close').click();
     },
 
@@ -64,7 +62,8 @@ ezrKeyMedia.views.Browser = Backbone.View.extend({
         var node = tmpl.clone();
         node.find('a').data({
             id : data.id,
-            host : data.host
+            host : data.host,
+            ending : data.scalesTo.ending
         });
         node.find('img').attr('src', data.thumb.url);
         node.find('.meta').text(data.filename + ' (' + data.filesize + ')');

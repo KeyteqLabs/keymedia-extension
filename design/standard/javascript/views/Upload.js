@@ -20,8 +20,12 @@ ezrKeyMedia.views.Upload = Backbone.View.extend({
         var data = JSON.parse(info.response);
         if ('content' in data && 'image' in data.content)
         {
+            var image = data.content.image;
+            console.log(image);
             if (this.uploadCallback)
-                this.uploadCallback(data.content.image.id, data.content.image.host);
+            {
+                this.uploadCallback(image.id, image.host, image.scalesTo.ending);
+            }
 
             if ('html' in data.content)
                 this.$('.keymedia-image').replaceWith($(data.content.html));

@@ -102,7 +102,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
      */
     public function media($id)
     {
-        return $this->makeRequest('/media/' . $id . '.json', array())->media;
+        return $this->makeRequest('/media/' . $id . '.json')->media;
     }
 
     /**
@@ -180,8 +180,9 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
         $ending = array_pop($parts);
         $width = 160;
         $height = 120;
+        $ending = $media->scalesTo->ending;
         $thumb = (object) array(
-            'url' => 'http://' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.jpg'
+            'url' => 'http://' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.' . $ending
         );
         return (object) array(
             'id' => $media->_id,
@@ -191,6 +192,7 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
             'height' => (int) $media->file->height,
             'thumb' => $thumb,
             'filename' => $media->name,
+            'scalesTo' => $media->scalesTo,
             'host' => $media->host
         );
     }

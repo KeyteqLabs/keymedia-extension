@@ -11,11 +11,12 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'search', 'close', 'enableUpload');
+        _.bindAll(this, 'render', 'search', 'close', 'enableUpload', 'changeImage');
 
         // DOM node to store selected image id into
         this.destination = options.destination;
         this.host = options.host;
+        this.ending = options.ending;
 
         this.el = $(this.el);
 
@@ -52,14 +53,17 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
         return this;
     },
 
+    changeImage : function(id, host, ending) {
+        this.destination.val(id);
+        this.host.val(host);
+        this.ending.val(ending);
+        return this;
+    },
+
     enableUpload : function() {
-        var saveId = this.destination, saveHost = this.host;
         this.upload = new ezrKeyMedia.views.Upload({
             model : this.model,
-            uploaded : function(id, host) {
-                saveId.val(id);
-                saveHost.val(host);
-            },
+            uploaded : this.changeImage,
             el : $(this.el).parent(),
             prefix : this.el.data('prefix'),
             version : this.el.data('version'),
@@ -73,8 +77,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
     {
         this.view = new ezrKeyMedia.views.Browser({
             model : this.model,
-            saveTo : this.destination,
-            saveHostTo : this.host,
+            onSelect : this.changeImage,
             el : this.container.show().contentEl
         });
 
