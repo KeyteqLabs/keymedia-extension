@@ -114,10 +114,7 @@ class KeyMedia extends \ezote\lib\Controller
         $id = array_pop($args);
         if ($backend && $id)
         {
-            $version = $http->variable('version', array());
-
             $backend = Backend::first(array('id' => $backend));
-
             $templates = array(
                 'skeleton' => 'design:parts/scaler.tpl',
                 'scale' => 'design:parts/scale_version.tpl'

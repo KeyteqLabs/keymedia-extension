@@ -439,15 +439,26 @@ class Handler
         // 1 line = 1 scaling
         $data = json_decode($class->attribute(\KeyMedia::FIELD_JSON));
         $toScale = array();
+        // Iterate over class definition sizes
         foreach ($data->versions as $version)
         {
             list($size, $name) = explode(',', $version);
+            $title = $name;
             $size = explode('x', $size);
             // Lookup key in my versions
-            $name = strtolower($name . '-' . implode('x', $size));
-            $toScale[] = isset($versions[$name]) ? $versions[$name] : compact('name', 'size');
+            $name = $this->escapeName($name);
+            $row = isset($versions[$name]) ? $versions[$name] : array();
+            $toScale[] = $row + compact('name', 'size', 'title');
         }
         return $toScale;
+    }
+
+    // TODO Move into Image
+    protected function escapeName($name)
+    {
+        $name = preg_replace('/[.,_]/', '-', $name);
+        $name .= implode('-', array('', $this->attr->ContentObjectID, $this->attr->ID));
+        return strtolower($name);
     }
 
     /**

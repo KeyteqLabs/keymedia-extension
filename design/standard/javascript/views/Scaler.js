@@ -82,14 +82,15 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         });
         this.container = this.$('#ezr-keymedia-scaler-image');
 
-        var i, scale = $(response.content.scale), item, r;
+        var i, scale = $(response.content.scale), item, r, name;
         var ul = this.$('.header ul'), box;
         var outerBounds = this.outerBounds(this.versions, 4, 40);
         for (i = 0; i < this.versions.length; i++) {
             r = this.versions[i];
+            name = ('title' in r) ? r.title : r.name;
             item = scale.clone();
             item.attr('id', this.scaledId(r));
-            item.find('h2').text(r.name);
+            item.find('h2').text(name);
             item.find('span').text(r.size.join('x'));
             item.data('scale', r);
             if ('url' in r)
@@ -128,11 +129,6 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         }
 
         return { max : max, min : min };
-    },
-
-    versionName : function(item)
-    {
-        return [item.name, item.size.join('x')].join('-').toLowerCase();
     },
 
     scaledId : function(item)
