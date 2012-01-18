@@ -49,4 +49,17 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($host, $data->host);
         $this->assertEquals($host, $image->host());
     }
+
+    public function testFitInside()
+    {
+        $width = $height = 1000;
+        $image = new Image((object) array(
+            'file' => (object) compact('width', 'height')
+        ));
+        $w = $h = 500;
+        $expect = Image::fitToBox($w, $h, $width, $height);
+        $actual = $image->boxInside($w, $h);
+
+        $this->assertEquals($expect, $actual);
+    }
 }

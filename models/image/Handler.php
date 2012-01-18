@@ -7,10 +7,10 @@ use \eZHTTPFile;
 use \eZContentObjectVersion;
 use \eZCharTransform;
 use \eZURLAliasML;
-use \eZINI;
-use \eZSys;
-use \eZImageShellHandler;
+use \ezpI18n;
 use \ezr_keymedia\models\Backend;
+use \ezr_keymedia\models\Image;
+use \Exception;
 
 class Handler
 {
@@ -18,7 +18,18 @@ class Handler
     protected $_backend;
     protected $_image;
     protected $attributeValues = false;
-    protected $postfix = 0;
+
+    /**
+     * Cache of current version object
+     * @var eZContentObjectVersion|false
+     */
+    protected $_version = false;
+
+    /**
+     * Cache of scale versions available
+     * @var array
+     */
+    protected $_toScale = false;
 
     /**
      * Construct a new handler, wrapping an ezContentObjectAttribute instance
@@ -36,56 +47,21 @@ class Handler
      *
      * @param eZHTTPFile|string $file The uploaded image or a local file
      * @param array $tags Tags to add to image in KeyMedia
-     * @param string $alt Alternative image text
+     * @param string $title Alternative image text
      *
      * @return \ezr_keymedia\models\Image|false
      */
-    public function uploadFile($file, array $tags = array(), $alt = '')
+    public function uploadFile($file, array $tags = array(), $title = '')
     {
-        //$this->removeAliases( $attr );
-
         if ($file instanceof \eZHTTPFile)
             $filepath = $file->Filename;
         elseif (is_string($file))
             $filepath = $file;
 
-        $version = eZContentObjectVersion::fetchVersion(
-            $this->attr->attribute('version'),
-            $this->attr->attribute('contentobject_id')
-        );
-
-        $filename = $this->imageName($this->attr, $version, $this->postfix);
-        $nameParts = explode('.', $filename);
-        $ending = array_pop($nameParts);
-
-        $data = array('title' => $alt);
-        $image = $this->backend()->upload($filepath, $filename, $tags, $data);
+        $filename = $this->imageName($this->attr, $this->version());
+        $image = $this->backend()->upload($filepath, $filename, $tags, compact('title'));
         $this->setImage($image->id, $image->host(), $image->ending());
-
         return $image;
-    }
-
-    protected function values($save = false)
-    {
-        if ($save)
-        {
-            $this->attr->setAttribute('data_text', json_encode($save));
-            $this->attributeValues = $save;
-            return $this->attr->storeData();
-        }
-        else
-        {
-            if (!$this->attributeValues)
-            {
-                $data = $this->attr->attribute('data_text');
-                if (is_string($data) && strlen($data) > 0)
-                    $data = json_decode($data, true);
-                else
-                    $data = array();
-                $this->attributeValues = $data;
-            }
-            return $this->attributeValues;;
-        }
     }
 
     /**
@@ -112,21 +88,16 @@ class Handler
         $data = $this->values();
 
         if (!isset($data['id']))
-            throw new \Exception(__CLASS__ . '::' . __METHOD__ . ' called without an image connection made first');
+            throw new Exception(__CLASS__ . '::' . __METHOD__ . ' called without an image connection made first');
 
-        $version = eZContentObjectVersion::fetchVersion(
-            $this->attr->attribute('version'),
-            $this->attr->attribute('contentobject_id')
-        );
-        $filename = $this->imageName($this->attr, $version, false, $name);
-        $filename = mb_strtolower($filename);
+        $filename = $this->imageName($this->attr, $this->version(), false, $name);
 
         // Push to backend
         $backend = $this->backend();
         $resp = $backend->addVersion($data['id'], $filename, $transformations);
 
         if (isset($resp->error))
-            throw new \Exception('Backend failed: ' . $resp->error);
+            throw new Exception('Backend failed: ' . $resp->error);
 
         // Ensure a versions index exists in the data
         $data += array('versions' => array());
@@ -165,12 +136,12 @@ class Handler
         // Use version name of default to name
         $name = $version->versionName($language) ?: $version->name($language);
         // Finally fall back ona  default name
-        $name = $name ?: \ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
+        $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
 
-        $name = \eZURLAliasML::convertToAlias($name);
+        $name = eZURLAliasML::convertToAlias($name);
         if ($postfix) $name .= '-' . $postfix;
         $name .= implode('-', array('', $attr->ContentObjectID, $attr->Version));
-        return $name;
+        return mb_strtolower($name);
     }
 
     /**
@@ -220,22 +191,6 @@ class Handler
     }
 
     /**
-     * Build a thumb string for the currently selected image
-     *
-     * @param int $width
-     * @param int $height
-     * @return string
-     */
-    protected function thumb($width, $height)
-    {
-        $data = $this->values();
-        $host = $data['host'];
-        $ending = isset($data['ending']) ? $data['ending'] : 'jpg';
-        $id = $data['id'];
-        return 'http://' . $host . "/{$width}x{$height}/{$id}.{$ending}";
-    }
-
-    /**
      * Update the image set in db for the ContentObjectAttribute loaded
      * in the handler at the moment.
      *
@@ -265,17 +220,17 @@ class Handler
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      * @param string|array|null $format
      * @return array
      */
     public function media($format = array(300, 200))
     {
-        $availableFormats = json_decode($this->attr->DataText, true);
+        $availableFormats = $this->attr->attribute('data_text');
 
         // If format array, go on and just rescale
-        if (isset($format) && !is_array($availableFormats) && !is_array($format))
-            return null; //throw new \Exception("Image attribute does not contain any information.");
+        if (!$availableFormats && !is_array($format))
+            return null; //throw new Exception("Image attribute does not contain any information.");
 
         // Fetch image data and build original part of return array
         if (!($image = $this->image())) return null;
@@ -314,14 +269,13 @@ class Handler
             {
 
                 list($versionWidth, $versionHeight) = $this->formatSize($format);
-                $bestFit = \ezr_keymedia\models\Image::fitToBox($versionWidth, $versionHeight, $originalImageInfo['width'], $originalImageInfo['height']);
 
+                $bestFit = $image->boxInside($versionWidth, $versionHeight);
                 $bestFit['size'] = array($versionWidth, $versionHeight);
 
                 // Autocreate the best fit version
                 self::addVersion($format, $bestFit);
 
-                $availableFormats = json_decode($this->attr->DataText, true);
                 $version = $availableFormats['versions'][$format];
 
             }
@@ -374,33 +328,53 @@ class Handler
             return $mediaInfo;
         }
         else {
-            //throw new \Exception("Unable to generate version.");
+            //throw new Exception("Unable to generate version.");
         }
 
     }
 
-    protected function formatSize($format){
-        $versions = $this->toScale();
-        $currentFormatSize = null;
-        foreach ($versions AS $versionItem)
+    /**
+     * Save or get values for this content object attribute
+     *
+     * @param array|false $save Values to save
+     * @return mixed
+     */
+    protected function values($save = false)
+    {
+        if ($save)
         {
-            // TEMP
-            $slug = strtolower($format) . "-" . join('x', $versionItem['size']);
-            if ($versionItem['name'] == $slug)
-                $currentVersionSize = $versionItem['size'];
+            $this->attr->setAttribute('data_text', json_encode($save));
+            $this->attributeValues = $save;
+            return $this->attr->storeData();
         }
-
-        return $currentVersionSize;
+        else
+        {
+            if (!$this->attributeValues)
+            {
+                $data = $this->attr->attribute('data_text');
+                if (is_string($data) && strlen($data) > 0)
+                    $data = json_decode($data, true);
+                else
+                    $data = array();
+                $this->attributeValues = $data;
+            }
+            return $this->attributeValues;;
+        }
     }
 
-    protected function mimeType()
-    {
-        return '';
-    }
-
-    protected function filesize()
-    {
-        return 100;
+    /**
+     * Get size for a named format as defined in
+     * scale rules for this specific use of an attribute for
+     * a content class
+     *
+     * @param string $format Name of format to get size for
+     * @return array array(width, height)
+     */
+    protected function formatSize($format) {
+        $version = array_filter($this->toScale(), function($version) use($format) {
+            return $format === $version['name'];
+        });
+        return $version['size'];
     }
 
     /**
@@ -436,25 +410,29 @@ class Handler
      */
     protected function toScale()
     {
-        $class = $this->attr->contentClassAttribute();
-
-        // Array of versions in db
-        $values = $this->values() + array('versions' => array());
-        $versions = $values['versions'];
-
-        // 1 line = 1 scaling
-        $data = json_decode($class->attribute(\KeyMedia::FIELD_JSON));
-        $toScale = array();
-        // Iterate over class definition sizes
-        foreach ($data->versions as $version)
+        if (!$this->_toScale)
         {
-            list($size, $name) = explode(',', $version);
-            $size = explode('x', $size);
-            // Lookup key in my versions
-            $row = isset($versions[$name]) ? $versions[$name] : array();
-            $toScale[] = $row + compact('name', 'size');
+            $class = $this->attr->contentClassAttribute();
+
+            // Array of versions in db
+            $values = $this->values() + array('versions' => array());
+            $versions = $values['versions'];
+
+            // 1 line = 1 scaling
+            $data = json_decode($class->attribute(\KeyMedia::FIELD_JSON));
+            $toScale = array();
+            // Iterate over class definition sizes
+            foreach ($data->versions as $version)
+            {
+                list($size, $name) = explode(',', $version);
+                $size = explode('x', $size);
+                // Lookup key in my versions
+                $row = isset($versions[$name]) ? $versions[$name] : array();
+                $toScale[] = $row + compact('name', 'size');
+            }
+            $this->_toScale = $toScale;
         }
-        return $toScale;
+        return $this->_toScale;
     }
 
     /**
@@ -477,5 +455,37 @@ class Handler
                 $this->_image = false;
         }
         return $this->_image;
+    }
+
+    /**
+     * Get current version object
+     *
+     * @return \eZContentObjectVersion
+     */
+    protected function version()
+    {
+        if (!$this->_version)
+        {
+            $this->_version = eZContentObjectVersion::fetchVersion(
+                $this->attr->attribute('version'),
+                $this->attr->attribute('contentobject_id')
+            );
+        }
+        return $this->_version;
+    }
+    /**
+     * Build a thumb string for the currently selected image
+     *
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    protected function thumb($width, $height)
+    {
+        $data = $this->values();
+        $host = $data['host'];
+        $ending = isset($data['ending']) ? $data['ending'] : 'jpg';
+        $id = $data['id'];
+        return 'http://' . $host . "/{$width}x{$height}/{$id}.{$ending}";
     }
 }

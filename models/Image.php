@@ -131,11 +131,23 @@ class Image
     }
 
     /**
+     * Find a sized box inside this images original size
+     * Used to calculate an initial version
+     *
+     * @param int $width Minimal crop width
+     * @param int $height Minimal crop height
+     */
+    public function boxInside($width, $height)
+    {
+        return self::fitToBox($width, $height, $this->file->width, $this->file->height);
+    }
+
+    /**
      * @static
-     * @param $width
-     * @param $height
-     * @param $boxWidth
-     * @param $boxHeight
+     * @param $width Width of box to fit
+     * @param $height Height of box to fit
+     * @param $boxWidth Width of original image
+     * @param $boxHeight Height of original image
      * @return array
      */
     public static function fitToBox($width, $height, $boxWidth, $boxHeight)
