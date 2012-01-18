@@ -216,7 +216,7 @@ class Handler
         $values = $this->values();
         if (!($hasId = isset($values['id'])))
             return false;
-        return $id ? $id === $values['id'] : false;
+        return $id ? $id === $values['id'] : true;
     }
 
     /**

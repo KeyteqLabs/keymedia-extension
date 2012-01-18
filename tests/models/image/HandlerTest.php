@@ -22,6 +22,28 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
         $media = $handler->media('named-format');
         $this->assertNull($media);
     }
+
+    public function testHasMedia()
+    {
+        $emptyAttr = $this->getMock('eZContentObjectAttribute', array('attribute'));
+        $emptyAttr->expects($this->any())
+            ->method('attribute')
+            ->will($this->returnValue(json_encode((object)array())));
+
+        $values = array('id' => 123);
+        $attr = $this->getMock('eZContentObjectAttribute', array('attribute'));
+        $attr->expects($this->any())
+            ->method('attribute')
+            ->will($this->returnValue(json_encode($values)));
+
+        $handler = new Handler($emptyAttr);
+        $this->assertFalse($handler->hasImage());
+
+        $handler = new Handler($attr);
+        $this->assertTrue($handler->hasImage());
+        $this->assertFalse($handler->hasImage(12));
+        $this->assertTrue($handler->hasImage(123));
+    }
     
     public function testGetMedia()
     {
