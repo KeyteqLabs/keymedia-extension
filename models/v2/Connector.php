@@ -102,7 +102,8 @@ class Connector extends \ezr_keymedia\models\ConnectorBase
      */
     public function media($id)
     {
-        return $this->makeRequest('/media/' . $id . '.json')->media;
+        $response = $this->makeRequest('/media/' . $id . '.json');
+        return isset($response->media) ? $response->media : false;
     }
 
     /**

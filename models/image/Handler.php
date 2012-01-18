@@ -319,7 +319,7 @@ class Handler
                 default :
                     $ext = '.jpg';
             }
-            $mediaUrl = "http://" . $this->image()->host()   . $version['url'] . $ext;
+            $mediaUrl = "http://" . $image->host()   . $version['url'] . $ext;
 
             $mediaInfo['url'] = $mediaUrl;
 
@@ -450,7 +450,7 @@ class Handler
             $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
             $data = json_decode($data);
 
-            if (is_object($data) && isset($data->id))
+            if (is_object($data) && isset($data->id) && $data->id)
                 $this->_image = $backend->get($data->id);
             else
                 $this->_image = false;
