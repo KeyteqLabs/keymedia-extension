@@ -137,8 +137,8 @@ class Handler
         $name = $version->versionName($language) ?: $version->name($language);
         // Finally fall back ona  default name
         $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
-
-        $name = eZURLAliasML::convertToAlias($name);
+        $name = str_replace('  ', ' ', $name);
+        $name = preg_replace('/[._,:;<>*+\s]/', '-', $name);
         if ($postfix) $name .= '-' . $postfix;
         $name .= implode('-', array('', $attr->ContentObjectID, $attr->Version));
         return mb_strtolower($name);
@@ -226,7 +226,7 @@ class Handler
      */
     public function media($format = array(300, 200))
     {
-        $availableFormats = $this->attr->attribute('data_text');
+        $availableFormats = $this->values();
 
         // If format array, go on and just rescale
         if (!$availableFormats && !is_array($format))
@@ -262,13 +262,14 @@ class Handler
             $version = array();
         }
         else {
-            $version = $availableFormats['versions'][$format];
-
-            // No version available - we need to autogenerate
-            if (!isset($version))
+            if (isset($availableFormats['versions']) && isset($availableFormats['versions'][$format]))
+                $version = $availableFormats['versions'][$format];
+            else
             {
-
-                list($versionWidth, $versionHeight) = $this->formatSize($format);
+                // No version available - we need to autogenerate
+                if (!$formatSize = $this->formatSize($format))
+                    return null;
+                list($versionWidth, $versionHeight) = $formatSize;
 
                 $bestFit = $image->boxInside($versionWidth, $versionHeight);
                 $bestFit['size'] = array($versionWidth, $versionHeight);
@@ -276,6 +277,7 @@ class Handler
                 // Autocreate the best fit version
                 self::addVersion($format, $bestFit);
 
+                $availableFormats = $this->values();
                 $version = $availableFormats['versions'][$format];
 
             }
@@ -296,15 +298,11 @@ class Handler
         else
         {
             // Build simple reply array
-            $mediaInfo = array_merge($mediaInfo, array(
-
-                'width' => $version['size'][0],
-                'height' => $version['size'][1],
-                'ratio' => $version['size'][0]/$version['size'][1],
-
-                'coords' => $version['coords'],
-
-            ));
+            list($width, $height) = $version['size'];
+            $coords = $version['coords'];
+            if ($width && $height)
+                $ratio = $width / $height;
+            $mediaInfo = array_merge($mediaInfo, compact('width', 'height', 'ratio', 'coords'));
         }
 
         if (isset($version) && !isset($mediaUrl)){
@@ -371,10 +369,11 @@ class Handler
      * @return array array(width, height)
      */
     protected function formatSize($format) {
-        $version = array_filter($this->toScale(), function($version) use($format) {
-            return $format === $version['name'];
+        $toScale = $this->toScale();
+        $version = array_filter($toScale, function($version) use($format) {
+            return isset($version['name']) && $format === $version['name'];
         });
-        return $version['size'];
+        return $version ? $version[0]['size'] : false;
     }
 
     /**
@@ -428,7 +427,7 @@ class Handler
                 $size = explode('x', $size);
                 // Lookup key in my versions
                 $row = isset($versions[$name]) ? $versions[$name] : array();
-                $toScale[] = $row + compact('name', 'size');
+                $toScale[] = compact('size') + $row + compact('name');
             }
             $this->_toScale = $toScale;
         }
