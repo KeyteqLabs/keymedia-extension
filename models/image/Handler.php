@@ -373,7 +373,9 @@ class Handler
         $version = array_filter($toScale, function($version) use($format) {
             return isset($version['name']) && $format === $version['name'];
         });
-        return $version ? $version[0]['size'] : false;
+        if (!$version) return false;
+        $version = array_shift($version);
+        return $version['size'];
     }
 
     /**
