@@ -2,4 +2,4 @@
     {if $class}class="{$class}"{/if}
     {if $width}width="{$width}"{/if}
     {if $height}height="{$height}"{/if}
-    {if $title}title="{$title}"{/if} />
+    {if $title}alt="{$title}"{/if} />
