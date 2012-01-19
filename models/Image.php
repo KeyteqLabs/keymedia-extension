@@ -24,7 +24,10 @@ class Image
      */
     public function __construct($data = array())
     {
-        $this->_data = (object) $data;
+        if ($data)
+            $this->_data = (object) $data;
+        else
+            $this->_data = (object) array();
     }
 
     /**
@@ -262,6 +265,10 @@ class Image
      */
     public function data()
     {
+        if (!$this->_data)
+        {
+            return false;
+        }
         $idAttribute = $this->idAttribute();
         $data = clone $this->_data;
         if ($idAttribute !== 'id')

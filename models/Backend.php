@@ -202,11 +202,11 @@ class Backend extends \eZPersistentObject
      */
     public function get($id)
     {
-        if ($con = $this->connection())
+        if (($con = $this->connection()) && $data = $con->media($id))
         {
-            $image = new Image($con->media($id));
-            if (!$image->host()) $image->host($this->host);
-            return $image;
+            // Default to backend host if no specific (cdn) host is set for image
+            if (!isset($data->host)) $data->host = $this->host;
+            return new Image($data);
         }
         return null;
     }

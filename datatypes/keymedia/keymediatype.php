@@ -71,14 +71,14 @@ class KeyMedia extends eZDataType
      *
      * @return bool
      */
-    function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
+    public function validateObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         return eZInputValidator::STATE_ACCEPTED;
     }
 
     /*!
     */
-    function fetchObjectAttributeHTTPInput( $http, $base, $attribute )
+    public function fetchObjectAttributeHTTPInput( $http, $base, $attribute )
     {
         // Get value of connected image id
         $attributeId = $attribute->attribute('id');
@@ -113,21 +113,6 @@ class KeyMedia extends eZDataType
     public function objectAttributeContent($attribute)
     {
         return new Handler($attribute);
-    }
-
-    /**
-     * Upload new file
-     *
-     * @param eZHTTPFile|string $file
-     * @return bool
-     */
-    public function uploadFile($file = null)
-    {
-        $handler = new Handler($contentObjectAttribute);
-        if (is_string($file))
-            return $handler->uploadUrl($file);
-        elseif ($file instanceof eZHTTPFile)
-            return $handler->uploadFile($file);
     }
 }
 
