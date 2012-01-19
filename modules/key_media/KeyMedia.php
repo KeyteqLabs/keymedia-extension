@@ -33,10 +33,8 @@ class KeyMedia extends \ezote\lib\Controller
      */
     public function dashboard()
     {
-        $data = array();
-        $data['backends'] = $this->backends();
         return self::response(
-            $data,
+            array('backends' => $this->backends()),
             array(
                 'template' => 'design:dashboard/dashboard.tpl',
                 'left_menu' => 'design:dashboard/left_menu.tpl',
@@ -87,41 +85,15 @@ class KeyMedia extends \ezote\lib\Controller
     }
 
     /**
-     * Add new mediabase connection
-     */
-    protected function save($backend, array $data = array())
-    {
-        $keys = array('id', 'host', 'username', 'api_key', 'api_version');
-
-        foreach ($keys as $key)
-        {
-            if (isset($data[$key]))
-                $backend->setAttribute($key, $data[$key]);
-        }
-
-        return $backend->store();
-    }
-
-    /**
      * eZJSCore method for providing scaler GUI tools
      * @param array $args
      */
     public static function scaler($args)
     {
-        $http = \eZHTTPTool::instance();
-        // $id will be id of image in keymeda
-        $backend = array_pop($args);
-        $id = array_pop($args);
-        if ($backend && $id)
-        {
-            $backend = Backend::first(array('id' => $backend));
-            $templates = array(
-                'skeleton' => 'design:parts/scaler.tpl',
-                'scale' => 'design:parts/scale_version.tpl'
-            );
-            $data = self::_templates($http, $templates);
-        }
-        return $data;
+        return self::_templates(array(
+            'skeleton' => 'design:parts/scaler.tpl',
+            'scale' => 'design:parts/scale_version.tpl'
+        ));
     }
 
     /**
@@ -153,9 +125,9 @@ class KeyMedia extends \ezote\lib\Controller
      */
     public static function browse($args)
     {
-        $http = \eZHTTPTool::instance();
         if ($id = array_pop($args))
         {
+            $http = \eZHTTPTool::instance();
             $q = $http->variable('q', '');
             $width = 160;
             $height = 120;
@@ -167,30 +139,10 @@ class KeyMedia extends \ezote\lib\Controller
             $results = $backend->search($q, array(), compact('width', 'height', 'offset', 'limit'));
 
             $templates = array(
+                'skeleton' => 'design:parts/browser.tpl',
                 'item' => 'design:parts/keymedia_browser_item.tpl'
             );
-            $data = compact('results') + self::_templates($http, $templates);
-        }
-        return $data;
-    }
-
-    /**
-     * eZJSCore method for selecting a KeyMedia image
-     */
-    public static function select($args)
-    {
-        $http = \eZHTTPTool::instance();
-        if ($id = array_pop($args))
-        {
-            $q = $http->variable('q', '');
-
-            $backend = Backend::first(compact('id'));
-            $results = $backend->search($q, array(), compact('width', 'height', 'offset', 'limit'));
-
-            $templates = array(
-                'item' => 'design:parts/keymedia_browser_item.tpl'
-            );
-            $data = compact('results') + self::_templates($http, $templates);
+            $data = compact('results') + self::_templates($templates);
         }
         return $data;
     }
@@ -247,19 +199,14 @@ class KeyMedia extends \ezote\lib\Controller
      * @param array $templates
      * @return array
      */
-    protected static function _templates($http, array $templates = array())
+    protected static function _templates(array $templates = array())
     {
-        $defaults = array();
-        if ($http->variable('skeleton', false))
-            $defaults['skeleton'] = 'design:content/keymedia/browse.tpl';
-
-        $templates += $defaults;
-
         $tpl = \eZTemplate::factory();
         $result = array();
         foreach ($templates as $name => $path)
         {
-            if ($path) $result[$name] = $tpl->fetch($path);
+            if ($path)
+                $result[$name] = $tpl->fetch($path);
         }
 
         return $result;
@@ -280,6 +227,22 @@ class KeyMedia extends \ezote\lib\Controller
     protected function backends()
     {
         return Backend::find();
+    }
+
+    /**
+     * Add new mediabase connection
+     */
+    protected function save($backend, array $data = array())
+    {
+        $keys = array('id', 'host', 'username', 'api_key', 'api_version');
+
+        foreach ($keys as $key)
+        {
+            if (isset($data[$key]))
+                $backend->setAttribute($key, $data[$key]);
+        }
+
+        return $backend->store();
     }
 
 }

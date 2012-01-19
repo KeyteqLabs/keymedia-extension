@@ -98,8 +98,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
             el : this.container.show().contentEl
         };
         this.view = new ezrKeyMedia.views.Scaler(settings);
-
-        this.model.scale(settings.imageId, settings.versions);
+        this.model.scale(settings.imageId);
     },
 
     close : function() {

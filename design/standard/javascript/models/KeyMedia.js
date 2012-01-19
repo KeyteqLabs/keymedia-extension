@@ -20,9 +20,8 @@ ezrKeyMedia.models.model = Backbone.Model.extend({
         $.getJSON(this.url('browse'), data, this.onSearch);
     },
 
-    scale : function(image, versions) {
-        versions = (versions || {});
-        $.getJSON(this.url('scaler', [image]), {versions:versions}, this.onScale);
+    scale : function(image) {
+        $.getJSON(this.url('scaler', [image]), this.onScale);
     },
 
     onScale : function(response) {
