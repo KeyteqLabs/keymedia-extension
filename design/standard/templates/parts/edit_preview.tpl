@@ -19,7 +19,7 @@
         <div class="tagger">
             <h4>{'Tags'|i18n( 'content/edit' )}</h4>
             <input type="text" class="tagedit" />
-            <input type="button" class="button tagit" id="ezr-keymedia-tagger-{$attribute.id}"
+            <input type="button" class="button tagit" id="keymedia-tagger-{$attribute.id}"
                 value="{'Add tag'|i18n( 'content/edit' )}">
             <ul>
             </ul>

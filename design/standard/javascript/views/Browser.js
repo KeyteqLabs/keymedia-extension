@@ -1,4 +1,4 @@
-ezrKeyMedia.views.Browser = Backbone.View.extend({
+KeyMedia.views.Browser = Backbone.View.extend({
     tagName : 'div',
     className : 'browser',
 

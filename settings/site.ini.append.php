@@ -1,8 +1,8 @@
 <?php /*
 
 [RegionalSettings]
-TranslationExtensions[]=ezr_keymedia
+TranslationExtensions[]=keymedia
 
 [TemplateSettings]
-ExtensionAutoloadPath[]=ezr_keymedia
+ExtensionAutoloadPath[]=keymedia
 */ ?>

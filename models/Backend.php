@@ -1,14 +1,14 @@
 <?php
 
-namespace ezr_keymedia\models;
+namespace keymedia\models;
 
 use \stdclass;
 
 class Backend extends \eZPersistentObject
 {
     protected $connectors = array(
-        '1' => 'ezr_keymedia\\models\\v1\\Connector',
-        '2' => 'ezr_keymedia\\models\\v2\\Connector',
+        '1' => 'keymedia\\models\\v1\\Connector',
+        '2' => 'keymedia\\models\\v2\\Connector',
     );
 
     protected $connection = false;
@@ -22,8 +22,8 @@ class Backend extends \eZPersistentObject
             'api_version' => array('name' => 'api_version', 'datatype' => 'int', 'required' => true)
         ),
         'keys' => array('id'),
-        'class_name' => '\\ezr_keymedia\\models\\Backend',
-        'name' => 'ezr_keymedia_backends'
+        'class_name' => '\\keymedia\\models\\Backend',
+        'name' => 'keymedia_backends'
     );
 
     /**
@@ -40,7 +40,7 @@ class Backend extends \eZPersistentObject
      * Create a brand new un-stored Backend
      *
      * @param array $data
-     * @return \ezr_keymedia\models\Backend
+     * @return \keymedia\models\Backend
      */
     public static function create(array $data = array())
     {
@@ -63,7 +63,7 @@ class Backend extends \eZPersistentObject
      * Find the first object matching criteria (id lookups)
      *
      * @param array $criteria
-     * @return \ezr_keymedia\models\Backend
+     * @return \keymedia\models\Backend
      */
     public static function first(array $criteria = array())
     {
@@ -198,7 +198,7 @@ class Backend extends \eZPersistentObject
      * Get a single image information
      *
      * @param string $id
-     * @return \ezr_keymedia\models\Image
+     * @return \keymedia\models\Image
      */
     public function get($id)
     {
@@ -240,7 +240,7 @@ class Backend extends \eZPersistentObject
      *          - `attributes`
      *          - `collection`
      *
-     * @return \ezr_keymedia\models\Image|false Image object if a successfull upload
+     * @return \keymedia\models\Image|false Image object if a successfull upload
      */
     public function upload($filepath, $filename, array $tags = array(), array $data = array())
     {
@@ -278,7 +278,7 @@ class Backend extends \eZPersistentObject
     /**
      * Get connection to mediabase
      * 
-     * @return \ezr_keymedia\models\Connector
+     * @return \keymedia\models\Connector
      */
     public function connection()
     {

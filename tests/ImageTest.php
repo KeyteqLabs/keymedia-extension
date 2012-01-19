@@ -1,8 +1,8 @@
 <?php
 
-namespace ezr_keymedia\tests;
+namespace keymedia\tests;
 
-use \ezr_keymedia\models\Image;
+use \keymedia\models\Image;
 
 class ImageTest extends \PHPUnit_Framework_TestCase
 {

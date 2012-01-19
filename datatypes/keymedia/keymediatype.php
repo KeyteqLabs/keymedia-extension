@@ -1,7 +1,7 @@
 <?php
 
-use \ezr_keymedia\models\Backend;
-use \ezr_keymedia\models\image\Handler;
+use \keymedia\models\Backend;
+use \keymedia\models\image\Handler;
 
 class KeyMedia extends eZDataType
 {
@@ -108,7 +108,7 @@ class KeyMedia extends eZDataType
      * This method is triggered when a template states {$attribute.content}
      *
      * @param object $attribute
-     * @return \ezr_keymedia\models\image\Handler
+     * @return \keymedia\models\image\Handler
      */
     public function objectAttributeContent($attribute)
     {

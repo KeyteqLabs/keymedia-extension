@@ -1,4 +1,4 @@
-ezrKeyMedia.views.Upload = Backbone.View.extend({
+KeyMedia.views.Upload = Backbone.View.extend({
 
     maxSize : '25mb',
     headers : {
@@ -49,8 +49,8 @@ ezrKeyMedia.views.Upload = Backbone.View.extend({
         var attrId = this.model.get('attributeId');
         this.uploader = new plupload.Uploader({
             runtimes : 'html5,html4',
-            browse_button : 'ezr-keymedia-local-file-' + attrId,
-            container : 'ezr-keymedia-local-file-container-' + attrId,
+            browse_button : 'keymedia-local-file-' + attrId,
+            container : 'keymedia-local-file-container-' + attrId,
             max_file_size : this.maxSize,
             url : this.options.prefix + '/keymedia::upload',
             multipart_params : {

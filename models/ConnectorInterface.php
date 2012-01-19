@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia\models;
+namespace keymedia\models;
 
 /**
  * KeyMedia connector interface

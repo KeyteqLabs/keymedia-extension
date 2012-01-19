@@ -1,7 +1,7 @@
-ezrKeyMedia.views.Modal = Backbone.View.extend({
+KeyMedia.views.Modal = Backbone.View.extend({
     // el construction information
     tagName : 'div',
-    id : 'ezr-keymedia-modal',
+    id : 'keymedia-modal',
 
     // Template for containing data
     template : '<div class="backdrop"/><div class="content"/>',

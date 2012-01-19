@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia\modules\user_test;
+namespace keymedia\modules\user_test;
 
 /**
  *
@@ -18,9 +18,9 @@ namespace ezr_keymedia\modules\user_test;
 
 use \stdClass;
 use \eZHTTPTool;
-use \ezr_keymedia\models\Backend;
-use \ezr_keymedia\models\v1\Connector as V1;
-use \ezr_keymedia\models\v2\Connector as V2;
+use \keymedia\models\Backend;
+use \keymedia\models\v1\Connector as V1;
+use \keymedia\models\v2\Connector as V2;
 
 class UserTest
 {

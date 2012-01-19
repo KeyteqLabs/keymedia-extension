@@ -1,4 +1,4 @@
-ezrKeyMedia.models.model = Backbone.Model.extend({
+KeyMedia.models.model = Backbone.Model.extend({
     prefix : null,
 
     initialize : function(options)

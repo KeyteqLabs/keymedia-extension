@@ -50,19 +50,19 @@
         <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
         <input type="hidden" name="{$base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending" />
 
-        <input type="button" class="ezr-keymedia-scale hid button"
+        <input type="button" class="keymedia-scale hid button"
             data-truesize='{$image.size|json}'
             data-versions='{$handler.toscale|json}'
             value="{'Scale'|i18n( 'content/edit' )}">
 
-        <input type="button" class="ezr-keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">
+        <input type="button" class="keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">
 
-        <div class="ezr-keymedia-local-file-container" id="ezr-keymedia-local-file-container-{$attribute.id}">
-            <input type="button" class="ezr-keymedia-local-file button" id="ezr-keymedia-local-file-{$attribute.id}"
+        <div class="keymedia-local-file-container" id="keymedia-local-file-container-{$attribute.id}">
+            <input type="button" class="keymedia-local-file button" id="keymedia-local-file-{$attribute.id}"
                 value="{'Choose from computer'|i18n( 'content/edit' )}">
         </div>
 
-        <div class="upload-progress hid" id="ezr-keymedia-progress-{$attribute.id}">
+        <div class="upload-progress hid" id="keymedia-progress-{$attribute.id}">
             <div class="progress"></div>
         </div>
     </div>

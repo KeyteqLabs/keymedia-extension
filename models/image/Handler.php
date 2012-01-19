@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia\models\image;
+namespace keymedia\models\image;
 
 use \eZMimeType;
 use \eZHTTPFile;
@@ -8,8 +8,8 @@ use \eZContentObjectVersion;
 use \eZCharTransform;
 use \eZURLAliasML;
 use \ezpI18n;
-use \ezr_keymedia\models\Backend;
-use \ezr_keymedia\models\Image;
+use \keymedia\models\Backend;
+use \keymedia\models\Image;
 use \Exception;
 
 class Handler
@@ -49,7 +49,7 @@ class Handler
      * @param array $tags Tags to add to image in KeyMedia
      * @param string $title Alternative image text
      *
-     * @return \ezr_keymedia\models\Image|false
+     * @return \keymedia\models\Image|false
      */
     public function uploadFile($file, array $tags = array(), $title = '')
     {
@@ -381,7 +381,7 @@ class Handler
     /**
      * Cached loading of the KeyMedia Backend for this Handlers attribute
      *
-     * @return \ezr_keymedia\models\Backend
+     * @return \keymedia\models\Backend
      */
     protected function backend()
     {
@@ -407,7 +407,7 @@ class Handler
     /**
      * Cached loading of the image for this content object attribute
      *
-     * @return \ezr_keymedia\models\Image
+     * @return \keymedia\models\Image
      */
     protected function toScale()
     {
@@ -439,7 +439,7 @@ class Handler
     /**
      * Cached loading of the image for this content object attribute
      *
-     * @return \ezr_keymedia\models\Image
+     * @return \keymedia\models\Image
      */
     protected function image()
     {

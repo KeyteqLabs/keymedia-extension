@@ -1,7 +1,7 @@
 <?php /*
 
 [DataTypeSettings]
-ExtensionDirectories[]=ezr_keymedia
+ExtensionDirectories[]=keymedia
 AvailableDataTypes[]=keymedia
 
 */

@@ -2,26 +2,26 @@ $(function() {
     $('.keymedia-type').each(function() {
         var wrapper = $(this);
         var container = wrapper.find('.keymedia-buttons');
-        var model = new ezrKeyMedia.models.model({
+        var model = new KeyMedia.models.model({
             id : container.data('backend'),
             prefix : container.data('prefix'),
             attributeId : container.data('id'),
             contentObjectId : container.data('contentobject-id'),
             version : container.data('version')
         });
-        var image = new ezrKeyMedia.models.Image({
+        var image = new KeyMedia.models.Image({
             id : container.find('.image-id').val(),
             backend : container.data('backend'),
             prefix : container.data('prefix')
         });
-        var controller = new ezrKeyMedia.views.KeyMedia({
+        var controller = new KeyMedia.views.KeyMedia({
             el : container,
             model : model,
             destination : container.find('.image-id'),
             host : container.find('.image-host'),
             ending : container.find('.image-ending')
         }).render();
-        var tagger = new ezrKeyMedia.views.Tagger({
+        var tagger = new KeyMedia.views.Tagger({
             el : wrapper.find('.tagger'),
             model : image
         }).render();

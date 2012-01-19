@@ -1,4 +1,4 @@
-ezrKeyMedia.views.Tagger = Backbone.View.extend({
+KeyMedia.views.Tagger = Backbone.View.extend({
 
     // underscore templates, is compile in initialize
     templates : {

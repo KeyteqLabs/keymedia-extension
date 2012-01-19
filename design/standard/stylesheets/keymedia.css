@@ -58,13 +58,13 @@
 }
 
 
-#ezr-keymedia-modal {
+#keymedia-modal {
     position: fixed;
     height: 100%;
     width: 100%;
 }
 
-.ezr-keymedia-local-file-container {
+.keymedia-local-file-container {
     display: inline
 }
 
@@ -82,7 +82,7 @@
     border-radius: 5px;
 }
 
-#ezr-keymedia-modal .backdrop {
+#keymedia-modal .backdrop {
     z-index: 1;
     position: absolute;
     top: 0;
@@ -93,7 +93,7 @@
     opacity: 0.6;
 }
 
-#ezr-keymedia-modal .content {
+#keymedia-modal .content {
     top: 25px;
     bottom: 25px;
     z-index: 2;
@@ -107,7 +107,7 @@
     font: normal 14px/14px Helvetica, Arial, sans-serif;
 }
 
-#ezr-keymedia-scaler .header, #ezr-keymedia-browser .header {
+#keymedia-scaler .header, #keymedia-browser .header {
     float: left;
     margin: 0;
     padding: 10px;
@@ -117,16 +117,16 @@
     position: relative;
 }
 
-#ezr-keymedia-browser .header {
+#keymedia-browser .header {
     border-bottom: 1px solid #555;
 }
 
 
-#ezr-keymedia-scaler .body, #ezr-keymedia-browser .body {
+#keymedia-scaler .body, #keymedia-browser .body {
     clear: both;
 }
 
-#ezr-keymedia-browser input {
+#keymedia-browser input {
     border-radius: 10px;
     margin: 0;
     padding: 3px 7px;
@@ -135,11 +135,11 @@
     font-size: 12px;
 }
 
-#ezr-keymedia-browser input:focus {
+#keymedia-browser input:focus {
     outline: none;
 }
 
-#ezr-keymedia-browser button.search {
+#keymedia-browser button.search {
     border: 0;
     border-radius: 10px;
     padding: 0 12px;
@@ -149,14 +149,14 @@
     margin: 0 0 0 5px;
 }
 
-#ezr-keymedia-browser a {
+#keymedia-browser a {
     color: #fff;
     text-decoration: none;
 }
 
-#ezr-keymedia-browser .prev, #ezr-keymedia-browser .next { display: none; }
+#keymedia-browser .prev, #keymedia-browser .next { display: none; }
 
-#ezr-keymedia-modal .close {
+#keymedia-modal .close {
     background: #fff url(close.png) center center no-repeat;
     height: 20px;
     width: 20px;
@@ -171,7 +171,7 @@
 
 /* Browse media */
 
-#ezr-keymedia-modal .item {
+#keymedia-modal .item {
     float: left;
     width: 180px;
     height: 120px;
@@ -182,11 +182,11 @@
     overflow: hidden;
 }
 
-    #ezr-keymedia-modal .item:first-child {
+    #keymedia-modal .item:first-child {
         border-left: 1px solid #333;
     }
 
-#ezr-keymedia-modal .item .pick {
+#keymedia-modal .item .pick {
     text-align: center;
     width: 180px;
     height: 120px;
@@ -195,12 +195,12 @@
     display: table-cell;
 }
 
-#ezr-keymedia-modal .item a {
+#keymedia-modal .item a {
 }
-#ezr-keymedia-modal .item img {
+#keymedia-modal .item img {
     margin: 0;
 }
-#ezr-keymedia-modal .item:hover .meta {
+#keymedia-modal .item:hover .meta {
     display:-moz-box;
     -moz-box-orient:horizontal;
     -moz-box-pack:center;
@@ -216,7 +216,7 @@
     box-pack:center;
     box-align:center;
 }
-#ezr-keymedia-modal .item .meta {
+#keymedia-modal .item .meta {
     display: none;
     bottom: 0;
     left: 0;
@@ -237,17 +237,17 @@
 
 /* Scale and crop media */
 
-#ezr-keymedia-scaler .header ul {
+#keymedia-scaler .header ul {
     list-style-type: none;
     margin: 0;
     float: left;
 }
-#ezr-keymedia-scaler .header ul li {
+#keymedia-scaler .header ul li {
     float: left;
     margin-right: 8px;
 }
 
-#ezr-keymedia-scaler .header ul li a {
+#keymedia-scaler .header ul li a {
     display: block;
     float: left;
     background: #fff;
@@ -260,50 +260,50 @@
     border: 1px dotted transparent;
 }
 
-#ezr-keymedia-scaler .header ul li a p {
+#keymedia-scaler .header ul li a p {
     margin-right: 6px;
     border: 1px solid #000;
     border-radius: 2px;
     float: left;
 }
 
-#ezr-keymedia-scaler .header ul li a h2 {
+#keymedia-scaler .header ul li a h2 {
     display: inline;
     margin: 0;
     font: bold 12px/14px Helvetica, Arial, sans-serif;
 }
 
-#ezr-keymedia-scaler .header ul li a span {
+#keymedia-scaler .header ul li a span {
     display: inline;
     font: normal 10px/10px Helvetica, Arial, sans-serif;
 }
 
-#ezr-keymedia-scaler .header ul li.uncropped a {
+#keymedia-scaler .header ul li.uncropped a {
     background: transparent;
     border-color: #ccc;
     color: #ccc;
 }
 
-#ezr-keymedia-scaler .header ul li.uncropped a p {
+#keymedia-scaler .header ul li.uncropped a p {
     border: 1px dotted #ccc;
 }
 
 
-#ezr-keymedia-scaler .header ul li.uncropped a:hover {
+#keymedia-scaler .header ul li.uncropped a:hover {
     border-color: #fff;
     color: #fff;
 }
 
-#ezr-keymedia-scaler .header ul li.uncropped a:hover p {
+#keymedia-scaler .header ul li.uncropped a:hover p {
     border: 1px dotted #fff;
 }
 
 
-#ezr-keymedia-scaler .header ul li.cropped a:hover {
+#keymedia-scaler .header ul li.cropped a:hover {
     background: #fff60b;
 }
 
-#ezr-keymedia-scaler .header ul li.active a, #ezr-keymedia-scaler .header ul li.active a:hover {
+#keymedia-scaler .header ul li.active a, #keymedia-scaler .header ul li.active a:hover {
     background-color: #ffbb00;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#ffbb00), to(#ff8d00));
     background-image: -webkit-linear-gradient(top, #ffbb00, #ff8d00);
@@ -316,11 +316,11 @@
 }
 
 
-#ezr-keymedia-scaler .header ul li:hover .overlay { display: block; opacity:1; }
-#ezr-keymedia-scaler .header ul li.active:hover .overlay,
-#ezr-keymedia-scaler .header ul li.uncropped:hover .overlay { display: none; }
+#keymedia-scaler .header ul li:hover .overlay { display: block; opacity:1; }
+#keymedia-scaler .header ul li.active:hover .overlay,
+#keymedia-scaler .header ul li.uncropped:hover .overlay { display: none; }
 
-#ezr-keymedia-scaler .overlay {
+#keymedia-scaler .overlay {
     display: none;
     opacity: 0;
     position: absolute;
@@ -334,7 +334,7 @@
 
 
 
-#ezr-keymedia-scaler-image {
+#keymedia-scaler-image {
     margin: 0 auto;
     text-align: center;
 }

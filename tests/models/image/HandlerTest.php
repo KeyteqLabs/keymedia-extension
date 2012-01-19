@@ -1,8 +1,8 @@
 <?php
 
-namespace ezr_keymedia\tests\models\image;
+namespace keymedia\tests\models\image;
 
-use \ezr_keymedia\models\image\Handler;
+use \keymedia\models\image\Handler;
 use \eZContentObjectAttribute;
 
 class HandlerTest extends \PHPUnit_Framework_TestCase

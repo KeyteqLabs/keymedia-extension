@@ -1,4 +1,4 @@
-ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
+KeyMedia.views.KeyMedia = Backbone.View.extend({
     // Holds current active subview
     view : null,
 
@@ -24,7 +24,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
             this.container = options.container;
         }
         else {
-            this.container = new ezrKeyMedia.views.Modal;
+            this.container = new KeyMedia.views.Modal;
             this.container.el.prependTo('body');
         }
 
@@ -41,8 +41,8 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
     },
 
     events : {
-        'click .ezr-keymedia-remote-file' : 'search',
-        'click .ezr-keymedia-scale' : 'scaler'
+        'click .keymedia-remote-file' : 'search',
+        'click .keymedia-scale' : 'scaler'
     },
 
     render : function()
@@ -61,7 +61,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
     },
 
     enableUpload : function() {
-        this.upload = new ezrKeyMedia.views.Upload({
+        this.upload = new KeyMedia.views.Upload({
             model : this.model,
             uploaded : this.changeImage,
             el : $(this.el).parent(),
@@ -75,7 +75,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
 
     search : function()
     {
-        this.view = new ezrKeyMedia.views.Browser({
+        this.view = new KeyMedia.views.Browser({
             model : this.model,
             onSelect : this.changeImage,
             el : this.container.show().contentEl
@@ -97,7 +97,7 @@ ezrKeyMedia.views.KeyMedia = Backbone.View.extend({
             model : this.model,
             el : this.container.show().contentEl
         };
-        this.view = new ezrKeyMedia.views.Scaler(settings);
+        this.view = new KeyMedia.views.Scaler(settings);
         this.model.scale(settings.imageId);
     },
 

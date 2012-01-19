@@ -5,10 +5,10 @@
  * @copyright     Copyright 2011, Keyteq AS (http://keyteq.no/labs)
  */
 
-namespace ezr_keymedia\modules\key_media;
+namespace keymedia\modules\key_media;
 
 use \eZPersistentObject;
-use \ezr_keymedia\models\Backend;
+use \keymedia\models\Backend;
 
 use \eZHTTPFile;
 use \eZHTTPTool;
@@ -16,7 +16,7 @@ use \eZContentObjectAttribute;
 
 /**
  * KeyMedia controller
- * Exposes the HTTP actions for eZr KeyMedia integration
+ * Exposes the HTTP actions for KeyMedia integration
  *
  * @author Raymond Julin <raymond@keyteq.no>
  * @since 1.0.0
@@ -113,7 +113,7 @@ class KeyMedia extends \ezote\lib\Controller
             // Store information on content object
             $imageAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
 
-            // @var \ezr_keymedia\models\image\Handler
+            // @var \keymedia\models\image\Handler
             $handler = $imageAttribute->content();
             $data = $handler->addVersion($name, compact('coords', 'size'));
         }

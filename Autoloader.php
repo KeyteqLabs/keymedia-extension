@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia;
+namespace keymedia;
 
 class Autoloader
 {

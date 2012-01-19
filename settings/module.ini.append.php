@@ -1,5 +1,5 @@
 <?php /*
 
 [ModuleSettings]
-ExtensionRepositories[]=ezr_keymedia
+ExtensionRepositories[]=keymedia
 ModuleList[]=key_media

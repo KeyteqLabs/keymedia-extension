@@ -1,4 +1,4 @@
-ezrKeyMedia.models.Image = Backbone.Model.extend({
+KeyMedia.models.Image = Backbone.Model.extend({
     prefix : '',
 
     defaults : function() {

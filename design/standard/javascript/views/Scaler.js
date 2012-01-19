@@ -1,4 +1,4 @@
-ezrKeyMedia.views.Scaler = Backbone.View.extend({
+KeyMedia.views.Scaler = Backbone.View.extend({
     // Holds reference to current selected scale li
     current : null,
 
@@ -22,7 +22,7 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
 
         this.el = $(this.el);
 
-        this.image = new ezrKeyMedia.models.Image({
+        this.image = new KeyMedia.models.Image({
             id : options.imageId,
             host : options.host
         });
@@ -80,7 +80,7 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         this.$('img').attr({
             src : this.image.thumb(this.size.w, this.size.h, 'jpg')
         });
-        this.container = this.$('#ezr-keymedia-scaler-image');
+        this.container = this.$('#keymedia-scaler-image');
 
         var i, scale = $(response.content.scale), item, r, name;
         var ul = this.$('.header ul'), box;
@@ -99,7 +99,7 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
 
             ul.append(item);
 
-            box = new ezrKeyMedia.views.Scalebox({
+            box = new KeyMedia.views.Scalebox({
                 el : item.find('p'),
                 model : r.size,
                 outer : outerBounds
@@ -212,7 +212,7 @@ ezrKeyMedia.views.Scaler = Backbone.View.extend({
         }
         else
         {
-            this.$('#ezr-keymedia-scaler-crop').Jcrop({
+            this.$('#keymedia-scaler-crop').Jcrop({
                 trueSize : size
             }, function(a) {
                 // Store reference to API

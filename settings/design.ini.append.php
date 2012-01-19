@@ -1,7 +1,7 @@
 <?php /*
 
 [ExtensionSettings]
-DesignExtensions[]=ezr_keymedia
+DesignExtensions[]=keymedia
 
 */ ?>
 

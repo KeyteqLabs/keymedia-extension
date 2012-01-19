@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia\models;
+namespace keymedia\models;
 
 class Image
 {
@@ -20,7 +20,7 @@ class Image
      * Find the first object matching criteria (id lookups)
      *
      * @param array $criteria
-     * @return \ezr_keymedia\models\Backend
+     * @return \keymedia\models\Backend
      */
     public function __construct($data = array())
     {

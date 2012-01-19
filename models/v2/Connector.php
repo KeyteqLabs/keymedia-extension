@@ -1,6 +1,6 @@
 <?php
 
-namespace ezr_keymedia\models\v2;
+namespace keymedia\models\v2;
 
 /**
  * KeyMedia connector, makes the module talk the talk that KeyMedia talks
@@ -17,7 +17,7 @@ namespace ezr_keymedia\models\v2;
  * @author Raymond Julin (raymond@keyteq.no)
  * @since 1.0.0
  */
-class Connector extends \ezr_keymedia\models\ConnectorBase
+class Connector extends \keymedia\models\ConnectorBase
 {
 
     /**

@@ -1,4 +1,4 @@
-ezrKeyMedia.views.Scalebox = Backbone.View.extend({
+KeyMedia.views.Scalebox = Backbone.View.extend({
     outerBounds : null,
 
     initialize : function(options)
