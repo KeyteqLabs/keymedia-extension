@@ -5,12 +5,12 @@ namespace keymedia\models\image;
 use \eZMimeType;
 use \eZHTTPFile;
 use \eZContentObjectVersion;
-use \eZCharTransform;
 use \eZURLAliasML;
 use \ezpI18n;
 use \keymedia\models\Backend;
 use \keymedia\models\Image;
 use \Exception;
+use \ezote\lib\Inflector;
 
 class Handler
 {
@@ -127,9 +127,6 @@ class Handler
     */
     public function imageName($attr, $version, $language = false, $postfix = '')
     {
-        // Initialize transformation system
-        $trans = eZCharTransform::instance();
-
         // Use either passed language or the attributes language_code
         $language = $language ?: $attr->attribute('language_code');
 
@@ -137,11 +134,9 @@ class Handler
         $name = $version->versionName($language) ?: $version->name($language);
         // Finally fall back ona  default name
         $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
-        $name = str_replace('  ', ' ', $name);
-        $name = preg_replace('/[._,:;<>*+\s]/', '-', $name);
         if ($postfix) $name .= '-' . $postfix;
         $name .= implode('-', array('', $attr->ContentObjectID, $attr->Version));
-        return mb_strtolower($name);
+        return Inflector::slug($name);
     }
 
     /**
