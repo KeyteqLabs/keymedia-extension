@@ -52,8 +52,13 @@
 
         <input type="button" class="keymedia-scale hid button"
             data-truesize='{$image.size|json}'
-            data-versions='{$handler.toscale|json}'
-            value="{'Scale'|i18n( 'content/edit' )}">
+            {if $handler.imageFits}
+            value="{'Scale'|i18n( 'content/edit' )}"
+            {else}
+            disabled="disabled"
+            value="{'Image to small, change it'|i18n( 'content/edit' )}"
+            {/if}
+            data-versions='{$handler.toscale|json}'>
 
         <input type="button" class="keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">
 

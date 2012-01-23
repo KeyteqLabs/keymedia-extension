@@ -43,6 +43,7 @@ class Image
             case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
             case 'ending': return $this->ending();
+            case 'box': return $this->box();
         }
         return isset($this->$key) ? $this->_data->$key : null;
     }
@@ -71,7 +72,7 @@ class Image
      */
     public function __isset($key)
     {
-        $exists = array('size', 'ending');
+        $exists = array('size', 'ending', 'box');
         if ($key === 'id') $key = $this->idAttribute();
         return isset($this->_data->$key) ?: in_array($key, $exists);
     }
@@ -120,6 +121,15 @@ class Image
     {
         if (is_string($host)) $this->_data->host = $host;
         return isset($this->host) ? $this->_data->host : '';
+    }
+
+    /**
+     * Get image Box (dimensions of image)
+     * @return keymedia\models\Box
+     */
+    public function box()
+    {
+        return new Box($this->file->width, $this->file->height);
     }
 
     /**

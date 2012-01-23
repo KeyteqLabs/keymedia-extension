@@ -137,10 +137,11 @@ class KeyMedia extends \ezote\lib\Controller
 
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();
-            list($minWidth, $minHeight) = $handler->attribute('minSize');
+            $box = $handler->attribute('minSize');
+            $minWidth = $box->width();
+            $minHeight = $box->height();
             $backend = $handler->attribute('backend');
-            $criteria = compact('minWidth', 'minHeight');
-            $results = $backend->search($q, $criteria, compact('width', 'height', 'offset', 'limit'));
+            $results = $backend->search($q, compact('minWidth', 'minHeight'), compact('width', 'height', 'offset', 'limit'));
 
             $skeleton = $http->variable('skeleton', false) ? 'design:parts/browser.tpl' : null;
             $item = 'design:parts/keymedia_browser_item.tpl';

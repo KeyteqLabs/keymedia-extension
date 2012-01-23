@@ -11,6 +11,7 @@ use \keymedia\models\Backend;
 use \keymedia\models\Image;
 use \Exception;
 use \ezote\lib\Inflector;
+use \keymedia\models\Box;
 
 class Handler
 {
@@ -148,7 +149,8 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image', 'toscale', 'minsize');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image',
+            'toscale', 'minsize', 'imagefits');
         if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -173,6 +175,8 @@ class Handler
                 return $this->toScale();
             case 'minSize':
                 return $this->minSize();
+            case 'imageFits':
+                return $this->minSize()->fits($image->box());
             case 'image':
                 return $image;
             case 'thumb':
@@ -447,7 +451,7 @@ class Handler
             if ($w > $width) $width = $w;
             if ($h > $height) $height = $h;
         }
-        return array($width, $height);
+        return new Box($width, $height);
     }
 
     /**
