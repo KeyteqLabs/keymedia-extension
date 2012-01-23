@@ -101,8 +101,8 @@ class KeyMedia extends \ezote\lib\Controller
      */
     public static function saveVersion(array $args = array())
     {
-        list($id, $attributeId, $version) = $args;
-        if ($id && $attributeId && $version)
+        list($attributeId, $version) = $args;
+        if ($attributeId && $version)
         {
             $http = \eZHTTPTool::instance();
 
@@ -123,9 +123,10 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * eZJSCore method for browsing KeyMedia
      */
-    public static function browse($args)
+    public static function browse(array $args = array())
     {
-        if ($id = array_pop($args))
+        list($attributeId, $version) = $args;
+        if ($attributeId && $version)
         {
             $http = \eZHTTPTool::instance();
             $q = $http->variable('q', '');
@@ -133,10 +134,13 @@ class KeyMedia extends \ezote\lib\Controller
             $height = 120;
             $offset = 0;
             $limit = 25;
-            $id = (int) $id;
 
-            $backend = Backend::first(compact('id'));
-            $results = $backend->search($q, array(), compact('width', 'height', 'offset', 'limit'));
+            $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+            $handler = $attribute->content();
+            list($minWidth, $minHeight) = $handler->attribute('minSize');
+            $backend = $handler->attribute('backend');
+            $criteria = compact('minWidth', 'minHeight');
+            $results = $backend->search($q, $criteria, compact('width', 'height', 'offset', 'limit'));
 
             $templates = array(
                 'skeleton' => 'design:parts/browser.tpl',

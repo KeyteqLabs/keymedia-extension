@@ -91,7 +91,8 @@ class Backend extends \eZPersistentObject
         $criteria += array(
             'attributes' => false,
             'collection' => false,
-            'externalId' => false
+            'externalId' => false,
+            'q' => $q
         );
         $options += array(
             'width' => false,
@@ -102,12 +103,11 @@ class Backend extends \eZPersistentObject
         );
         if ($con = $this->connection())
         {
-            $results = $con->searchByTerm(
-                $q, $criteria['attributes'], $criteria['collection'],
-                $options['limit'], $options['offset'], $options['width'], $options['height'],
-                $criteria['externalId']
-            );
-            return $this->_format($results, $options['format']);
+            // Donts end format to backend, just used here
+            $format = $options['format'];
+            unset($options['format']);
+            $results = $con->search($criteria, $options);
+            return $this->_format($results, $format);
         }
 
         return false;

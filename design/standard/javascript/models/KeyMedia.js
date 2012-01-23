@@ -8,7 +8,7 @@ KeyMedia.models.model = Backbone.Model.extend({
 
     url : function(method, extra) {
         extra = (extra || []);
-        return this.get('prefix') + '/' + ['keymedia', method, this.id].concat(extra).join('::');
+        return this.get('prefix') + '/' + ['keymedia', method].concat(extra).join('::');
     },
 
     search : function(q, include) {
@@ -17,7 +17,7 @@ KeyMedia.models.model = Backbone.Model.extend({
         if (typeof q === 'string')
             data.q = q;
             
-        $.getJSON(this.url('browse'), data, this.onSearch);
+        $.getJSON(this.url('browse', [this.get('attributeId'), this.get('version')]), data, this.onSearch);
     },
 
     scale : function(image) {

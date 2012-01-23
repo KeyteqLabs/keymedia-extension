@@ -23,6 +23,15 @@ interface ConnectorInterface
     public function __construct($username, $apiKey, $mediabaseDomain);
 
     /**
+     * Perform generic search on backend
+     *
+     * @param array $criteria
+     * @param array $options
+     * @return array
+     */
+    public function search(array $criteria = array(), array $options = array());
+
+    /**
      *
      * Sets the callback used for progressreporting.
      * Check PHPDoc for documentation regarding callbacks.

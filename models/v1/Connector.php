@@ -9,7 +9,7 @@ namespace keymedia\models\v1;
  * <code>
  *   $api = new Connector($username, $apiKey, $host);
  *   $api->searchByTags($tags, $operator);
- *   $api->search($q);
+ *   $api->search(array('q' => 'a term'));
  *   $result = $api->uploadMedia($filepath, $filename, $tags, $attributes);
  * </code>
  *
@@ -20,7 +20,24 @@ namespace keymedia\models\v1;
 class Connector extends \keymedia\models\ConnectorBase
 {
     /**
+     * Perform search
      *
+     * For v1 apis this is just a thin wrapper for makeRequest passing
+     * both criteria + options as its payload
+     *
+     * @param array $criteria
+     * @param array $options
+     * @return array
+     */
+    public function search(array $criteria = array(), array $options = array())
+    {
+        $payload = $options + $criteria;
+        return $this->makeRequest('search', $payload);
+    }
+    
+    /**
+     * @deprecated
+     * @see Connector::search()
      * Search by one or more tags.
      *
      * @param $q
@@ -36,15 +53,7 @@ class Connector extends \keymedia\models\ConnectorBase
      */
     public function searchByTerm($q, $attributes = false, $collection = false, $limit = false, $offset = false, $width = false, $height = false, $externalId = false)
     {
-        $params = compact('q', 'limit', 'offset');
-        if ($width && !is_array($width)) $params['width'] = $width;
-        if ($height && !is_array($height)) $params['height'] = $height;
-
-        if ($attributes !== false) $params['attributes'] = $attributes;
-        if ($collection !== false) $params['collection'] = $collection;
-        if ($externalId !== false) $params['externalId'] = $externalId;
-
-        return $this->makeRequest('search', $params);
+        return $this->search(compact('q', 'attributes', 'collection', 'externalId'), compact('limit', 'offset', 'width', 'height'));
     }
 
     /**

@@ -9,7 +9,7 @@ namespace keymedia\models\v2;
  * <code>
  *   $api = new Connector($username, $apiKey, $host);
  *   $api->searchByTags($tags, $operator);
- *   $api->search($q);
+ *   $api->search(array('q' => 'a term'));
  *   $result = $api->uploadMedia($filepath, $filename, $tags, $attributes);
  * </code>
  *
@@ -26,8 +26,17 @@ class Connector extends \keymedia\models\ConnectorBase
      * @param array $conditions
      * @return array
      */
-    public function search(array $conditions = array())
+    public function search(array $criteria = array(), array $options = array())
     {
+        $payload = $options + $criteria;
+        $results = $this->makeRequest('/media.json', $payload);
+        if ($results && isset($results->media))
+        {
+            $hits = $results->media;
+            $total = $results->total;
+            return (object) compact('hits', 'total');
+        }
+        return false;
     }
 
     /**
@@ -79,12 +88,10 @@ class Connector extends \keymedia\models\ConnectorBase
      */
     public function searchByTags($tags = array(), $operator = 'or', $limit = 25, $offset = 0, $width = false, $height = false)
     {
-        $params = compact('tags', 'operator', 'limit', 'offset');
+        $criteria = compact('tags');
+        $options = compact('operator', 'limit', 'offset');
 
-        if ($width !== false) $params['width'] = $width;
-        if ($height !== false) $params['height'] = $height;
-
-        $results = $this->makeRequest('/media.json', $params);
+        $results = $this->search($criteria, $options);
         if ($results && isset($results->media))
         {
             $hits = $results->media;

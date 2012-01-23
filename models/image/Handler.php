@@ -148,8 +148,8 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image', 'toscale');
-        if (in_array($name, $ok)) return true;
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image', 'toscale', 'minsize');
+        if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
     }
@@ -171,6 +171,8 @@ class Handler
                 return $this->selected();
             case 'toscale':
                 return $this->toScale();
+            case 'minSize':
+                return $this->minSize();
             case 'image':
                 return $image;
             case 'thumb':
@@ -429,6 +431,23 @@ class Handler
             $this->_toScale = $toScale;
         }
         return $this->_toScale;
+    }
+
+    /**
+     * Get min size an image must be to be used for this attribute instance
+     *
+     * @return array $width, $height
+     */
+    protected function minSize()
+    {
+        $width = $height = 0;
+        foreach ($this->toScale() as $version)
+        {
+            list($w, $h) = $version['size'];
+            if ($w > $width) $width = $w;
+            if ($h > $height) $height = $h;
+        }
+        return array($width, $height);
     }
 
     /**
