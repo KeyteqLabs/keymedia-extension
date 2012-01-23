@@ -18,7 +18,7 @@
     'plupload/plupload.html4.js',
     'plupload/plupload.html5.js',
 
-    'jquery.jcrop.min.js',
+    'libs/jquery.jcrop.min.js',
     'ns.js',
     'models/KeyMedia.js',
     'models/Image.js',
