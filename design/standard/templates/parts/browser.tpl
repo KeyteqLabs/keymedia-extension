@@ -8,12 +8,14 @@
 
 <div id="keymedia-browser">
     <div class="header">
-        <input type="text" name="keymedia-search" placeholder="{$searchPlaceholder}" />
-        <button type="button" class="search">{$search}</button>
-        <a class="prev">{$prev}</a>
-        <a class="next">{$next}</a>
+        <form onsubmit="javascript: return false;" class="search">
+            <input type="text" name="keymedia-search" placeholder="{$searchPlaceholder}" />
+            <button type="button" class="search">{$search}</button>
+            <a class="prev">{$prev}</a>
+            <a class="next">{$next}</a>
 
-        <button type="button" class="close">{$close}</button>
+            <button type="button" class="close">{$close}</button>
+        </form>
     </div>
 
     <div class="body">

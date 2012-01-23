@@ -16,6 +16,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
 
     events : {
         'click button.search' : 'search',
+        'submit form.search' : 'search',
         'click .item a' : 'select'
     },
 
@@ -31,7 +32,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
         e.preventDefault();
         this.model.search(
             this.input.val(),
-            {skeleton : undefined}
+            {skeleton : 0}
         );
     },
     render : function(response) {
