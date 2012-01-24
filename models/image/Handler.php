@@ -218,8 +218,8 @@ class Handler
     public function hasImage($id = null)
     {
         $values = $this->values();
-        if (!($hasId = isset($values['id'])))
-            return false;
+        $hasId = !!$values['id'];
+        if (!$hasId) return false;
         return $id ? $id === $values['id'] : true;
     }
 
