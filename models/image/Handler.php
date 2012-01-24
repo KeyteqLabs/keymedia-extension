@@ -176,7 +176,10 @@ class Handler
             case 'minSize':
                 return $this->minSize();
             case 'imageFits':
-                return $this->minSize()->fits($image->box());
+                $box = $this->minSize();
+                if ($box && $image)
+                    return $box->fits($image->box());
+                return false;
             case 'image':
                 return $image;
             case 'thumb':
