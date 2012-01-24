@@ -1,5 +1,6 @@
 KeyMedia.views.Upload = Backbone.View.extend({
 
+    browseButton : null,
     maxSize : '25mb',
     headers : {
         'Accept' : 'application/json, text/javascript, */*; q=0.01'
@@ -8,9 +9,15 @@ KeyMedia.views.Upload = Backbone.View.extend({
     initialize : function(options)
     {
         _.bindAll(this, 'render', 'uploaded', 'added', 'progress');
+        this.browseButton = 'keymedia-local-file-' + this.model.get('attributeId');
         this.options = options;
         this.uploadCallback = options.uploaded;
         return this;
+    },
+
+    url : function()
+    {
+        return this.options.prefix + '/keymedia::upload';
     },
 
     uploaded : function(up, file, info)
@@ -46,15 +53,16 @@ KeyMedia.views.Upload = Backbone.View.extend({
     },
 
     render : function(response) {
-        var attrId = this.model.get('attributeId');
+        var button = this.$('#' + this.browseButton),
+            text = button.val() + ' (Max ' + this.maxSize + ')';
+        button.val(text);
         this.uploader = new plupload.Uploader({
             runtimes : 'html5,html4',
-            browse_button : 'keymedia-local-file-' + attrId,
-            container : 'keymedia-local-file-container-' + attrId,
+            browse_button : this.browseButton,
             max_file_size : this.maxSize,
-            url : this.options.prefix + '/keymedia::upload',
+            url : this.url(),
             multipart_params : {
-                'AttributeID' : attrId,
+                'AttributeID' : this.model.get('attributeId'),
                 'ContentObjectVersion' : this.options.version,
                 'ContentObjectID' : this.options.objectId
             },
