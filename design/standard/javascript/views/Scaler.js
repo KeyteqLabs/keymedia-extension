@@ -117,8 +117,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     {
         var i, w, h, min = {w:0,h:0}, max = {w:0,h:0};
         for (i = 0; i < versions.length; i++) {
-            w = parseInt(versions[i].size[0]);
-            h = parseInt(versions[i].size[1]);
+            w = parseInt(versions[i].size[0], 10);
+            h = parseInt(versions[i].size[1], 10);
 
             if (w > max.w) max.w = w;
             if (h > max.h) max.h = h;

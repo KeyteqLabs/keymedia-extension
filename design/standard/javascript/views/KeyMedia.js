@@ -24,7 +24,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
             this.container = options.container;
         }
         else {
-            this.container = new KeyMedia.views.Modal;
+            this.container = new KeyMedia.views.Modal();
             this.container.el.prependTo('body');
         }
 

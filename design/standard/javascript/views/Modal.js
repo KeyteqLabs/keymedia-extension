@@ -17,7 +17,7 @@ KeyMedia.views.Modal = Backbone.View.extend({
     },
 
     events : {
-        'click .close' : 'close',
+        'click .close' : 'close'
     },
 
     render : function()

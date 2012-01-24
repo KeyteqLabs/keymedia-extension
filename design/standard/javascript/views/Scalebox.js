@@ -46,7 +46,7 @@ KeyMedia.views.Scalebox = Backbone.View.extend({
             // if the shortest downscale still is too small, recalculate
             if (min.h * scale < minIconWidthHeight)
             {
-                scale = (scale /((maxIconWidth-minIconWidthHeight)/maxIconWidth)) * ((maxIconHeight-minIconWidthHeight)/maxIconHeight)
+                scale = (scale /((maxIconWidth-minIconWidthHeight)/maxIconWidth)) * ((maxIconHeight-minIconWidthHeight)/maxIconHeight);
                 addToWidth = false;
             }
         }
@@ -55,7 +55,7 @@ KeyMedia.views.Scalebox = Backbone.View.extend({
             // if the shortest downscale gets smaller than given minimum icon size, recalculate
             addToWidth = false;
             addMinimum = minIconWidthHeight;
-            scale = scale * ((maxIconHeight-minIconWidthHeight)/maxIconHeight)
+            scale = scale * ((maxIconHeight-minIconWidthHeight)/maxIconHeight);
         }
 
         // calc icon sizes

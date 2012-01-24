@@ -15,7 +15,7 @@ KeyMedia.views.Upload = Backbone.View.extend({
 
     uploaded : function(up, file, info)
     {
-        if (!'response' in info) return true;
+        if (!('response' in info)) return true;
 
         var data = JSON.parse(info.response);
         if ('content' in data && 'image' in data.content)
