@@ -17,7 +17,8 @@ KeyMedia.models.model = Backbone.Model.extend({
         if (typeof q === 'string')
             data.q = q;
             
-        $.getJSON(this.url('browse', [this.get('id'), this.get('version')]), data, this.onSearch);
+        var url = this.url('browse', [this.get('id'), this.get('version')]);
+        $.getJSON(url, data, this.onSearch);
     },
 
     scale : function(image) {

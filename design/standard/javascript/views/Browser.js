@@ -36,23 +36,26 @@ KeyMedia.views.Browser = Backbone.View.extend({
         );
     },
     render : function(response) {
-        if (response.content.hasOwnProperty('skeleton'))
+        if (response)
         {
-            this.el.html(response.content.skeleton);
-            this.input = this.$('[type=text]');
-        }
-        else
-        {
-            this.el.find('.body').html('');
-        }
+            if (response.content.hasOwnProperty('skeleton'))
+            {
+                this.el.html(response.content.skeleton);
+                this.input = this.$('[type=text]');
+            }
+            else
+            {
+                this.el.find('.body').html('');
+            }
 
-        var body = this.el.find('.body');
+            var body = this.el.find('.body');
 
-        var i, tmpl = $(response.content.item), item;
-        var results = response.content.results.hits;
-        for (i = 0; i < results.length; i++) {
-            item = this.item(results[i], tmpl);
-            body.append(item);
+            var i, tmpl = $(response.content.item), item;
+            var results = response.content.results.hits;
+            for (i = 0; i < results.length; i++) {
+                item = this.item(results[i], tmpl);
+                body.append(item);
+            }
         }
 
         this.delegateEvents();
