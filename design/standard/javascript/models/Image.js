@@ -10,7 +10,7 @@ KeyMedia.models.Image = Backbone.Model.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'thumb', 'domain', 'removeTag', 'addTag');
+        _.bindAll(this, 'thumb', 'domain', 'removeTag', 'addTag', 'saveAttr');
         if ('prefix' in options)
             this.prefix = options.prefix;
     },
@@ -26,8 +26,8 @@ KeyMedia.models.Image = Backbone.Model.extend({
 
     saveAttr : function()
     {
-        var backend = this.get('backend');
-        var url = this.get('prefix') + '/' + ['keymedia', 'tag', backend, this.id].join('::'),
+        // KeyMedia.models.model instance
+        var url = this.attr.url('tag', [this.attr.id, this.attr.get('version')]),
             context = this, data = this.attributes;
 
         $.ajax({

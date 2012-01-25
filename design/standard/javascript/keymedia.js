@@ -4,17 +4,16 @@ $(function() {
         var container = wrapper.find('.keymedia-buttons');
         if (container.length) {
             var model = new KeyMedia.models.model({
-                id : container.data('backend'),
+                id : container.data('id'),
                 prefix : container.data('prefix'),
-                attributeId : container.data('id'),
                 contentObjectId : container.data('contentobject-id'),
                 version : container.data('version')
             });
             var image = new KeyMedia.models.Image({
                 id : container.find('.image-id').val(),
-                backend : container.data('backend'),
                 prefix : container.data('prefix')
             });
+            image.attr = model;
             var controller = new KeyMedia.views.KeyMedia({
                 el : container,
                 model : model,

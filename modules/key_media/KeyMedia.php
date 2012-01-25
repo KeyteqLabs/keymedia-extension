@@ -182,14 +182,16 @@ class KeyMedia extends \ezote\lib\Controller
      */
     public static function tag(array $args = array())
     {
-        list($backendId, $id) = $args;
-        if ($backendId && $id)
+        list($attributeId, $version) = $args;
+        if ($attributeId && $version)
         {
+            $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+            $handler = $attribute->content();
+            $backend = $handler->attribute('backend');
             $http = \eZHTTPTool::instance();
             $tags = (array) $http->variable('tags');
-
-            $backend = Backend::first(array('id' => $backendId));
-            $image = $backend->tag(compact('id'), (array) $tags);
+            $id = $http->variable('id');
+            $image = $backend->tag(compact('id'), $tags);
             return $image->data();
         }
         return false;

@@ -1,12 +1,8 @@
-{def $backend = $handler.backend
-    $size = ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )
-}
-{if $backend}
+{if $handler.backend}
 <div id="keymedia-buttons-{$attribute.id}" class="keymedia-buttons"
     data-prefix={'/ezjscore/call'|ezurl}
     data-id="{$attribute.id}"
     data-contentobject-id="{$attribute.contentobject_id}"
-    data-backend="{$backend.id}"
     data-version="{$attribute.version}">
 
     <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />

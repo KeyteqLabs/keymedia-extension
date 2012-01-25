@@ -17,7 +17,7 @@ KeyMedia.models.model = Backbone.Model.extend({
         if (typeof q === 'string')
             data.q = q;
             
-        $.getJSON(this.url('browse', [this.get('attributeId'), this.get('version')]), data, this.onSearch);
+        $.getJSON(this.url('browse', [this.get('id'), this.get('version')]), data, this.onSearch);
     },
 
     scale : function(image) {
@@ -44,7 +44,7 @@ KeyMedia.models.model = Backbone.Model.extend({
             coords : coords,
             size : size
         };
-        var url = this.url('saveVersion', [this.get('attributeId'), this.get('version')]),
+        var url = this.url('saveVersion', [this.get('id'), this.get('version')]),
             context = this;
         $.ajax({
             url : url,
