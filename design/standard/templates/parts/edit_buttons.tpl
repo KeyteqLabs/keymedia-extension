@@ -1,6 +1,7 @@
 {def $backend = $handler.backend
     $size = ezini( 'KeyMedia', 'EditSize', 'keymedia.ini' )
 }
+{if $backend}
 <div id="keymedia-buttons-{$attribute.id}" class="keymedia-buttons"
     data-prefix={'/ezjscore/call'|ezurl}
     data-id="{$attribute.id}"
@@ -35,3 +36,6 @@
         <div class="progress"></div>
     </div>
 </div>
+{else}
+<h2 class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</h2>
+{/if}

@@ -393,7 +393,8 @@ class Handler
         {
             $class = $this->attr->contentClassAttribute();
             $id = $class->attribute(\KeyMedia::FIELD_BACKEND);
-            $this->_backend = Backend::first(compact('id'));
+            if ($id)
+                $this->_backend = Backend::first(compact('id'));
         }
         return $this->_backend;
     }
@@ -466,7 +467,8 @@ class Handler
     {
         if (!$this->_image)
         {
-            $backend = $this->backend();
+            if (!($backend = $this->backend()))
+                return false;
 
             $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
             $data = json_decode($data);
