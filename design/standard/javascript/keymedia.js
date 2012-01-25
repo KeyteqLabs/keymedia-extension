@@ -6,7 +6,6 @@ $(function() {
             var model = new KeyMedia.models.model({
                 id : container.data('id'),
                 prefix : container.data('prefix'),
-                contentObjectId : container.data('contentobject-id'),
                 version : container.data('version')
             });
             var image = new KeyMedia.models.Image({

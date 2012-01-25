@@ -158,11 +158,10 @@ class KeyMedia extends \ezote\lib\Controller
         $http = eZHTTPTool::instance();
         $httpFile = eZHTTPFile::fetch('file');
 
-        $attributeID = $http->postVariable('AttributeID');
-        $contentObjectVersion = $http->postVariable('ContentObjectVersion');
-        $contentObjectID = $http->postVariable('ContentObjectID');
+        $attributeId = $http->postVariable('AttributeID');
+        $version = $http->postVariable('ContentObjectVersion');
 
-        $attribute = eZContentObjectAttribute::fetch($attributeID, $contentObjectVersion);
+        $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
         $handler = $attribute->content();
         if (!$image = $handler->uploadFile($httpFile))
             return array('error' => 'Failed upload');

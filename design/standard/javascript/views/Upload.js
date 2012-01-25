@@ -68,7 +68,6 @@ KeyMedia.views.Upload = Backbone.View.extend({
             multipart_params : {
                 'AttributeID' : this.model.id,
                 'ContentObjectVersion' : this.options.version,
-                'ContentObjectID' : this.options.objectId
             },
             headers : this.headers
         });

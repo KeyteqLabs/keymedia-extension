@@ -66,8 +66,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
             uploaded : this.changeImage,
             el : $(this.el).parent(),
             prefix : this.el.data('prefix'),
-            version : this.el.data('version'),
-            objectId : this.el.data('contentobject-id')
+            version : this.el.data('version')
         });
         this.upload.render();
         return this;

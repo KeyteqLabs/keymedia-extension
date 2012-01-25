@@ -3,6 +3,7 @@
 namespace keymedia\models;
 
 use \stdclass;
+use \Exception;
 
 class Backend extends \eZPersistentObject
 {
@@ -285,7 +286,7 @@ class Backend extends \eZPersistentObject
         if (!is_object($this->connection))
         {
             if (!isset($this->connectors[$this->api_version]))
-                throw new \Exception("API version {$this->api_version} has no conncetor");
+                throw new Exception("API version {$this->api_version} has no conncetor");
 
             $class = $this->connectors[$this->api_version];
             $connection = new $class($this->username, $this->api_key, $this->host);
