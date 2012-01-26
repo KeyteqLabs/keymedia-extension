@@ -17,7 +17,7 @@
 
     'libs/jquery.jcrop.min.js',
     'ns.js',
-    'models/KeyMedia.js',
+    'models/Attribute.js',
     'models/Image.js',
 
     'views/Modal.js',

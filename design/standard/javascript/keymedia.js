@@ -3,7 +3,7 @@ $(function() {
         var wrapper = $(this);
         var container = wrapper.find('.keymedia-buttons');
         if (container.length) {
-            var model = new KeyMedia.models.model({
+            var model = new KeyMedia.models.Attribute({
                 id : container.data('id'),
                 prefix : container.data('prefix'),
                 version : container.data('version')

@@ -26,7 +26,7 @@ KeyMedia.models.Image = Backbone.Model.extend({
 
     saveAttr : function()
     {
-        // KeyMedia.models.model instance
+        // KeyMedia.models.Attribute instance
         var url = this.attr.url('tag', [this.attr.id, this.attr.get('version')]),
             context = this, data = this.attributes;
 

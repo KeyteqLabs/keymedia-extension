@@ -1,4 +1,5 @@
-KeyMedia.models.model = Backbone.Model.extend({
+// A Keymedia attributes model
+KeyMedia.models.Attribute = Backbone.Model.extend({
     prefix : null,
 
     initialize : function(options)
