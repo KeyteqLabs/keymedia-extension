@@ -62,3 +62,40 @@ KeyMedia.models.Image = Backbone.Model.extend({
         return this.domain() + '/' + width + 'x' + height + '/' + this.id + '.' + filetype;
     }
 });
+
+KeyMedia.models.ImageCollection = Backbone.Collection.extend({
+    model : KeyMedia.models.Image,
+
+    // Must end in trailing slash
+    prefix : '/',
+
+    attr : null,
+
+    initialize : function(options)
+    {
+        _.bindAll(this, 'search', 'onSearch');
+        return this;
+    },
+
+    url : function()
+    {
+        return this.attr.url('browse');
+    },
+
+    search : function(q, filters)
+    {
+        var data = (filters || {});
+        if (typeof q === 'string')
+            data.q = q;
+        return $.getJSON(this.url('browse'), data, this.onSearch);
+    },
+
+    onSearch : function(resp)
+    {
+        if (resp && 'content' in resp && 'results' in resp.content)
+        {
+            this.reset(resp.content.results.hits);
+            this.trigger('search', resp);
+        }
+    }
+});

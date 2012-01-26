@@ -1,17 +1,20 @@
 KeyMedia.views.Browser = Backbone.View.extend({
-    tagName : 'div',
-    className : 'browser',
-
+    tpl : null,
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'item', 'select');
+        _.bindAll(this, 'render', 'select', 'renderItems');
 
-        this.model.bind('search', this.render);
+        this.collection.bind('reset', this.renderItems);
         this.el = $(this.el);
 
         this.onSelect = options.onSelect;
 
-        return this;
+        this.tpl = {
+            browser : Handlebars.compile($('#tpl-keymedia-browser').html()),
+            item : Handlebars.compile($('#tpl-keymedia-item').html())
+        };
+
+        return this.render();
     },
 
     events : {
@@ -22,7 +25,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
 
     select : function(e) {
         e.preventDefault();
-        var node = $(e.currentTarget);
+        var node = $(e.currentTarget).parent();
         this.onSelect(node.data('id'), node.data('host'), node.data('ending'));
         this.$('.close').click();
     },
@@ -30,49 +33,33 @@ KeyMedia.views.Browser = Backbone.View.extend({
     search : function(e)
     {
         e.preventDefault();
-        this.model.search(
-            this.input.val(),
-            {skeleton : 0}
-        );
+        this.collection.search(this.input.val());
     },
-    render : function(response) {
-        if (response)
-        {
-            if (response.content.hasOwnProperty('skeleton'))
-            {
-                this.el.html(response.content.skeleton);
-                this.input = this.$('[type=text]');
-            }
-            else
-            {
-                this.el.find('.body').html('');
-            }
 
-            var body = this.el.find('.body');
-
-            var i, tmpl = $(response.content.item), item;
-            var results = response.content.results.hits;
-            for (i = 0; i < results.length; i++) {
-                item = this.item(results[i], tmpl);
-                body.append(item);
-            }
-        }
-
-        this.delegateEvents();
+    render : function() {
+        this.el.html(
+            this.tpl.browser({
+                tr : _KeyMediaTranslations
+            })
+        );
+        this.renderItems();
+        this.input = this.$('[type=text]');
         return this;
     },
 
-    item : function(data, tmpl) {
-        var node = tmpl.clone();
-        node.find('a').data({
-            id : data.id,
-            host : data.host,
-            ending : data.scalesTo.ending
-        });
-        node.find('img').attr('src', data.thumb.url);
-        node.find('.meta').text(data.filename + ' (' + data.filesize + ')');
-        if (data.shared) node.find('.share').addClass('shared');
+    renderItems : function()
+    {
+        var body = this.$('.body'), view;
+        this.collection.each(function(item) {
+            view = $(this.tpl.item(item.attributes));
+            view.data({
+                id : item.id,
+                host : item.get('host'),
+                ending : item.get('scalesTo').ending
+            });
+            body.append(view);
+        }, this);
 
-        return node;
+        return this;
     }
 });

@@ -1,9 +1,6 @@
 KeyMedia.views.KeyMedia = Backbone.View.extend({
     // Holds current active subview
     view : null,
-
-    _init : false,
-
     destination : null,
     host : null,
 
@@ -27,16 +24,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
             this.container = new KeyMedia.views.Modal();
             this.container.el.prependTo('body');
         }
-
         this.container.bind('close', this.close);
-
-        if ('scaler' in options)
-            this.scaler = options.scaler;
-        if ('search' in options)
-            this.search = options.search;
-
-        if (this._init) this._init();
-
         return this;
     },
 
@@ -75,12 +63,12 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     search : function()
     {
         this.view = new KeyMedia.views.Browser({
-            model : this.model,
+            collection : this.model.images,
             onSelect : this.changeImage,
             el : this.container.show().contentEl
-        });
+        }).render();
 
-        this.model.search('', {skeleton:true});
+        this.model.images.search('');
     },
 
     // Open a scaling gui

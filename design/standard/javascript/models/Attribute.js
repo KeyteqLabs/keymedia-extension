@@ -1,25 +1,18 @@
 // A Keymedia attributes model
 KeyMedia.models.Attribute = Backbone.Model.extend({
     prefix : null,
+    images : null,
 
     initialize : function(options)
     {
-        _.bindAll(this, 'onSearch', 'search', 'scale', 'onScale', 'addVanityUrl');
+        _.bindAll(this, 'scale', 'onScale', 'addVanityUrl');
+        this.images = new KeyMedia.models.ImageCollection();
+        this.images.attr = this;
     },
 
     url : function(method, extra) {
-        extra = (extra || []);
+        extra = (extra || [this.id,this.get('version')]);
         return this.get('prefix') + '/' + ['keymedia', method].concat(extra).join('::');
-    },
-
-    search : function(q, include) {
-        var data = (include || {skeleton:true});
-
-        if (typeof q === 'string')
-            data.q = q;
-            
-        var url = this.url('browse', [this.get('id'), this.get('version')]);
-        $.getJSON(url, data, this.onSearch);
     },
 
     scale : function(image) {
@@ -28,11 +21,6 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
 
     onScale : function(response) {
         this.trigger('scale', response);
-    },
-
-    onSearch : function(response)
-    {
-        this.trigger('search', response);
     },
 
     // Create a new vanity url for a version

@@ -143,9 +143,7 @@ class KeyMedia extends \ezote\lib\Controller
             $backend = $handler->attribute('backend');
             $results = $backend->search($q, compact('minWidth', 'minHeight'), compact('width', 'height', 'offset', 'limit'));
 
-            $skeleton = $http->variable('skeleton', false) ? 'design:parts/browser.tpl' : null;
-            $item = 'design:parts/keymedia_browser_item.tpl';
-            $data = compact('results') + self::_templates(compact('skeleton', 'item'));
+            $data = compact('results');
         }
         return $data;
     }

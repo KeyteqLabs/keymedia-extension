@@ -11,6 +11,7 @@
     'libs/backbone-min.js',
 ))}
 {ezscript( array(
+    'libs/handlebars.js',
     'plupload/plupload.js',
     'plupload/plupload.html4.js',
     'plupload/plupload.html5.js',
@@ -30,6 +31,8 @@
 
     'keymedia.js',
 ) )}
+
+{include uri="design:parts/js_templates.tpl"}
 {/run-once}
 
 <div class="keymedia-type" data-bootstrap-image='{$image.data|json}'>
