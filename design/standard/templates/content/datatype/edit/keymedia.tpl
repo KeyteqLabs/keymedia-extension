@@ -12,30 +12,30 @@
 ))}
 {ezscript( array(
     'libs/handlebars.js',
-    'plupload/plupload.js',
-    'plupload/plupload.html4.js',
-    'plupload/plupload.html5.js',
-
+    'libs/plupload/plupload.js',
+    'libs/plupload/plupload.html4.js',
+    'libs/plupload/plupload.html5.js',
     'libs/jquery.jcrop.min.js',
-    'ns.js',
-    'models/Attribute.js',
-    'models/Image.js',
 
-    'views/Modal.js',
-    'views/KeyMedia.js',
-    'views/Scalebox.js',
-    'views/Scaler.js',
-    'views/Browser.js',
-    'views/Upload.js',
-    'views/Tagger.js',
+    'keymedia/ns.js',
+    'keymedia/Attribute.js',
+    'keymedia/Image.js',
 
-    'keymedia.js',
+    'keymedia/views/Modal.js',
+    'keymedia/views/KeyMedia.js',
+    'keymedia/views/Scalebox.js',
+    'keymedia/views/Scaler.js',
+    'keymedia/views/Browser.js',
+    'keymedia/views/Upload.js',
+    'keymedia/views/Tagger.js',
+
+    'keymedia/run.js',
 ) )}
 
 {include uri="design:parts/js_templates.tpl"}
 {/run-once}
 
 <div class="keymedia-type" data-bootstrap-image='{$image.data|json}'>
-    {include uri="design:parts/edit_preview.tpl" attribute=$attribute}
-    {include uri="design:parts/edit_buttons.tpl" attribute=$attribute base=$base}
+    {include uri="design:parts/keymedia/preview.tpl" attribute=$attribute}
+    {include uri="design:parts/keymedia/interactions.tpl" attribute=$attribute base=$base}
 </div>
