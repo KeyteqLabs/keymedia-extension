@@ -168,11 +168,30 @@ class KeyMedia extends \ezote\lib\Controller
         $tpl->setVariable('attribute', $attribute);
         return array(
             'image' => $image->data(),
-            'html' => $tpl->fetch('design:parts/edit_preview.tpl'),
+            'html' => $tpl->fetch('design:parts/keymedia/preview.tpl'),
             'ok' => true
         );
     }
 
+    /**
+     * Get image preview
+     */
+    public static function image(array $args = array())
+    {
+        list($attributeId, $version) = $args;
+        if ($attributeId && $version)
+        {
+            $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+            $handler = $attribute->content();
+            $result = array();
+            if ($handler && $image = $handler->attribute('image'))
+                $result['image'] = $image->data();
+            $tpl = \eZTemplate::factory();
+            $tpl->setVariable('attribute', $attribute);
+            $result['preview'] = $tpl->fetch('design:parts/keymedia/preview.tpl');
+            return $result;
+        }
+    }
 
     /**
      * eZJSCore method for adding tags to a remote media

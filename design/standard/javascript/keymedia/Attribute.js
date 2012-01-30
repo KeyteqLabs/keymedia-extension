@@ -5,7 +5,7 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'scale', 'onScale', 'addVanityUrl');
+        _.bindAll(this, 'scale', 'onScale', 'addVanityUrl', 'image');
         this.images = new KeyMedia.models.ImageCollection();
         this.images.attr = this;
     },
@@ -13,6 +13,15 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
     url : function(method, extra) {
         extra = (extra || [this.id,this.get('version')]);
         return this.get('prefix') + '/' + ['keymedia', method].concat(extra).join('::');
+    },
+
+    image : function(image) {
+        $.getJSON(this.url('image'), function(resp) {
+            var content = resp.content, data = content.image;
+            data.preview = content.preview;
+            image.set(data);
+        });
+        return image;
     },
 
     scale : function(image) {

@@ -1,5 +1,8 @@
 KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
 {
+    editor : null,
+    image : null,
+
     initialize : function(options)
     {
         this.init(options);
@@ -10,6 +13,9 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             version : data.version,
             prefix : '/' + KP.urlPrefix + '/ezjscore/call'
         });
+        this.image = new KeyMedia.models.Image;
+        this.image.bind('change', this.render);
+        this.image.bind('reset', this.render);
 
         return this;
     },
@@ -23,29 +29,6 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
 
     parseEdited : function()
     {
-        var values = [],
-            node,
-            elements = this.$('ul li'),
-            value,
-            inputName = this.base + '_data_object_relation_list_' + this.attributeId;
-
-        if (elements.length)
-        {
-            elements.each(function()
-            {
-                node = $(this);
-                value = {};
-                value[inputName] = node.data('id');
-                values.push(value);
-            });
-        }
-        else
-        {
-            value = {};
-            value[inputName] = 'no_relation';
-            values.push(value);
-        }
-        return values;
     },
 
     browse : function(e)
@@ -64,8 +47,14 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
 
     changeImage : function(id, host, ending)
     {
+        this.$('.image-id').val(id);
+        this.$('.image-host').val(host);
+        this.$('.image-ending').val(ending);
+        // Trigger autosave
+
+        this.editor.onHandlerSave(this.model.id, this.$(':input').serializeArray());
         this.editor.trigger('stack.pop');
-        // Store image on attribute and reload it
+        this.model.image(this.image);
     },
 
     upload : function(e)
@@ -76,8 +65,10 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         this.editor.onHandlerSave(this.attributeId, this.parseEdited());
     },
 
-    render : function(elements)
+    render : function()
     {
+        if (this.image.get('preview'))
+            this.$('.keymedia-preview').html(this.image.get('preview'));
         return this;
     },
 

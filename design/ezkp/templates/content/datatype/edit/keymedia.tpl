@@ -31,6 +31,6 @@
         {include uri="design:parts/keymedia/preview.tpl" attribute=$attribute}
     </div>
     <div class="keymedia-interactions">
-        {include uri="design:parts/keymedia/interactions.tpl" attribute=$attribute base=$base}
+        {include uri="design:parts/keymedia/interactions.tpl" attribute=$attribute base=$attribute_base}
     </div>
 </div>
