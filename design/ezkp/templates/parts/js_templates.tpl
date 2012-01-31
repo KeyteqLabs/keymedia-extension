@@ -37,6 +37,35 @@
 {/literal}
 </script>
 
+<script type="text/x-handlebars-template" id="tpl-keymedia-scaler">
+    {include uri="design:handlebars/stack/item/header.tpl" noWrap=true()}
+{literal}
+    <div class="stack-item-content">
+        <div class="header">
+            <ul>
+            {{#each versions}}
+                <li>
+                    <a>
+                        <p data-size=[{{size}}]></p>
+                        <h2>{{name}}</h2><br />
+                        <span></span>
+                    </a>
+                    <div class="overlay"></div>
+                </li>
+            {{/each}}
+            </ul>
+        </div>
+        <div class="body">
+            <div class="image-wrap">
+                <img src="{{image}}" />
+            </div>
+            <div id="keymedia-scaler-controls">
+            </div>
+        </div>
+    </div>
+{/literal}
+</script>
+
 <script type="text/x-handlebars-template" id="tpl-keymedia-item">
 {literal}
     <div class="item">

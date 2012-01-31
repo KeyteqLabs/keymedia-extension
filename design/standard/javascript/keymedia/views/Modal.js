@@ -12,7 +12,6 @@ KeyMedia.views.Modal = Backbone.View.extend({
     initialize : function(options)
     {
         _.bindAll(this, 'render');
-        this.el = $(this.el);
         return this;
     },
 
@@ -22,10 +21,7 @@ KeyMedia.views.Modal = Backbone.View.extend({
 
     render : function()
     {
-        this.el = $(this.el);
-
-        this.el.html(this.template);
-        this.el.hide();
+        this.$el.html(this.template).hide();
         this.contentEl = this.$('.content');
 
         this.delegateEvents();
@@ -34,13 +30,13 @@ KeyMedia.views.Modal = Backbone.View.extend({
     },
 
     show : function() {
-        this.el.show();
+        this.$el.show();
         return this;
     },
 
     close : function(e) {
         this.trigger('close');
-        this.el.hide();
+        this.$el.hide();
         if (this.view !== null)
             this.view.remove();
     }

@@ -13,7 +13,6 @@ KeyMedia.views.Tagger = Backbone.View.extend({
                 this.templates[name] = _.template(template);
         }, this);
         this.model.bind('change', this.update);
-        this.el = $(this.el);
         return this;
     },
 

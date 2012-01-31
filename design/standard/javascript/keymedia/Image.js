@@ -10,6 +10,7 @@ KeyMedia.models.Image = Backbone.Model.extend({
 
     initialize : function(options)
     {
+        options = (options || {});
         _.bindAll(this, 'thumb', 'domain', 'removeTag', 'addTag', 'saveAttr');
         if ('prefix' in options)
             this.prefix = options.prefix;

@@ -13,17 +13,25 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         h : 580
     },
 
-    tagName : 'div',
-    className : 'scaler',
+    tpl : null,
 
     initialize : function(options)
     {
+        options = (options || {});
         _.bindAll(this, 'render', 'changeScale', 'versionCreated', 'createOverlay');
+        this.tpl = {
+            scaler : Handlebars.compile($('#tpl-keymedia-scaler').html())
+        };
 
-        this.image = new KeyMedia.models.Image({
-            id : options.imageId,
-            host : options.host
-        });
+        if ('image' in options) {
+            this.image = options.image;
+        }
+        else {
+            this.image = new KeyMedia.models.Image({
+                id : options.imageId,
+                host : options.host
+            });
+        }
 
         this.versions = options.versions;
         this.trueSize = options.trueSize;
@@ -44,15 +52,18 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var node = $(e.currentTarget),
             overlay = node.find('div');
 
-        if (node !== this.current)
+        if (node !== this.current) {
             this.createOverlay(node.find('div'), node.data('scale'));
+        }
     },
 
     createOverlay : function(node, data) {
         if (this.cropper) {
-            if (!('coords' in data) || data.coords.length !== 4)
+            if (!('coords' in data) || data.coords.length !== 4) {
                 return false;
+            }
             var scale = this.cropper.getScaleFactor();
+            console.log('scale', scale);
             var coords = data.coords,
                 x = parseInt(coords[0] / scale[0], 10),
                 y = parseInt(coords[1] / scale[1], 10),
@@ -69,40 +80,29 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
     },
 
-    render : function(response) {
-        if (response.content.hasOwnProperty('skeleton'))
-        {
-            this.$el.html(response.content.skeleton);
-        }
+    render : function() {
+        var content = $(this.tpl.scaler({
+            tr : _KeyMediaTranslations,
+            heading : 'Scale image',
+            versions : this.versions,
+            trueSize : this.trueSize,
+            image : this.image.thumb(this.size.w, this.size.h, 'jpg')
+        }));
 
-        this.$('img').attr({
-            src : this.image.thumb(this.size.w, this.size.h, 'jpg')
-        });
-        this.container = this.$('#keymedia-scaler-image');
+        this.$el.append(content);
 
-        var i, scale = $(response.content.scale), item, r, name;
-        var ul = this.$('.header ul'), box;
-        var outerBounds = this.outerBounds(this.versions, 4, 40);
-        for (i = 0; i < this.versions.length; i++) {
-            r = this.versions[i];
-            item = scale.clone();
-            item.attr('id', this.scaledId(r));
-            item.find('h2').text(r.name);
-            item.find('span').text(r.size.join('x'));
-            item.data('scale', r);
-            if ('url' in r)
-                item.addClass('cropped');
-            else
-                item.addClass('uncropped');
-
-            ul.append(item);
-
+        var outerBounds = this.outerBounds(this.versions, 4, 40), el, versions = this.versions;
+        this.$('.header li').each(function(index) {
+            el = $('p', this);
             box = new KeyMedia.views.Scalebox({
-                el : item.find('p'),
-                model : r.size,
+                el : el,
+                model : el.data('size'),
                 outer : outerBounds
             }).render();
-        }
+            $(this).data({
+                scale : versions[index]
+            });
+        });
 
         // Enable the first scaling by simulating a click
         this.$('.header ul').find('a').first().click();
@@ -135,6 +135,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     storeVersion : function(selection, scale)
     {
+        console.log('scale', scale);
         var vanityName = scale.name,
             size = scale.size;
 
@@ -173,6 +174,9 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.current = $(e.currentTarget);
         this.current.addClass('active');
         scale = this.current.data('scale');
+
+        if (typeof scale === 'undefined')
+            return this;
 
         var w = this.size.w, h = this.size.h, x, y, x2, y2;
 

@@ -8,6 +8,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
 
     initialize : function(options)
     {
+        options = (options || {});
         _.bindAll(this, 'render', 'search', 'close', 'enableUpload', 'changeImage');
 
         // DOM node to store selected image id into
@@ -15,14 +16,12 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         this.host = options.host;
         this.ending = options.ending;
 
-        this.el = $(this.el);
-
         if ('container' in options) {
             this.container = options.container;
         }
         else {
             this.container = new KeyMedia.views.Modal();
-            this.container.el.prependTo('body');
+            this.container.$el.prependTo('body');
         }
         this.container.bind('close', this.close);
         return this;
@@ -52,9 +51,9 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         this.upload = new KeyMedia.views.Upload({
             model : this.model,
             uploaded : this.changeImage,
-            el : $(this.el).parent(),
-            prefix : this.el.data('prefix'),
-            version : this.el.data('version')
+            el : this.$el.parent(),
+            prefix : this.$el.data('prefix'),
+            version : this.$el.data('version')
         });
         this.upload.render();
         return this;
@@ -73,7 +72,9 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
 
     // Open a scaling gui
     scaler : function(e) {
-        if (!(this.destination && this.destination.val())) return false;
+        if (!(this.destination && this.destination.val())) {
+            return false;
+        }
 
         var node = $(e.currentTarget);
         settings = {
@@ -89,8 +90,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     },
 
     close : function() {
-        if (this.view && 'close' in this.view)
-        {
+        if (this.view && ('close' in this.view)) {
             this.view.close();
         }
     }

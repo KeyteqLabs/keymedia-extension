@@ -1,27 +1,27 @@
 KeyMedia.views.Browser = Backbone.View.extend({
     tpl : null,
-
-    name : '',
-
     input : null,
+    name : '',
 
     initialize : function(options)
     {
+        options = (options || {});
         _.bindAll(this, 'render', 'select', 'renderItems');
 
         this.collection.bind('reset', this.renderItems);
-        this.el = $(this.el);
 
         this.tpl = {
             browser : Handlebars.compile($('#tpl-keymedia-browser').html()),
             item : Handlebars.compile($('#tpl-keymedia-item').html())
         };
 
-        if ('onSelect' in options)
+        if ('onSelect' in options) {
             this.onSelect = options.onSelect;
+        }
 
-        if ('parentName' in options)
+        if ('parentName' in options) {
             this.name = options.parentName;
+        }
 
         return this;
     },
@@ -36,8 +36,9 @@ KeyMedia.views.Browser = Backbone.View.extend({
         e.preventDefault();
         var node = $(e.currentTarget), id = node.data('id');
         var model = this.model.images.get(id);
-        if (this.onSelect)
+        if (this.onSelect) {
             this.onSelect(id, model.get('host'), model.get('scalesTo').ending);
+        }
         this.$('.close').click();
     },
 
@@ -45,8 +46,9 @@ KeyMedia.views.Browser = Backbone.View.extend({
     {
         e.preventDefault();
         var q = '';
-        if (this.input)
+        if (this.input) {
             q = this.input.val();
+        }
         this.model.images.search(this.input.val());
     },
 
@@ -57,7 +59,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
             heading : 'Select image'
         }));
 
-        this.el.append(content);
+        this.$el.append(content);
         this.renderItems();
         this.input = this.$('.q');
         return this;

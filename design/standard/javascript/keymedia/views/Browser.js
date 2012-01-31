@@ -5,8 +5,6 @@ KeyMedia.views.Browser = Backbone.View.extend({
         _.bindAll(this, 'render', 'select', 'renderItems');
 
         this.collection.bind('reset', this.renderItems);
-        this.el = $(this.el);
-
         this.onSelect = options.onSelect;
 
         this.tpl = {
@@ -37,7 +35,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
     },
 
     render : function() {
-        this.el.html(
+        this.$el.html(
             this.tpl.browser({
                 tr : _KeyMediaTranslations
             })

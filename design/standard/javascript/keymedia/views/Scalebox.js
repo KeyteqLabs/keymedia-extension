@@ -4,6 +4,7 @@ KeyMedia.views.Scalebox = Backbone.View.extend({
     initialize : function(options)
     {
         this.outerBounds = options.outer;
+        return this;
     },
 
     render : function()
@@ -18,7 +19,7 @@ KeyMedia.views.Scalebox = Backbone.View.extend({
             'margin-top' : parseInt(((h - size[1]) / 2), 10)
         };
 
-        this.el.css(css);
+        this.$el.css(css);
     },
 
     boxSize : function (size, maxIconWidth, maxIconHeight, minIconWidthHeight)
