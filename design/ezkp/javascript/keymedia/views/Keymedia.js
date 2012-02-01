@@ -40,8 +40,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         var options = {
             model : this.model,
             collection : this.model.images,
-            onSelect : this.changeImage,
-            parentName : this.editor.model.get('metadata').objectName
+            onSelect : this.changeImage
         };
 
         this.model.images.search('');
@@ -57,8 +56,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             model : this.model,
             image : this.image,
             versions : node.data('versions'),
-            trueSize : node.data('truesize'),
-            parentName : this.editor.model.get('metadata').objectName
+            trueSize : node.data('truesize')
         };
 
         this.model.image(this.image);
@@ -68,11 +66,9 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
 
     changeImage : function(id, host, ending)
     {
-        // Not really needed with autosave?
         this.$('.image-id').val(id);
         this.$('.image-host').val(host);
         this.$('.image-ending').val(ending);
-
         // Triggers autosave
         this.editor.onHandlerSave(this.model.id, this.$(':input').serializeArray());
         this.editor.trigger('stack.pop');
@@ -92,6 +88,9 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         if (this.image.get('preview')) {
             this.$('.keymedia-preview').html(this.image.get('preview'));
+        }
+        if (this.image.get('interactions')) {
+            this.$('.keymedia-interactions').html(this.image.get('interactions'));
         }
         return this;
     },

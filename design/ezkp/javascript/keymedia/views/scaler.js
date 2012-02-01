@@ -64,11 +64,11 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
     },
 
+    // render the overlay div for a scaled versions
+    // menu item. Happens on mouseenter on the li or after saving
+    // new crop information
     createOverlay : function(node, data) {
-        if (this.cropper) {
-            if (!('coords' in data) || data.coords.length !== 4) {
-                return false;
-            }
+        if (this.cropper && 'coords' in data && data.coords.length === 4) {
             var scale = this.cropper.getScaleFactor(), container = this.$img.parent(), coords = data.coords;
 
             var x = parseInt(coords[0] / scale[0], 10),
@@ -76,13 +76,12 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 x2 = parseInt(coords[2] / scale[0], 10),
                 y2 = parseInt(coords[3] / scale[1], 10),
                 offset = container.position();
-            var css = {
+            node.css({
                 'top' : parseInt((offset.top - 0) + y, 10),
                 left : parseInt((offset.left - 0) + x, 10),
                 width : parseInt(x2 - x, 10),
                 height : parseInt(y2 - y, 10)
-            };
-            node.css(css);
+            });
         }
     },
 
@@ -155,7 +154,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     {
         var menuElement = this.$('#scaled-' + data.name.toLowerCase());
         menuElement.data('scale', data);
-        this.createOverlay(menuElement.find('.overlay'), data);
+        this.createOverlay(menuElement, data);
     },
 
     changeScale : function(e) {

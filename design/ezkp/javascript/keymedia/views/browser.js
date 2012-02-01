@@ -1,7 +1,6 @@
 KeyMedia.views.Browser = Backbone.View.extend({
     tpl : null,
     input : null,
-    name : '',
 
     initialize : function(options)
     {
@@ -18,11 +17,6 @@ KeyMedia.views.Browser = Backbone.View.extend({
         if ('onSelect' in options) {
             this.onSelect = options.onSelect;
         }
-
-        if ('parentName' in options) {
-            this.name = options.parentName;
-        }
-
         return this;
     },
 
