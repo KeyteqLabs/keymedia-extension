@@ -1,4 +1,14 @@
 KeyMedia.views.Scaler = Backbone.View.extend({
+    // constants
+    HEADING : 'Select crops',
+    TRANSLATIONS : null,
+
+    // size of cropping image
+    SIZE : {
+        w : 830,
+        h : 580
+    },
+
     // Holds reference to current selected scale li
     current : null,
 
@@ -7,13 +17,9 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     trueSize : [],
 
-    // size of cropping image
-    size : {
-        w : 830,
-        h : 580
-    },
-
     tpl : null,
+
+    $img : null,
 
     initialize : function(options)
     {
@@ -22,6 +28,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.tpl = {
             scaler : Handlebars.compile($('#tpl-keymedia-scaler').html())
         };
+        this.TRANSLATIONS = _KeyMediaTranslations;
 
         if ('image' in options) {
             this.image = options.image;
@@ -35,8 +42,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
         this.versions = options.versions;
         this.trueSize = options.trueSize;
-        this.boxSize = options.size;
 
+        // Model is an instance of Attribute
         this.model.bind('scale', this.render);
         this.model.bind('version.create', this.versionCreated);
 
@@ -62,14 +69,13 @@ KeyMedia.views.Scaler = Backbone.View.extend({
             if (!('coords' in data) || data.coords.length !== 4) {
                 return false;
             }
-            var scale = this.cropper.getScaleFactor();
-            console.log('scale', scale);
-            var coords = data.coords,
-                x = parseInt(coords[0] / scale[0], 10),
+            var scale = this.cropper.getScaleFactor(), container = this.$img.parent(), coords = data.coords;
+
+            var x = parseInt(coords[0] / scale[0], 10),
                 y = parseInt(coords[1] / scale[1], 10),
                 x2 = parseInt(coords[2] / scale[0], 10),
                 y2 = parseInt(coords[3] / scale[1], 10),
-                offset = this.container.position();
+                offset = container.position();
             var css = {
                 'top' : parseInt((offset.top - 0) + y, 10),
                 left : parseInt((offset.left - 0) + x, 10),
@@ -82,11 +88,10 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     render : function() {
         var content = this.tpl.scaler({
-            tr : _KeyMediaTranslations,
-            heading : 'Scale image',
+            tr : this.TRANSLATIONS,
+            heading : this.HEADING,
             versions : this.versions,
-            trueSize : this.trueSize,
-            image : this.image.thumb(this.size.w, this.size.h, 'jpg')
+            image : this.image.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
         });
 
         this.$el.append(content);
@@ -103,6 +108,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 scale : versions[index]
             });
         });
+
+        this.$img = this.$('img');
 
         // Enable the first scaling by simulating a click
         this.$('.header ul').find('a').first().click();
@@ -135,7 +142,6 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     storeVersion : function(selection, scale)
     {
-        console.log('scale', scale);
         var vanityName = scale.name,
             size = scale.size;
 
@@ -178,7 +184,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         if (typeof scale === 'undefined')
             return this;
 
-        var w = this.size.w, h = this.size.h, x, y, x2, y2;
+        var w = this.SIZE.w, h = this.SIZE.h, x, y, x2, y2;
 
         // Find initial placement of crop
         // x,y,x2,y2
