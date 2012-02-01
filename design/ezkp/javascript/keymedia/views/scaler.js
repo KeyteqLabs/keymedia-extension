@@ -81,13 +81,13 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     },
 
     render : function() {
-        var content = $(this.tpl.scaler({
+        var content = this.tpl.scaler({
             tr : _KeyMediaTranslations,
             heading : 'Scale image',
             versions : this.versions,
             trueSize : this.trueSize,
             image : this.image.thumb(this.size.w, this.size.h, 'jpg')
-        }));
+        });
 
         this.$el.append(content);
 
@@ -214,7 +214,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
         else
         {
-            this.$('#keymedia-scaler-crop').Jcrop({
+            this.$('img').Jcrop({
                 trueSize : size
             }, function(a) {
                 // Store reference to API
