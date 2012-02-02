@@ -1,6 +1,5 @@
 {def $searchPlaceholder = '…'|i18n( 'content/keymedia' )
     $search = 'Search for images'|i18n( 'content/keymedia' )
-    $close = 'Close'|i18n( 'content/keymedia' )
     $next = 'Next 25 &gt;'
     $prev = '&lt; Previous 25'
 }
@@ -9,7 +8,6 @@
 {literal} _KeyMediaTranslations = { {/literal}
     searchPlaceholder : '{$searchPlaceholder}',
     search : '{$search}',
-    close : '{$close}',
     next : '{$next}',
     prev : '{$prev}'
 {literal} }; {/literal}
@@ -26,8 +24,6 @@
                     <button type="button" class="search">{{tr.search}}</button>
                     <a class="prev">{{tr.prev}}</a>
                     <a class="next">{{tr.next}}</a>
-    
-                    <button type="button" class="close">{{tr.close}}</button>
                 </form>
             </div>
     
