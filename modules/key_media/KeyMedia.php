@@ -168,7 +168,7 @@ class KeyMedia extends \ezote\lib\Controller
         $tpl->setVariable('attribute', $attribute);
         return array(
             'image' => $image->data(),
-            'toScale' == $handler->toScale(),
+            'toScale' == $handler->attribute('toscale'),
             'preview' => $tpl->fetch('design:parts/keymedia/preview.tpl'),
             'interactions' => $tpl->fetch('design:parts/keymedia/interactions.tpl'),
             'ok' => true

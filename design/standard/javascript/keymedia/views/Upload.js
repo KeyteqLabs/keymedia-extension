@@ -37,8 +37,10 @@ KeyMedia.views.Upload = Backbone.View.extend({
                 this.uploadCallback(image.id, image.host, image.scalesTo.ending);
             }
 
+            /* Commenting this out might break image update shizzle in standard design
             if ('html' in data.content)
                 this.$('.keymedia-image').replaceWith($(data.content.html));
+            */
         }
 
         this.$('.upload-progress').fadeOut();

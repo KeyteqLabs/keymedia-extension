@@ -24,8 +24,8 @@
         {/if}
         <button type="button" class="from-keymedia">{'Fetch from KeyMedia'|i18n( 'content/edit' )}</button>
     
-        <div class="upload-container">
-            <button type="button" class="upload">{'Upload new image'|i18n( 'content/edit' )}</button>
+        <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
+            <button type="button" class="upload" id="keymedia-local-file-{$attribute.id}">{'Upload new image'|i18n( 'content/edit' )}</button>
             <div class="upload-progress hid"><div class="progress"></div></div>
         </div>
     </section>

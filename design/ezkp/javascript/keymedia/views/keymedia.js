@@ -7,7 +7,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         options = (options || {});
         this.init(options);
-        _.bindAll(this, 'browse', 'upload', 'scale', 'render', 'changeImage');
+        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload');
         var data = this.$el.data();
         this.model = new KeyMedia.models.Attribute({
             id : data.id,
@@ -26,7 +26,6 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     events :
     {
         'click button.from-keymedia' : 'browse',
-        'click button.upload' : 'upload',
         'click button.scale' : 'scale'
     },
 
@@ -76,14 +75,6 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         this.model.image(this.image);
     },
 
-    upload : function(e)
-    {
-        e.preventDefault();
-        // Hmm?
-        $(e.currentTarget).parent().remove();
-        this.editor.onHandlerSave(this.attributeId, this.parseEdited());
-    },
-
     render : function()
     {
         if (this.image.get('preview')) {
@@ -98,24 +89,19 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             model : this.image
         }).render();
 
+        this.enableUpload();
+
         return this;
     },
 
-    onAdd : function(elements)
-    {
-        this.render(elements);
-
-        this.editor.trigger('stack.pop');
-
-        this.editor.onHandlerSave(this.attributeId, this.parseEdited());
-    },
-
-    removeObjects : function(e)
-    {
-        e.preventDefault();
-
-        this.$('ul li input:checked').parents('li').remove();
-
-        this.editor.onHandlerSave(this.attributeId, this.parseEdited());
+    enableUpload : function() {
+        this.upload = new KeyMedia.views.Upload({
+            model : this.model,
+            uploaded : this.changeImage,
+            el : this.$el,
+            prefix : this.model.get('prefix'),
+            version : this.model.get('version')
+        }).render();
+        return this;
     }
 });

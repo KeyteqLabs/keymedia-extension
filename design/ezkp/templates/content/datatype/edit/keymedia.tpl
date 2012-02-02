@@ -17,7 +17,7 @@
         'keymedia/views/scaled_version.js',
         'keymedia/views/scaler.js',
         'keymedia/views/browser.js',
-        'keymedia/views/Keymedia.js',
+        'keymedia/views/keymedia.js',
 
         'keymedia/views/Modal.js',
         'keymedia/views/Upload.js',
