@@ -15,8 +15,8 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             prefix : '/' + KP.urlPrefix + '/ezjscore/call'
         });
 
-        var bootstrap = this.$('.attribute-base').data('bootstrap');
-        this.image = new KeyMedia.models.Image(bootstrap);
+        this.image = new KeyMedia.models.Image(this.$('.attribute-base').data('bootstrap'));
+        this.image.attr = this.model;
         this.image.bind('change', this.render);
         this.image.bind('reset', this.render);
 
@@ -92,6 +92,12 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         if (this.image.get('interactions')) {
             this.$('.keymedia-interactions').html(this.image.get('interactions'));
         }
+
+        this.taggerView = new KeyMedia.views.Tagger({
+            el : this.$('.tagger'),
+            model : this.image
+        }).render();
+
         return this;
     },
 

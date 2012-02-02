@@ -50,7 +50,8 @@ KeyMedia.views.Tagger = Backbone.View.extend({
     render : function(media) {
         this.list = this.$('ul');
         this.input = this.$('.tagedit');
-        this.button = this.$('.tagit');
+        this.button = this.$('button');
+        this.update(this.model);
         this.inputChange();
         return this;
     },

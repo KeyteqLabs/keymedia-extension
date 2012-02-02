@@ -37,7 +37,7 @@
         </p>
         <div class="tagger">
             <input type="text" class="tagedit" placeholder="{'Write a tag'|i18n( 'content/edit' )}" />
-            <button type="button">
+            <button type="button" class="tagit">
                 {'Add tag'|i18n( 'content/edit' )}
             </button>
             <ul>
