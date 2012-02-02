@@ -27,10 +27,10 @@
 {/run-once}
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$image.data|json}' data-version='{$attribute.version}'>
-    <div class="keymedia-preview">
+    <div class="keymedia-preview current-image">
         {include uri="design:parts/keymedia/preview.tpl" attribute=$attribute}
     </div>
-    <div class="keymedia-interactions">
+    <div class="keymedia-interactions actions">
         {include uri="design:parts/keymedia/interactions.tpl" attribute=$attribute base=$attribute_base}
     </div>
 </div>
