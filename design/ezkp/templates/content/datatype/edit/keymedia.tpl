@@ -14,7 +14,7 @@
         'keymedia/Attribute.js',
         'keymedia/Image.js',
 
-        'keymedia/views/Scalebox.js',
+        'keymedia/views/scaled_version.js',
         'keymedia/views/scaler.js',
         'keymedia/views/browser.js',
         'keymedia/views/Keymedia.js',

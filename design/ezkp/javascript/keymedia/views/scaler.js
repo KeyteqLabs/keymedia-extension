@@ -21,10 +21,13 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     $img : null,
 
+    versionViews : null,
+
     initialize : function(options)
     {
         options = (options || {});
         _.bindAll(this, 'render', 'changeScale', 'versionCreated', 'createOverlay');
+        this.versionViews = [];
         this.tpl = {
             scaler : Handlebars.compile($('#tpl-keymedia-scaler').html())
         };
@@ -89,23 +92,19 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var content = this.tpl.scaler({
             tr : this.TRANSLATIONS,
             heading : this.HEADING,
-            versions : this.versions,
             image : this.image.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
         });
-
         this.$el.append(content);
 
         var outerBounds = this.outerBounds(this.versions, 4, 40), el, versions = this.versions;
-        this.$('.header li').each(function(index) {
-            el = $('p', this);
-            box = new KeyMedia.views.Scalebox({
-                el : el,
-                model : el.data('size'),
-                outer : outerBounds
+        var _view, _container = this.$('.header ul');
+        this.versionViews = this.versions.map(function(version) {
+            _view = new KeyMedia.views.ScaledVersion({
+                model : version,
+                outerBounds : outerBounds
             }).render();
-            $(this).data({
-                scale : versions[index]
-            });
+            _container.append(_view.el);
+            return _view;
         });
 
         this.$img = this.$('img');

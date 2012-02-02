@@ -39,24 +39,24 @@
 {/literal}
 </script>
 
+<script type="text/x-handlebars-template" id="tpl-keymedia-scaledversion">
+{literal}
+    <a>
+        <h2>{{name}}</h2>
+        <p>{{width}}x{{height}}</p>
+        <span class="box"></span>
+    </a>
+    <div class="overlay"></div>
+{/literal}
+</script>
+
 <script type="text/x-handlebars-template" id="tpl-keymedia-scaler">
     {include uri="design:handlebars/stack/item/header.tpl" noWrap=true()}
 {literal}
     <div class="stack-item-content">
         <div class="keymedia" id="keymedia-scaler">
             <div class="header">
-                <ul>
-                {{#each versions}}
-                    <li>
-                        <a>
-                            <p data-size=[{{size}}]></p>
-                            <h2>{{name}}</h2><br />
-                            <span></span>
-                        </a>
-                        <div class="overlay"></div>
-                    </li>
-                {{/each}}
-                </ul>
+                <ul></ul>
             </div>
             <div class="body">
                 <div class="image-wrap">
