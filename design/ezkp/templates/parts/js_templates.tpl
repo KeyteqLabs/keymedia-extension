@@ -19,19 +19,21 @@
     {include uri="design:handlebars/stack/item/header.tpl" noWrap=true()}
 {literal}
     <div class="stack-item-content">
-        <div class="header">
-            <form onsubmit="javascript: return false;" class="search">
-                <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
-                <button type="button" class="search">{{tr.search}}</button>
-                <a class="prev">{{tr.prev}}</a>
-                <a class="next">{{tr.next}}</a>
-
-                <button type="button" class="close">{{tr.close}}</button>
-            </form>
-        </div>
-
-        <div class="body">
-        {{body}}
+        <div class="keymedia" id="keymedia-browser">
+            <div class="header">
+                <form onsubmit="javascript: return false;" class="search">
+                    <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
+                    <button type="button" class="search">{{tr.search}}</button>
+                    <a class="prev">{{tr.prev}}</a>
+                    <a class="next">{{tr.next}}</a>
+    
+                    <button type="button" class="close">{{tr.close}}</button>
+                </form>
+            </div>
+    
+            <div class="body">
+            {{body}}
+            </div>
         </div>
     </div>
 {/literal}
@@ -41,25 +43,27 @@
     {include uri="design:handlebars/stack/item/header.tpl" noWrap=true()}
 {literal}
     <div class="stack-item-content">
-        <div class="header">
-            <ul>
-            {{#each versions}}
-                <li>
-                    <a>
-                        <p data-size=[{{size}}]></p>
-                        <h2>{{name}}</h2><br />
-                        <span></span>
-                    </a>
-                    <div class="overlay"></div>
-                </li>
-            {{/each}}
-            </ul>
-        </div>
-        <div class="body">
-            <div class="image-wrap">
-                <img src="{{image}}" />
+        <div class="keymedia" id="keymedia-scaler">
+            <div class="header">
+                <ul>
+                {{#each versions}}
+                    <li>
+                        <a>
+                            <p data-size=[{{size}}]></p>
+                            <h2>{{name}}</h2><br />
+                            <span></span>
+                        </a>
+                        <div class="overlay"></div>
+                    </li>
+                {{/each}}
+                </ul>
             </div>
-            <div id="keymedia-scaler-controls">
+            <div class="body">
+                <div class="image-wrap">
+                    <img src="{{image}}" />
+                </div>
+                <div id="keymedia-scaler-controls">
+                </div>
             </div>
         </div>
     </div>

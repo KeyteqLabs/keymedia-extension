@@ -18,7 +18,7 @@
 <script type="text/x-handlebars-template" id="tpl-keymedia-browser">
 {literal}
     <div id="keymedia-browser">
-        <div class="header">
+        <div class="keymedia header">
             <form onsubmit="javascript: return false;" class="search">
                 <input type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
                 <button type="button" class="search">{{tr.search}}</button>
@@ -29,7 +29,7 @@
             </form>
         </div>
 
-        <div class="body">
+        <div class="keymedia body">
         {{body}}
         </div>
     </div>
