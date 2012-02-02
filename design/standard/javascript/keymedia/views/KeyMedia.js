@@ -20,7 +20,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
             this.container = options.container;
         }
         else {
-            this.container = new KeyMedia.views.Modal();
+            this.container = new KeyMedia.views.Modal().render();
             this.container.$el.prependTo('body');
         }
         this.container.bind('close', this.close);
