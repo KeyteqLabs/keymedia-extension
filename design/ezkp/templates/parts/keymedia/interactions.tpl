@@ -36,7 +36,7 @@
         {$image.name|wash}
         </p>
         <div class="tagger">
-            <input type="text" class="tagedit" placeholder="{'Write a tag'|i18n( 'content/edit' )}" />
+            <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}" />
             <button type="button" class="tagit">
                 {'Add tag'|i18n( 'content/edit' )}
             </button>

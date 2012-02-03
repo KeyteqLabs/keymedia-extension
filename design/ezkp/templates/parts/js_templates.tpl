@@ -1,4 +1,4 @@
-{def $searchPlaceholder = '…'|i18n( 'content/keymedia' )
+{def $searchPlaceholder = 'Search for media'|i18n( 'content/keymedia' )
     $search = 'Search for images'|i18n( 'content/keymedia' )
     $next = 'Next 25 &gt;'
     $prev = '&lt; Previous 25'
@@ -20,8 +20,11 @@
         <div class="keymedia" id="keymedia-browser">
             <div class="header">
                 <form onsubmit="javascript: return false;" class="search">
-                    <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
-                    <button type="button" class="search">{{tr.search}}</button>
+                    <div class="search-field">
+                        <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
+                        <span class="kp-icon16 search-icon"></span>
+                    </div>
+                    <button type="button" class="action">{{tr.search}}</button>
                     <a class="prev">{{tr.prev}}</a>
                     <a class="next">{{tr.next}}</a>
                 </form>
@@ -38,9 +41,10 @@
 <script type="text/x-handlebars-template" id="tpl-keymedia-scaledversion">
 {literal}
     <a>
-        <h2>{{name}}</h2>
-        <p>{{width}}x{{height}}</p>
-        <span class="box"></span>
+        <p class="box"></p>
+        <h2>{{name}}<br />
+            <span>{{width}}x{{height}}</span>
+        </h2>
     </a>
     <div class="overlay"></div>
 {/literal}

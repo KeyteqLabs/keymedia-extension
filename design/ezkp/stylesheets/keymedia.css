@@ -1,0 +1,184 @@
+#keymedia-scaler .header, #keymedia-browser .header {
+  float: left;
+  margin: 0;
+  padding: 0 0 10px 0;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 100%;
+  position: relative; }
+
+#keymedia-scaler .body, #keymedia-browser .body {
+  clear: both; }
+
+#keymedia-browser .body {
+  border-left: 1px solid #fff;
+  border-top: 1px solid #fff;
+  float: left; }
+
+#keymedia-browser .header button {
+  visibility: hidden; }
+
+#keymedia-browser a {
+  color: #fff;
+  text-decoration: none; }
+
+#keymedia-browser .prev, #keymedia-browser .next {
+  display: none; }
+
+/* Browse media */
+#keymedia-browser .item {
+  float: left;
+  width: 180px;
+  height: 120px;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  padding: 3px;
+  position: relative;
+  overflow: hidden;
+  background: #ededed; }
+
+#keymedia-browser .item .pick {
+  text-align: center;
+  width: 180px;
+  height: 120px;
+  /* background: url(loader.gif) center center no-repeat; */
+  vertical-align: middle;
+  display: table-cell; }
+
+#keymedia-browser .item img {
+  margin: 0; }
+
+#keymedia-browser .item:hover .meta {
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  display: box;
+  box-orient: horizontal;
+  box-pack: center;
+  box-align: center; }
+
+#keymedia-browser .item .meta {
+  display: none;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  padding: 0 10px;
+  margin: 0;
+  background: #fff;
+  opacity: 0.7;
+  position: absolute;
+  color: #000;
+  font: normal 12px/18px Helvetica, Arial, sans-serif; }
+
+/* Scale and crop media */
+#keymedia-scaler .header {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -o-user-select: none;
+  user-select: none; }
+
+#keymedia-scaler .header ul {
+  list-style-type: none;
+  margin: 0;
+  float: left; }
+
+#keymedia-scaler .header ul li {
+  float: left;
+  margin-right: 8px; }
+
+#keymedia-scaler .header ul li a {
+  display: block;
+  float: left;
+  background: #fff;
+  border-radius: 4px;
+  height: 30px;
+  padding: 3px 15px 0 6px;
+  font: normal 11px/11px Helvetica, Arial, sans-serif;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #bbb; }
+
+#keymedia-scaler .header ul li a p {
+  margin-right: 6px;
+  border: 1px solid #000;
+  border-radius: 2px;
+  float: left; }
+
+#keymedia-scaler .header ul li a h2 {
+  float: left;
+  margin: 0;
+  font: bold 12px/14px Helvetica, Arial, sans-serif; }
+
+#keymedia-scaler .header ul li a span {
+  font: normal 10px/10px Helvetica, Arial, sans-serif; }
+
+#keymedia-scaler .header ul li.uncropped a {
+  background: transparent;
+  border-color: #ccc;
+  color: #ccc; }
+
+#keymedia-scaler .header ul li.uncropped a p {
+  border: 1px dotted #ccc; }
+
+#keymedia-scaler .header ul li.uncropped a:hover {
+  border-color: #fff;
+  color: #fff; }
+
+#keymedia-scaler .header ul li.uncropped a:hover p {
+  border: 1px dotted #fff; }
+
+#keymedia-scaler .header ul li.cropped a:hover {
+  background: #fff60b; }
+
+#keymedia-scaler .header ul li.active a, #keymedia-scaler .header ul li.active a:hover {
+  background-color: #ffbb00;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffbb00), to(#ff8d00));
+  background-image: -webkit-linear-gradient(top, #ffbb00, #ff8d00);
+  background-image: -moz-linear-gradient(top, #ffbb00, #ff8d00);
+  background-image: -ms-linear-gradient(top, #ffbb00, #ff8d00);
+  background-image: -o-linear-gradient(top, #ffbb00, #ff8d00);
+  background-image: linear-gradient(top, #ffbb00, #ff8d00);
+  color: #000;
+  border-color: transparent; }
+
+#keymedia-scaler .header ul li:hover .overlay {
+  display: block;
+  opacity: 1; }
+
+#keymedia-scaler .header ul li.active:hover .overlay,
+#keymedia-scaler .header ul li.uncropped:hover .overlay {
+  display: none; }
+
+#keymedia-scaler .overlay {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  z-index: 700;
+  border: 1px solid #fff60b;
+  -webkit-transition: opacity 0.1s ease;
+  -moz-transition: opacity 0.1s ease;
+  -o-transition: opacity 0.1s ease;
+  transition: opacity 0.1s ease; }
+
+#keymedia-scaler .header ul li.active .overlay {
+  border-color: #000; }
+
+#keymedia-scaler-image {
+  margin: 0 auto;
+  text-align: center; }
+
+/* Override jCrop */
+#keymedia-scaler .jcrop-handle {
+  font-size: 1px;
+  width: 16px !important;
+  height: 16px !important;
+  border: 1px #eee solid;
+  background-color: #fff;
+  border-radius: 4px; }

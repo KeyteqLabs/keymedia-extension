@@ -2,7 +2,7 @@ KeyMedia.views.Tagger = Backbone.View.extend({
 
     // underscore templates, is compile in initialize
     templates : {
-        tag : '<li><%-tag%><span class="remove"><a data-tag="<%-tag%>">X</a></span></li>'
+        tag : '<li><%-tag%><span class="remove"><a data-tag="<%-tag%>">x</a></span></li>'
     },
 
     initialize : function(options)
