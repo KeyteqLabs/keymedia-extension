@@ -75,7 +75,7 @@
     <div class="item">
         <a class="pick" data-id="{{id}}">
             <img src="{{thumb.url}}" />
-            <span class="meta">{{filename}} ({{width}}x{{height}})</span>
+            <p class="meta">{{filename}}<br /><span class="details">{{width}} x {{height}}</span></p>
             <span class="share{{#if shared}} shared{{/if}}"></span>
         </a>
     </div>
