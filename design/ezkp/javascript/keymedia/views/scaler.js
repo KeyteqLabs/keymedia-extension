@@ -98,11 +98,17 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.$el.append(content);
 
         var outerBounds = this.outerBounds(this.versions, 4, 40), el, versions = this.versions;
-        var _view, _container = this.$('.header ul');
+        var _view, _container = this.$('.header ul'),
+            className;
         this.versionViews = this.versions.map(function(version) {
+            if ('url' in version)
+                className = 'cropped';
+            else
+                className = 'uncropped';
             _view = new KeyMedia.views.ScaledVersion({
                 model : version,
-                outerBounds : outerBounds
+                outerBounds : outerBounds,
+                className : className
             }).render();
             _container.append(_view.el);
             return _view;
