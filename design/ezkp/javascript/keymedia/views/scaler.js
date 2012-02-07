@@ -92,6 +92,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var content = this.tpl.scaler({
             tr : this.TRANSLATIONS,
             heading : this.HEADING,
+            icon : '/extension/ezkp/design/ezkp/images/kp/32x32/Pictures-alt-2b.png',
             image : this.image.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
         });
         this.$el.append(content);
