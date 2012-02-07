@@ -219,7 +219,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
         else
         {
-            this.$('img').Jcrop({
+            this.$('.image-wrap img').Jcrop({
                 trueSize : size
             }, function(a) {
                 // Store reference to API
