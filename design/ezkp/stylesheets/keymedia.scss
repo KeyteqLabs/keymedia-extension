@@ -36,7 +36,7 @@
             
             .pick {
                 text-align: center;
-                width: 180px;
+                width: 170px;
                 height: 190px;
                 display: table-cell;
                 padding: 10px 10px 0 10px;
@@ -45,7 +45,7 @@
                 img {
                     border: 1px solid #fff;
                     @include box-shadow(3px,3px,5px,0,rgba(0,0,0,0.4));
-                    opacity: 0.9;
+                    opacity: 1;
                     @include transition(opacity,0.2s);
                 }
                 

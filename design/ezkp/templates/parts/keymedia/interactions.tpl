@@ -10,7 +10,7 @@
 {if $handler.backend}
     <section class="edit-buttons">
         {if $image}
-        <button type="button" class="scale"
+        <button type="button" class="scale action"
             {if not( $handler.imageFits )}disabled="disabled"{/if}
             data-truesize='{$image.size|json}'
             data-versions='{$handler.toscale|json}'>
