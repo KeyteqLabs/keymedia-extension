@@ -55,7 +55,8 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             model : this.model,
             image : this.image,
             versions : node.data('versions'),
-            trueSize : node.data('truesize')
+            trueSize : node.data('truesize'),
+            className : 'keymedia-scaler'
         };
 
         this.model.image(this.image);
