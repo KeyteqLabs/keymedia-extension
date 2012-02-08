@@ -45,7 +45,7 @@
                 img {
                     border: 1px solid #fff;
                     @include box-shadow(3px,3px,5px,0,rgba(0,0,0,0.4));
-                    opacity: 1;
+                    opacity: 0.9;
                     @include transition(opacity,0.2s);
                 }
                 
@@ -103,10 +103,10 @@
                     background: #fff;
                     border-radius: 4px;
                     height: 30px;
-                    padding: 3px 15px 0 6px;
+                    padding: 3px 25px 0 3px;
                     font: normal 11px/11px Helvetica, Arial, sans-serif;
                     color: #000;
-                    border: 1px solid #bbb;
+                    border: 1px solid #fff;
                     
                     h2 {
                         float: left;
@@ -124,16 +124,10 @@
                     }
                 }
                 
-                &.active a, &.active a:hover {
-                    @include gradient(#ffbb00, #ff8d00);
-                    color: #000;
-                    border-color: transparent;
-                }
-                
                 &.uncropped a {
                     background: transparent;
                     border-color: #ccc;
-                    color: #ccc;
+                    color: #fff;
                     
                     
                     p { border: 1px dotted #ccc; }
@@ -146,7 +140,15 @@
                     }
                 }
                 
-                &.cropped a:hover { background: #fff60b; }
+                &.cropped a:hover { background: #fff60b; border-color: transparent; }
+                
+                &.active a, &.active a:hover {
+                    @include gradient(#ffbb00, #ff8d00);
+                    color: #000;
+                    border-color: transparent;
+                    
+                    p { border-color: #000;}
+                }
             }
         }
     }
@@ -164,6 +166,8 @@
     	background-color: #fff;
     	border-radius: 4px
     }
+    
+    .jcrop-holder { border: 1px solid #fff; }
 }
 
 
