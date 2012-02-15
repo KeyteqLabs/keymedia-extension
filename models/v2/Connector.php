@@ -103,9 +103,9 @@ class Connector extends \keymedia\models\ConnectorBase
 
     /**
      * Return media information for given image id
-     * 
+     *
      * @param string $id
-     * @return object 
+     * @return object
      */
     public function media($id)
     {

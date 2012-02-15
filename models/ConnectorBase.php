@@ -19,7 +19,7 @@ abstract class ConnectorBase implements ConnectorInterface
     protected $mediabaseDomain;
     /** @var string The callback used for progress-reporting. */
     protected $callback;
-    /** @var int Timout in minutes before the request is cancelled */
+    /** @var int Timout in seconds before the request is cancelled */
     protected $timeout;
 
 
@@ -36,7 +36,7 @@ abstract class ConnectorBase implements ConnectorInterface
         $this->apiKey = $apiKey;
         $this->mediabaseDomain = $mediabaseDomain;
 
-        $this->timeout = 30;
+        $this->timeout = 1800;
     }
 
     /**
