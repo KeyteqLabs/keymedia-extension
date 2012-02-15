@@ -228,7 +228,7 @@ class Handler
      * @param string|array|null $format
      * @return array
      */
-    public function media($format = array(300, 200))
+    public function media($format = array(300, 200), $quality = null)
     {
         $availableFormats = $this->values();
 
@@ -262,7 +262,7 @@ class Handler
         }
         elseif (is_array($format))
         {
-            $mediaUrl = $this->thumb($format[0], $format[1]);
+            $mediaUrl = $this->thumb($format[0], $format[1], $quality);
             $version = array();
         }
         else {
@@ -296,7 +296,7 @@ class Handler
         );
         if (isset($mediaUrl))
         {
-            $url = $mediaUrl;
+            $url = $this->addQualityToUrl($mediaUrl, $quality);
             return compact('url') + $mediaInfo;
         }
         else
@@ -311,7 +311,6 @@ class Handler
 
         if (isset($version) && !isset($mediaUrl)){
 
-            $ext = '';
             switch($data->file->type)
             {
                 case 'image/png' :
@@ -323,7 +322,8 @@ class Handler
                 default :
                     $ext = '.jpg';
             }
-            $mediaUrl = "http://" . $image->host()   . $version['url'] . $ext;
+            $url = $this->addQualityToUrl($version['url'], $quality);
+            $mediaUrl = "http://" . $image->host()   . $url . $ext;
 
             $mediaInfo['url'] = $mediaUrl;
 
@@ -504,12 +504,38 @@ class Handler
      * @param int $height
      * @return string
      */
-    protected function thumb($width, $height)
+    protected function thumb($width, $height, $quality = false)
     {
         $data = $this->values();
         $host = $data['host'];
         $ending = isset($data['ending']) ? $data['ending'] : 'jpg';
         $id = $data['id'];
-        return 'http://' . $host . "/{$width}x{$height}/{$id}.{$ending}";
+        if ($quality)
+            $quality = 'q' . $quality;
+        return 'http://' . $host . "/{$width}x{$height}{$quality}/{$id}.{$ending}";
+    }
+
+    /**
+     * Add quality param in url to keymedia file
+     *
+     * @param $url
+     * @param $quality
+     * @return string
+     */
+    protected function addQualityToUrl($url, $quality)
+    {
+        if (!$quality)
+            return $url;
+
+        $quality = 'q' . $quality;
+        $pathArr = explode('/', $url);
+        $index = $pathArr[0] ? 1 : 2;
+
+        /**
+         * Add quality param at index
+         */
+        array_splice($pathArr, $index, 0, $quality);
+
+        return join('/', $pathArr);
     }
 }

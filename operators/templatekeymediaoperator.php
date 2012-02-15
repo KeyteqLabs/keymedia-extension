@@ -30,17 +30,20 @@ class TemplateKeymediaOperator
     {
         return array(
             'keymedia' => array(
-
-                    'attribute' => array(
-                        'type' => 'eZContentObjectAttribute',
-                        'required' => true
+                'attribute' => array(
+                    'type' => 'eZContentObjectAttribute',
+                    'required' => true
+                ),
+                'format' => array(
+                    'type' => 'mixed',
+                    'required' => false,
+                    'default' => null
                     ),
-                    'format' => array(
-                        'type' => 'mixed',
-                        'required' => false,
-                        'default' => null
-                    )
-
+                'quality' => array(
+                    'type' => 'mixed',
+                    'required' => false,
+                    'default' => null
+                )
             )
         );
     }
@@ -61,13 +64,14 @@ class TemplateKeymediaOperator
     {
         $attr = $namedParameters['attribute'];
         $format = $namedParameters['format'];
+        $quality = $namedParameters['quality'];
         $format = $format ?: array(300, 200);
 
         switch ($operatorName)
         {
             case 'keymedia':
                 $handler = $attr->content();
-                $operatorValue = $handler->media($format);
+                $operatorValue = $handler->media($format, $quality);
                 break;
         }
     }
