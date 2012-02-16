@@ -3,7 +3,11 @@
 {/if}
 {def $media = keymedia($attribute,$format)}
 
-{if eq($attribute.content.id, 0)|not}    
+{if not( is_set ( $quality ) )}
+    {def $quality = null()}
+{/if}
+
+{if eq($attribute.content.id, 0)|not}
     {if $media.url|is_set()}
         {def $template = 'design:content/datatype/view/'|concat($media.type)|concat('.tpl')}
 
@@ -14,6 +18,6 @@
             'height', cond($height|is_set(), $height, $media.height)
         )}
 
-        {include uri=$template media=$media param=$params}    
+        {include uri=$template media=$media param=$params}
     {/if}
 {/if}
