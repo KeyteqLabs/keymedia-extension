@@ -3,7 +3,7 @@
 {/if}
 {def $media = keymedia($attribute,$format)}
 
-{if not( is_set ( $quality ) )}
+{if is_set($quality)|not}
     {def $quality = null()}
 {/if}
 
