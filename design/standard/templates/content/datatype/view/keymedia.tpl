@@ -1,11 +1,12 @@
 {if not( is_set( $format ) )}
     {def $format = array(300,200)}
 {/if}
-{def $media = keymedia($attribute,$format)}
 
 {if is_set($quality)|not}
-    {def $quality = null()}
+    {def $quality = false()}
 {/if}
+
+{def $media = keymedia($attribute,$format, $quality, 1)}
 
 {if eq($attribute.content.id, 0)|not}
     {if $media.url|is_set()}

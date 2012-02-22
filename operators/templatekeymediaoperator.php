@@ -43,6 +43,11 @@ class TemplateKeymediaOperator
                     'type' => 'mixed',
                     'required' => false,
                     'default' => null
+                ),
+                'fetchInfo' => array(
+                    'type' => 'mixed',
+                    'required' => false,
+                    'default' => null
                 )
             )
         );
@@ -65,13 +70,14 @@ class TemplateKeymediaOperator
         $attr = $namedParameters['attribute'];
         $format = $namedParameters['format'];
         $quality = $namedParameters['quality'];
+        $fetchInfo = $namedParameters['fetchInfo'];
         $format = $format ?: array(300, 200);
 
         switch ($operatorName)
         {
             case 'keymedia':
                 $handler = $attr->content();
-                $operatorValue = $handler->media($format, $quality);
+                $operatorValue = $handler->media($format, $quality, $fetchInfo);
                 break;
         }
     }
