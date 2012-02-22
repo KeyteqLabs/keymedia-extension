@@ -226,9 +226,10 @@ class Handler
     /**
      * @throws Exception
      * @param string|array|null $format
+     * @param boolean $fetchInfo Wether to fetch info from mediabase
      * @return array
      */
-    public function media($format = array(300, 200), $quality = null)
+    public function media($format = array(300, 200), $quality = null, $fetchInfo = false)
     {
         $availableFormats = $this->values();
 
@@ -236,17 +237,20 @@ class Handler
         if (!$availableFormats && !is_array($format))
             return null; //throw new Exception("Image attribute does not contain any information.");
 
-        // Fetch image data and build original part of return array
-        if (!($image = $this->image())) return null;
-        if ($data = $image->data())
+        if ($fetchInfo)
         {
-            $originalImageInfo =  array(
-                'size' => $data->file->size,
-                'width' => $data->file->width,
-                'height' => $data->file->height,
-                'name' => isset($data->file->name) ? $data->file->name : null,
-                'ratio' => $data->file->ratio
-            );
+            // Fetch image data and build original part of return array
+            if (!($image = $this->image())) return null;
+            if ($data = $image->data())
+            {
+                $originalImageInfo =  array(
+                    'size' => $data->file->size,
+                    'width' => $data->file->width,
+                    'height' => $data->file->height,
+                    'name' => isset($data->file->name) ? $data->file->name : null,
+                    'ratio' => $data->file->ratio
+                );
+            }
         }
 
         // Init version to null
@@ -275,6 +279,9 @@ class Handler
                     return null;
                 list($versionWidth, $versionHeight) = $formatSize;
 
+                if (empty($image) && !($image = $this->image()))
+                    return null;
+
                 $bestFit = $image->boxInside($versionWidth, $versionHeight);
                 $bestFit['size'] = array($versionWidth, $versionHeight);
 
@@ -283,20 +290,23 @@ class Handler
 
                 $availableFormats = $this->values();
                 $version = $availableFormats['versions'][$format];
-
             }
         }
 
-        $typeArr = explode('/', $data->file->type);
         $mediaInfo = array(
-            'mime-type' => $data->file->type,
-            'type' => array_shift($typeArr),
-            'format' => $format,
-            'original' => $originalImageInfo
+            'format' => $format
         );
+        if ($fetchInfo && $data)
+        {
+            $typeArr = explode('/', $data->file->type);
+            $mediaInfo['mime-type'] = $data->file->type;
+            $mediaInfo['type'] = array_shift($typeArr);
+            $mediaInfo['original'] = $originalImageInfo;
+        }
+
         if (isset($mediaUrl))
         {
-            $url = $this->addQualityToUrl($mediaUrl, $quality);
+            $url = $mediaUrl;
             return compact('url') + $mediaInfo;
         }
         else
@@ -309,21 +319,22 @@ class Handler
             $mediaInfo = array_merge($mediaInfo, compact('width', 'height', 'ratio', 'coords'));
         }
 
-        if (isset($version) && !isset($mediaUrl)){
-
-            switch($data->file->type)
+        if (isset($version) && !isset($mediaUrl))
+        {
+            switch($availableFormats['ending'])
             {
-                case 'image/png' :
-                    $ext ='.png';
-                    break;
-                case 'image/gif' :
-                    $ext ='.gif';
+                case 'png':
+                case 'jpg':
+                case 'gif':
+                    $ext = '.' . $availableFormats['ending'];
                     break;
                 default :
                     $ext = '.jpg';
             }
+            $host = !empty($image) ? $image->host() : $availableFormats['host'];
+
             $url = $this->addQualityToUrl($version['url'], $quality);
-            $mediaUrl = "http://" . $image->host()   . $url . $ext;
+            $mediaUrl = "http://" . $host . $url . $ext;
 
             $mediaInfo['url'] = $mediaUrl;
 
