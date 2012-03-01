@@ -1,4 +1,7 @@
 {if $handler.backend}
+    {if eq(is_set($base), false())}
+        {def $base='ContentObjectAttribute'}
+    {/if}
 <div id="keymedia-buttons-{$attribute.id}" class="keymedia-buttons"
     data-prefix={'/ezjscore/call'|ezurl}
     data-id="{$attribute.id}"

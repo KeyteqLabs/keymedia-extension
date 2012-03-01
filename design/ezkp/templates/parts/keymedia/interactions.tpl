@@ -4,6 +4,9 @@
 {if not( is_set( $image ) ) }
     {def $image = $handler.image}
 {/if}
+{if eq(is_set($base), false())}
+    {def $base='ContentObjectAttribute'}
+{/if}
 <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />
 <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
 <input type="hidden" name="{$base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending" />
