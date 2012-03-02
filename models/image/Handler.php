@@ -347,6 +347,18 @@ class Handler
     }
 
     /**
+     * Remove the image
+     *
+     * @return mixed
+     */
+    public function remove()
+    {
+        $this->attr->setAttribute('data_text', '');
+        $this->attributeValues = false;
+        return $this->attr->storeData();
+    }
+
+    /**
      * Save or get values for this content object attribute
      *
      * @param array|false $save Values to save

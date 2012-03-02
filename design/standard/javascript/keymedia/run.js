@@ -15,6 +15,7 @@ $(function() {
             image.attr = model;
             var controller = new KeyMedia.views.KeyMedia({
                 el : container,
+                wrapper : wrapper,
                 model : model,
                 destination : container.find('.image-id'),
                 host : container.find('.image-host'),

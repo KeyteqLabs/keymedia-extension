@@ -3,6 +3,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     view : null,
     destination : null,
     host : null,
+    wrapper : null,
 
     container : false,
 
@@ -15,6 +16,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         this.destination = options.destination;
         this.host = options.host;
         this.ending = options.ending;
+        this.wrapper = options.wrapper;
 
         if ('container' in options) {
             this.container = options.container;
@@ -29,7 +31,8 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
 
     events : {
         'click .keymedia-remote-file' : 'search',
-        'click .keymedia-scale' : 'scaler'
+        'click .keymedia-scale' : 'scaler',
+        'click .keymedia-remove-file' : 'remove'
     },
 
     render : function()
@@ -37,6 +40,18 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         this.container.render();
         this.enableUpload();
         this.delegateEvents();
+        return this;
+    },
+
+    remove : function(e)
+    {
+        e.preventDefault();
+        this.destination.val('');
+        this.host.val('');
+        this.ending.val('');
+        this.wrapper.find('.keymedia-image').remove();
+        this.$('.keymedia-scale').remove();
+        this.$('.keymedia-remove-file').remove();
         return this;
     },
 

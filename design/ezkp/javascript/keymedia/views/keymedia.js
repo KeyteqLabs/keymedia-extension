@@ -7,7 +7,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         options = (options || {});
         this.init(options);
-        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload');
+        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'remove');
         var data = this.$el.data();
         this.model = new KeyMedia.models.Attribute({
             id : data.id,
@@ -26,11 +26,27 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     events :
     {
         'click button.from-keymedia' : 'browse',
-        'click button.scale' : 'scale'
+        'click button.scale' : 'scale',
+        'click .remove' : 'remove'
     },
 
     parseEdited : function()
     {
+    },
+
+    remove : function(e)
+    {
+        e.preventDefault();
+        this.$('.image-id').val('');
+        this.$('.image-host').val('');
+        this.$('.image-ending').val('');
+        var data = this.$(':input').serializeArray();
+        data.push({
+            name : 'imageRemove',
+            value : 1
+        })
+        // Triggers autosave
+        this.editor.onHandlerSave(this.model.id, data);
     },
 
     browse : function(e)
@@ -104,5 +120,19 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             version : this.model.get('version')
         }).render();
         return this;
+    },
+
+    success : function(response)
+    {
+        var remove = _(response).find(function(el){
+            if (_(el).has('imageRemove') || (_(el).has('name') && el.name == 'imageRemove'))
+                return true;
+        });
+        if (remove)
+        {
+            this.$('.current-image').remove();
+            this.$('.meta').remove();
+            this.$('.scale').remove();
+        }
     }
 });

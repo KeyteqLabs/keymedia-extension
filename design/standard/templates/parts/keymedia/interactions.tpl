@@ -22,6 +22,7 @@
         value="{'Requires a bigger image'|i18n( 'content/edit' )}"
         {/if}
         data-versions='{$handler.toscale|json}'>
+        <input type="button" class="keymedia-remove-file button" value="{'Remove image'|i18n( 'content/edit' )}">
     {/if}
 
     <input type="button" class="keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">

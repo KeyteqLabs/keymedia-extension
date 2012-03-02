@@ -86,6 +86,9 @@ class KeyMedia extends eZDataType
         $host = $http->variable($base . '_host_' . $attributeId);
         $ending = $http->variable($base . '_ending_' . $attributeId);
         $handler = new Handler($attribute);
+
+        if (!$id)
+            return $handler->remove();
         return $handler->setImage($id, $host, $ending);
     }
 
