@@ -29,7 +29,7 @@
 {$image.attribute('show')}
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$image.data|json}' data-version='{$attribute.version}'>
-    <section class="image-container">
+    <section {if $image}class="image-container with-image"{else}class="image-container"{/if}>
     {if $image}
         <div class="keymedia-preview current-image">
                 <div class="image-wrap">
@@ -67,16 +67,9 @@
         {if $handler.backend}
             <section class="edit-buttons">
                 <span class="kp-icon50 pictures-icon"{if $image} style="display:none"{/if}></span>
-                <button type="button" class="upload-image from-keymedia"{if $image} style="display:none"{/if}>{'Touch to fetch picture'|i18n( 'content/edit' )}</button>
+                <button type="button" class="upload-image from-keymedia"{if $image} style="display:none"{/if}>{'Touch to fetch from KeyMedia'|i18n( 'content/edit' )}</button>
 
-                <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image}
-                     style="display:none"{/if}>
-                    <button type="button" class="upload"
-                            id="keymedia-local-file-{$attribute.id}">{'or upload from disk'|i18n( 'content/edit' )}</button>
-                    <div class="upload-progress hid">
-                        <div class="progress"></div>
-                    </div>
-                </div>
+                
             </section>
 
             
@@ -86,6 +79,13 @@
     </div>
     </section>
     {if $handler.backend}
+    <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image} style="display:none"{/if}>
+        <button type="button" class="upload upload-from-disk"
+                id="keymedia-local-file-{$attribute.id}">{'Upload from disk'|i18n( 'content/edit' )}</button>
+        <div class="upload-progress hid">
+            <div class="progress"></div>
+        </div>
+    </div>
         {if $image}
             <div class="meta">
                 <div class="tagger">
