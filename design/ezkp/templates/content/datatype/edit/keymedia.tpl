@@ -2,7 +2,7 @@
     {def $attribute_base='ContentObjectAttribute'}
 {/if}
 {def $handler = $attribute.content
-    $image = $handler.image }
+     $image = $handler.image }
 
 {run-once}
     {ezcss( array('jquery.jcrop.css', 'keymedia.css') )}
@@ -25,13 +25,78 @@
     ) )}
     {include uri="design:parts/js_templates.tpl"}
 {/run-once}
+
+{$image.attribute('show')}
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$image.data|json}' data-version='{$attribute.version}'>
     <section class="image-container">
+    {if $image}
         <div class="keymedia-preview current-image">
-            {include uri="design:parts/keymedia/preview.tpl" attribute=$attribute}
+
+                <div class="image-wrap">
+                    {if eq($attribute.content.id, 0)|not}
+                        <div class="remove-wrap">
+                            <span class="kp-icon16 remove-black"></span>
+                            <input class="button remove"
+                                   type="submit"
+                                   name="CustomActionButton[{$attribute.id}_delete_image]"
+                                   value="{'Remove current image'|i18n( 'content/edit' )}"/>
+                        </div>
+                    {/if}
+
+                    <button type="button" class="scale action"
+                            {if not( $handler.imageFits )}disabled="disabled"{/if}
+                            data-truesize='{$image.size|json}'
+                            data-versions='{$handler.toscale|json}'>
+
+                        {if $handler.imageFits}
+                        {'Scale variants'|i18n( 'content/edit' )}
+                        {else}
+                        {'Requires a bigger image'|i18n( 'content/edit' )}
+                        {/if}
+                    </button>
+
+                    {attribute_view_gui format=array(200,200) attribute=$attribute}
+                </div>
         </div>
+    {/if}
         <div class="keymedia-interactions actions">
-            {include uri="design:parts/keymedia/interactions.tpl" attribute=$attribute base=$attribute_base}
+            <input type="hidden" name="{$attribute_base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id"/>
+            <input type="hidden" name="{$attribute_base}_host_{$attribute.id}" value="{$image.host}" class="image-host"/>
+            <input type="hidden" name="{$attribute_base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending"/>
+            {if $handler.backend}
+                <section class="edit-buttons">
+                    <button type="button" class="from-keymedia"{if $image} style="display:none"{/if}>{'Fetch from KeyMedia'|i18n( 'content/edit' )}</button>
+
+                    <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image}
+                         style="display:none"{/if}>
+                        <button type="button" class="upload"
+                                id="keymedia-local-file-{$attribute.id}">{'Upload new image'|i18n( 'content/edit' )}</button>
+                        <div class="upload-progress hid">
+                            <div class="progress"></div>
+                        </div>
+                    </div>
+                </section>
+
+                {if $image}
+                    <div class="meta">
+                        <p>
+                            {$image.name|wash}
+                        </p>
+
+                        <div class="tagger">
+                            <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}"/>
+                            <button type="button" class="tagit">
+                                {'Add tag'|i18n( 'content/edit' )}
+                            </button>
+                            <ul>
+                            </ul>
+                        </div>
+                    </div>
+                {/if}
+            {else}
+                <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
+            {/if}
         </div>
+    </section>
 </div>
