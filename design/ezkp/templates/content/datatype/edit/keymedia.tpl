@@ -32,7 +32,6 @@
     <section class="image-container">
     {if $image}
         <div class="keymedia-preview current-image">
-
                 <div class="image-wrap">
                     {if eq($attribute.content.id, 0)|not}
                         <div class="remove-wrap">
@@ -43,8 +42,7 @@
                                    value="{'Remove current image'|i18n( 'content/edit' )}"/>
                         </div>
                     {/if}
-
-                    <button type="button" class="scale action"
+                    <button type="button" class="edit-image scale action"
                             {if not( $handler.imageFits )}disabled="disabled"{/if}
                             data-truesize='{$image.size|json}'
                             data-versions='{$handler.toscale|json}'>
@@ -60,43 +58,46 @@
                 </div>
         </div>
     {/if}
-        <div class="keymedia-interactions actions">
-            <input type="hidden" name="{$attribute_base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id"/>
-            <input type="hidden" name="{$attribute_base}_host_{$attribute.id}" value="{$image.host}" class="image-host"/>
-            <input type="hidden" name="{$attribute_base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending"/>
-            {if $handler.backend}
-                <section class="edit-buttons">
-                    <button type="button" class="from-keymedia"{if $image} style="display:none"{/if}>{'Fetch from KeyMedia'|i18n( 'content/edit' )}</button>
+    
+    
+    <div class="keymedia-interactions actions">
+        <input type="hidden" name="{$attribute_base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id"/>
+        <input type="hidden" name="{$attribute_base}_host_{$attribute.id}" value="{$image.host}" class="image-host"/>
+        <input type="hidden" name="{$attribute_base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending"/>
+        {if $handler.backend}
+            <section class="edit-buttons">
+                <span class="kp-icon50 pictures-icon"{if $image} style="display:none"{/if}></span>
+                <button type="button" class="upload-image from-keymedia"{if $image} style="display:none"{/if}>{'Touch to fetch picture'|i18n( 'content/edit' )}</button>
 
-                    <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image}
-                         style="display:none"{/if}>
-                        <button type="button" class="upload"
-                                id="keymedia-local-file-{$attribute.id}">{'Upload new image'|i18n( 'content/edit' )}</button>
-                        <div class="upload-progress hid">
-                            <div class="progress"></div>
-                        </div>
+                <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image}
+                     style="display:none"{/if}>
+                    <button type="button" class="upload"
+                            id="keymedia-local-file-{$attribute.id}">{'or upload from disk'|i18n( 'content/edit' )}</button>
+                    <div class="upload-progress hid">
+                        <div class="progress"></div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                {if $image}
-                    <div class="meta">
-                        <p>
-                            {$image.name|wash}
-                        </p>
-
-                        <div class="tagger">
-                            <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}"/>
-                            <button type="button" class="tagit">
-                                {'Add tag'|i18n( 'content/edit' )}
-                            </button>
-                            <ul>
-                            </ul>
-                        </div>
-                    </div>
-                {/if}
-            {else}
-                <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
-            {/if}
-        </div>
+            
+        {else}
+            <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
+        {/if}
+    </div>
     </section>
+    {if $handler.backend}
+        {if $image}
+            <div class="meta">
+                <div class="tagger">
+                    <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}"/>
+                    <button type="button" class="tagit">
+                        {'Add tag'|i18n( 'content/edit' )}
+                    </button>
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        {/if}
+    {/if}
+    
 </div>
