@@ -94,11 +94,8 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
 
     render : function()
     {
-        if (this.image.get('preview')) {
-            this.$('.keymedia-preview').html(this.image.get('preview'));
-        }
-        if (this.image.get('interactions')) {
-            this.$('.keymedia-interactions').html(this.image.get('interactions'));
+        if (this.image.get('content')) {
+            this.$el.html(this.image.get('content'));
         }
 
         this.taggerView = new KeyMedia.views.Tagger({
@@ -132,7 +129,9 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         {
             this.$('.current-image').remove();
             this.$('.meta').remove();
-            this.$('.scale').remove();
+            this.$('.edit-buttons').show();
+            this.$('.image-container').removeClass('with-image');
+            this.$('.upload-container').show();
         }
     }
 });

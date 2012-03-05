@@ -18,10 +18,8 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
     image : function(image) {
         $.getJSON(this.url('image'), function(resp) {
             var content = resp.content, data = content.image;
-            if ('preview' in content)
-                data.preview = content.preview;
-            if ('interactions' in content)
-                data.interactions = content.interactions;
+            if ('content' in content)
+                data.content = content.content;
             image.set(data);
         });
         return image;

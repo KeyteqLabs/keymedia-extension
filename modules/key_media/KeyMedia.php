@@ -169,8 +169,7 @@ class KeyMedia extends \ezote\lib\Controller
         return array(
             'image' => $image->data(),
             'toScale' == $handler->attribute('toscale'),
-            'preview' => $tpl->fetch('design:parts/keymedia/preview.tpl'),
-            'interactions' => $tpl->fetch('design:parts/keymedia/interactions.tpl'),
+            'content' => $tpl->fetch('design:content/datatype/edit/keymedia.tpl'),
             'ok' => true
         );
     }
@@ -192,9 +191,8 @@ class KeyMedia extends \ezote\lib\Controller
             }
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
-            $preview = $tpl->fetch('design:parts/keymedia/preview.tpl');
-            $interactions = $tpl->fetch('design:parts/keymedia/interactions.tpl');
-            return compact('image', 'preview', 'interactions', 'toScale');
+            $content = $tpl->fetch('design:content/datatype/edit/keymedia.tpl');
+            return compact('image', 'content', 'toScale');
         }
     }
 

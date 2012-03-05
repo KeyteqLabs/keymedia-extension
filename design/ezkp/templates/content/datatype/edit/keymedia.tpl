@@ -26,7 +26,6 @@
     {include uri="design:parts/js_templates.tpl"}
 {/run-once}
 
-{$image.attribute('show')}
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$image.data|json}' data-version='{$attribute.version}'>
     <section {if $image}class="image-container with-image"{else}class="image-container"{/if}>
@@ -65,9 +64,9 @@
         <input type="hidden" name="{$attribute_base}_host_{$attribute.id}" value="{$image.host}" class="image-host"/>
         <input type="hidden" name="{$attribute_base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending"/>
         {if $handler.backend}
-            <section class="edit-buttons">
-                <span class="kp-icon50 pictures-icon"{if $image} style="display:none"{/if}></span>
-                <button type="button" class="upload-image from-keymedia"{if $image} style="display:none"{/if}>{'Touch to fetch from KeyMedia'|i18n( 'content/edit' )}</button>
+            <section class="edit-buttons"{if $image} style="display:none"{/if}>
+                <span class="kp-icon50 pictures-icon"></span>
+                <button type="button" class="upload-image from-keymedia">{'Touch to fetch from KeyMedia'|i18n( 'content/edit' )}</button>
 
                 
             </section>
