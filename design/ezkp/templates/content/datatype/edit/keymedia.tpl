@@ -86,17 +86,14 @@
         </div>
     </div>
         {if $image}
-            <div class="meta">
-                <div class="tagger">
-                    <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}"/>
-                    <button type="button" class="tagit">
-                        {'Add tag'|i18n( 'content/edit' )}
-                    </button>
-                    <ul>
-                    </ul>
-                </div>
+            <div class="tagger">
+                <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}"/>
+                <button type="button" class="tagit">
+                    {'Add tag'|i18n( 'content/edit' )}
+                </button>
+                <ul>
+                </ul>
             </div>
         {/if}
     {/if}
-    
 </div>
