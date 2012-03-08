@@ -5,6 +5,7 @@
      $image = $handler.image }
 
 {run-once}
+    {if $excludeJS|not}
     {ezcss( array('jquery.jcrop.css', 'keymedia.css') )}
     {ezscript( array(
         'libs/handlebars.js',
@@ -24,6 +25,7 @@
         'keymedia/views/Tagger.js',
     ) )}
     {include uri="design:parts/js_templates.tpl"}
+    {/if}
 {/run-once}
 
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'

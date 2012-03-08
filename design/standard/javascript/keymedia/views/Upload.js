@@ -31,7 +31,6 @@ KeyMedia.views.Upload = Backbone.View.extend({
         if ('content' in data && 'image' in data.content)
         {
             var image = data.content.image;
-            console.log(image);
             if (this.uploadCallback)
             {
                 this.uploadCallback(image.id, image.host, image.scalesTo.ending);
