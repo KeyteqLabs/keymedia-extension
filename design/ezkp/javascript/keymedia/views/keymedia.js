@@ -27,7 +27,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         'click button.from-keymedia' : 'browse',
         'click button.scale' : 'scale',
-        'click .remove' : 'remove'
+        'click .image-wrap .remove' : 'remove'
     },
 
     parseEdited : function()
@@ -80,22 +80,28 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         return this;
     },
 
-    changeImage : function(id, host, ending)
+    changeImage : function(id, host, ending, pop)
     {
         this.$('.image-id').val(id);
         this.$('.image-host').val(host);
         this.$('.image-ending').val(ending);
         // Triggers autosave
         this.editor.onHandlerSave(this.model.id, this.$(':input').serializeArray());
-        this.editor.trigger('stack.pop');
+        if (pop)
+            this.editor.trigger('stack.pop');
         // Reloads image from server
         this.model.image(this.image);
     },
 
     render : function()
     {
-        if (this.image.get('content')) {
-            this.$el.html(this.image.get('content'));
+        if (this.image.get('content'))
+        {
+            var content = $(this.image.get('content'));
+            if (content.first().hasClass('attribute-base'))
+                this.$('.attribute-base').replaceWith(this.image.get('content'));
+            else
+                this.$el.html(this.image.get('content'));
         }
 
         this.taggerView = new KeyMedia.views.Tagger({
@@ -129,6 +135,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         {
             this.$('.current-image').remove();
             this.$('.meta').remove();
+            this.$('.tagger').remove();
             this.$('.edit-buttons').show();
             this.$('.image-container').removeClass('with-image');
             this.$('.upload-container').show();
