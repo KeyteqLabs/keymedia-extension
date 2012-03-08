@@ -27,7 +27,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         'click button.from-keymedia' : 'browse',
         'click button.scale' : 'scale',
-        'click .remove' : 'remove'
+        'click .image-wrap .remove' : 'remove'
     },
 
     parseEdited : function()
