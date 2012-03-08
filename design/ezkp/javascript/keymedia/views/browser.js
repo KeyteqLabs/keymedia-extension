@@ -31,7 +31,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
         var node = $(e.currentTarget), id = node.data('id');
         var model = this.model.images.get(id);
         if (this.onSelect) {
-            this.onSelect(id, model.get('host'), model.get('scalesTo').ending);
+            this.onSelect(id, model.get('host'), model.get('scalesTo').ending, true);
         }
         this.$('.close').click();
     },

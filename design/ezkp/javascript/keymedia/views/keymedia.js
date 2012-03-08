@@ -80,14 +80,15 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         return this;
     },
 
-    changeImage : function(id, host, ending)
+    changeImage : function(id, host, ending, pop)
     {
         this.$('.image-id').val(id);
         this.$('.image-host').val(host);
         this.$('.image-ending').val(ending);
         // Triggers autosave
         this.editor.onHandlerSave(this.model.id, this.$(':input').serializeArray());
-        this.editor.trigger('stack.pop');
+        if (pop)
+            this.editor.trigger('stack.pop');
         // Reloads image from server
         this.model.image(this.image);
     },
