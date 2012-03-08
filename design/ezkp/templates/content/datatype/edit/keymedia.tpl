@@ -66,9 +66,10 @@
         {if $handler.backend}
             <section class="edit-buttons"{if $image} style="display:none"{/if}>
                 <span class="kp-icon50 pictures-icon"></span>
-                <button type="button" class="upload-image from-keymedia">{'Touch to fetch from KeyMedia'|i18n( 'content/edit' )}</button>
-
-                
+                <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image} style="display:none"{/if}>
+                    <button type="button" class="upload-image upload upload-from-disk" id="keymedia-local-file-{$attribute.id}">{'Click to add'|i18n( 'content/edit' )}</button>
+                        <div class="upload-progress hid"><div class="progress"></div></div>
+                </div>
             </section>
 
             
@@ -78,13 +79,10 @@
     </div>
     </section>
     {if $handler.backend}
-    <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $image} style="display:none"{/if}>
-        <button type="button" class="upload upload-from-disk"
-                id="keymedia-local-file-{$attribute.id}">{'Upload from disk'|i18n( 'content/edit' )}</button>
-        <div class="upload-progress hid">
-            <div class="progress"></div>
-        </div>
-    </div>
+        <button type="button" class="from-keymedia">{'Browse KeyMedia'|i18n( 'content/edit' )}</button>
+    
+    
+    
         {if $image}
             <div class="tagger">
                 <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}"/>
