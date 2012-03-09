@@ -38,11 +38,8 @@
         -o-transition: opacity 0.2s ease;
         transition: opacity 0.2s ease; }
       #keymedia-browser .body .item .pick .meta {
-        position: absolute;
-        bottom: 5px;
-        left: 5px;
-        right: 5px;
         text-overflow: ellipsis;
+        max-width: 170px;
         white-space: nowrap;
         overflow: hidden;
         color: #000;

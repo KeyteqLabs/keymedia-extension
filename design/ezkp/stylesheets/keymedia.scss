@@ -50,11 +50,8 @@
                 }
                 
                 .meta {
-                    position: absolute;
-                    bottom: 5px;
-                    left: 5px;
-                    right: 5px;
                     text-overflow: ellipsis;
+                    max-width: 170px;
                     white-space: nowrap;
                     overflow: hidden;
                     color: #000;
