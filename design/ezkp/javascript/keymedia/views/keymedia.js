@@ -7,7 +7,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         options = (options || {});
         this.init(options);
-        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'remove');
+        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage');
         var data = this.$el.data();
         this.model = new KeyMedia.models.Attribute({
             id : data.id,
@@ -27,14 +27,14 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         'click button.from-keymedia' : 'browse',
         'click button.scale' : 'scale',
-        'click .image-wrap .remove' : 'remove'
+        'click .image-wrap .remove' : 'removeImage'
     },
 
     parseEdited : function()
     {
     },
 
-    remove : function(e)
+    removeImage : function(e)
     {
         e.preventDefault();
         this.$('.image-id').val('');
