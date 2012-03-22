@@ -9,10 +9,12 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         this.init(options);
         _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage');
         var data = this.$el.data();
+        var prefix = KP.urlPrefix ? '/' + KP.urlPrefix : '';
+        prefix = prefix + '/ezjscore/call';
         this.model = new KeyMedia.models.Attribute({
             id : data.id,
             version : data.version,
-            prefix : '/' + KP.urlPrefix + '/ezjscore/call'
+            prefix : prefix
         });
 
         this.image = new KeyMedia.models.Image(this.$('.attribute-base').data('bootstrap'));
