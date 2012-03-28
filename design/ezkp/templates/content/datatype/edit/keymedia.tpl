@@ -5,7 +5,7 @@
      $image = $handler.image }
 
 {run-once}
-    {if $excludeJS|not}
+    {if is_set($excludeJS)|not}
     {ezcss( array('jquery.jcrop.css', 'keymedia.css') )}
     {ezscript( array(
         'libs/handlebars.js',
