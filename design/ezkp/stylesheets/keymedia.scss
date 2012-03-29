@@ -109,6 +109,10 @@
                         float: left;
                         margin: 0;
                         font: bold 12px/14px Helvetica, Arial, sans-serif;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        width: 90px;
+                        white-space: nowrap;
                     }
                     
                     span { font: normal 10px/10px Helvetica, Arial, sans-serif; }
