@@ -58,7 +58,7 @@
   user-select: none; }
   #keymedia-scaler .header ul li {
     float: left;
-    margin-right: 8px; }
+    margin: 0 8px 10px 0; }
     #keymedia-scaler .header ul li .overlay {
       display: none;
       -webkit-transition: opacity 0.1s ease;
@@ -89,11 +89,7 @@
       #keymedia-scaler .header ul li a h2 {
         float: left;
         margin: 0;
-        font: bold 12px/14px Helvetica, Arial, sans-serif;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: 90px;
-        white-space: nowrap; }
+        font: bold 12px/14px Helvetica, Arial, sans-serif; }
       #keymedia-scaler .header ul li a span {
         font: normal 10px/10px Helvetica, Arial, sans-serif; }
       #keymedia-scaler .header ul li a p {
@@ -129,7 +125,8 @@
         border-color: #000; }
 #keymedia-scaler .body {
   clear: both;
-  padding: 20px 0 0 0; }
+  padding: 0!important;
+  position: static!important; }
 #keymedia-scaler .jcrop-handle {
   font-size: 1px;
   width: 16px !important;
@@ -138,4 +135,5 @@
   background-color: #fff;
   border-radius: 4px; }
 #keymedia-scaler .jcrop-holder {
-  border: 1px solid #fff; }
+  border: 1px solid #fff;
+  overflow: hidden; }
