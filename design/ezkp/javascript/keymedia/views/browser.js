@@ -5,9 +5,10 @@ KeyMedia.views.Browser = Backbone.View.extend({
     initialize : function(options)
     {
         options = (options || {});
-        _.bindAll(this, 'render', 'select', 'renderItems');
+        _.bindAll(this, 'render', 'select', 'renderItems', 'page', 'onPage');
 
         this.collection.bind('reset', this.renderItems);
+        this.collection.bind('add', this.renderItems);
 
         this.tpl = {
             browser : Handlebars.compile($('#tpl-keymedia-browser').html()),
@@ -23,7 +24,8 @@ KeyMedia.views.Browser = Backbone.View.extend({
     events : {
         'click button.search' : 'search',
         'submit form.search' : 'search',
-        'click .item a' : 'select'
+        'click .item a' : 'select',
+        'click .more-hits' : 'page'
     },
 
     select : function(e) {
@@ -54,18 +56,37 @@ KeyMedia.views.Browser = Backbone.View.extend({
         }));
 
         this.$el.append(content);
-        this.renderItems();
+        this.renderItems(true);
         this.input = this.$('.q');
         return this;
     },
 
-    renderItems : function()
+    renderItems : function(clear)
     {
         var html = '';
         this.collection.each(function(item) {
             html += this.tpl.item(item.attributes);
         }, this);
-        this.$('.body').html(html);
+        
+        if (this.collection.total > this.collection.length)
+            this.$('.more-hits').show();
+        else
+            this.$('.more-hits').hide();
+
+        if (clear)
+            this.$('.body').html(html);
+        else
+            this.$('.body').append(html);
         return this;
+    },
+
+    page : function()
+    {
+        this.collection.page();
+    },
+
+    onPage : function()
+    {
+        this.renderItems();
     }
 });

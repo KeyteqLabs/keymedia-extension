@@ -72,9 +72,13 @@ KeyMedia.models.ImageCollection = Backbone.Collection.extend({
 
     attr : null,
 
+    total : 0,
+
+    limit : 25,
+
     initialize : function(options)
     {
-        _.bindAll(this, 'search', 'onSearch');
+        _.bindAll(this, 'search', 'onSearch', 'page', 'onPage');
         return this;
     },
 
@@ -88,6 +92,7 @@ KeyMedia.models.ImageCollection = Backbone.Collection.extend({
         var data = (filters || {});
         if (typeof q === 'string')
             data.q = q;
+        data.limit = this.limit;
         return $.getJSON(this.url('browse'), data, this.onSearch);
     },
 
@@ -95,8 +100,33 @@ KeyMedia.models.ImageCollection = Backbone.Collection.extend({
     {
         if (resp && 'content' in resp && 'results' in resp.content)
         {
+            this.total = resp.content.results.total;
             this.reset(resp.content.results.hits);
             this.trigger('search', resp);
         }
-    }
+    },
+
+    page : function(q)
+    {
+        if (this.length < this.total)
+        {
+            var data = {};
+            if (typeof q === 'string')
+                data.q = q;
+
+            data.limit = this.limit;
+
+            data.offset = this.length;
+            return $.getJSON(this.url('browse'), data, this.onPage);
+        }
+    },
+
+    onPage : function(resp)
+    {
+        if (resp && 'content' in resp && 'results' in resp.content)
+        {
+            this.add(resp.content.results.hits);
+            this.trigger('page', resp);
+        }
+    },
 });

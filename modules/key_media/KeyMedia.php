@@ -132,8 +132,8 @@ class KeyMedia extends \ezote\lib\Controller
             $q = $http->variable('q', '');
             $width = 160;
             $height = 120;
-            $offset = 0;
-            $limit = 25;
+            $offset = $http->variable('offset', 0);
+            $limit = $http->variable('limit', 25);
 
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();

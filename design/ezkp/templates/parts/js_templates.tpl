@@ -33,6 +33,7 @@
             <div class="body">
             {{body}}
             </div>
+            <a class="more-hits" style="display:none">Show more</a>
         </div>
     </div>
 {/literal}
