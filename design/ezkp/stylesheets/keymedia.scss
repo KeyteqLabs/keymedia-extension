@@ -101,7 +101,7 @@
             
             li {
                 float: left;
-                margin-right: 8px;
+                margin: 0 8px 10px 0;
                 
                 .overlay {
                     display: none;
@@ -174,7 +174,8 @@
     
     .body {
         clear: both;
-        padding: 20px 0 0 0;
+        padding: 0!important;
+        position: static!important;
     }
     
     .jcrop-handle { // Override jCrop
@@ -186,7 +187,10 @@
     	border-radius: 4px
     }
     
-    .jcrop-holder { border: 1px solid #fff; }
+    .jcrop-holder {
+        border: 1px solid #fff;
+        overflow: hidden;
+    }
 }
 
 
