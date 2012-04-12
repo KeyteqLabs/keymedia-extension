@@ -83,7 +83,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
 
     page : function()
     {
-        this.collection.page();
+        this.collection.page(this.$('.q').val());
     },
 
     onPage : function()
