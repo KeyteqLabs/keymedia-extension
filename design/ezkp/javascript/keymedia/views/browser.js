@@ -68,15 +68,16 @@ KeyMedia.views.Browser = Backbone.View.extend({
             html += this.tpl.item(item.attributes);
         }, this);
         
-        if (this.collection.total > this.collection.length)
-            this.$('.more-hits').show();
-        else
-            this.$('.more-hits').hide();
-
         if (clear)
             this.$('.body').html(html);
         else
             this.$('.body').append(html);
+
+        if (this.collection.total > this.collection.length)
+            this.$('.body').append('<a class="more-hits button">Show more</a>');
+        else
+            this.$('.more-hits').hide();
+
         return this;
     },
 
