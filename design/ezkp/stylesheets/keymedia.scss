@@ -65,29 +65,9 @@
                 }
             }
         }
+        
+        .more-hits { clear: both; }
     }
-    .more-hits {
-                 display: block;
-                 padding: 14px 0 0 0;
-                 height: 25px;
-
-                 border-left: 1px solid #fff;
-                 width: 100%;
-                 background: #006dd3;
-                 text-align: center;
-                 font-weight: bold;
-                 font-size: 14px;
-                 float: left;
-                 color: #fff;
-                 cursor: pointer;
-                 text-decoration: none;
-                background-image: -moz-linear-gradient(top, #0091e2, #006dd3);
-                background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #0091e2),color-stop(1, #006dd3));
-             }
-
-             .more-hits:hover {
-                 background: #0091e2;
-             }
 }
 
 
