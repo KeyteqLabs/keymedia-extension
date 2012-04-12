@@ -45,6 +45,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
         this.versions = options.versions;
         this.trueSize = options.trueSize;
+        this.app = options.app;
 
         // Model is an instance of Attribute
         this.model.bind('scale', this.render);
@@ -158,6 +159,22 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     versionCreated : function(data)
     {
+        /**
+         * HACK. Prevent old coords to be used when scaling again
+         * Store new coords in scale button
+         */
+        var name = data.name,
+            coords = data.coords;
+
+        var scaleButtonVersions = this.versions;
+        _(scaleButtonVersions).each(function(version, key){
+            if (version.name == name)
+            {
+                scaleButtonVersions[key].coords = coords;
+            }
+        });
+        this.app.versions = scaleButtonVersions;
+
         var menuElement = this.$('#scaled-' + data.name.toLowerCase());
         menuElement.data('scale', data);
         this.createOverlay(menuElement, data);

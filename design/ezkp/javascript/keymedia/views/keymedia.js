@@ -2,6 +2,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
 {
     editor : null,
     image : null,
+    versions : null,
 
     initialize : function(options)
     {
@@ -46,7 +47,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         data.push({
             name : 'imageRemove',
             value : 1
-        })
+        });
         // Triggers autosave
         this.editor.onHandlerSave(this.model.id, data);
     },
@@ -72,9 +73,10 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         var options = {
             model : this.model,
             image : this.image,
-            versions : node.data('versions'),
+            versions : this.versions,
             trueSize : node.data('truesize'),
-            className : 'keymedia-scaler'
+            className : 'keymedia-scaler',
+            app : this
         };
 
         this.model.image(this.image);
@@ -111,6 +113,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             model : this.image
         }).render();
 
+        this.versions = this.$('button.scale').data('versions');
         this.enableUpload();
 
         return this;
