@@ -89,12 +89,17 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         this.$('.image-id').val(id);
         this.$('.image-host').val(host);
         this.$('.image-ending').val(ending);
+
+        var data = this.$(':input').serializeArray();
+        data.push({
+            name : 'changeImage',
+            value : 1
+        });
+
         // Triggers autosave
-        this.editor.onHandlerSave(this.model.id, this.$(':input').serializeArray());
+        this.editor.onHandlerSave(this.model.id, data);
         if (pop)
             this.editor.trigger('stack.pop');
-        // Reloads image from server
-        this.model.image(this.image);
     },
 
     render : function()
@@ -136,6 +141,11 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             if (_(el).has('imageRemove') || (_(el).has('name') && el.name == 'imageRemove'))
                 return true;
         });
+        var changeImage = _(response).find(function(el)
+        {
+            if (_(el).has('changeImage') || (_(el).has('name') && el.name == 'changeImage'))
+                return true;
+        });
         if (remove)
         {
             this.$('.current-image').remove();
@@ -144,6 +154,11 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             this.$('.edit-buttons').show();
             this.$('.image-container').removeClass('with-image');
             this.$('.upload-container').show();
+        }
+        else if(changeImage)
+        {
+            // Reloads image from server
+            this.model.image(this.image);
         }
     }
 });
