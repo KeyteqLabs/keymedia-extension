@@ -60,7 +60,8 @@ KeyMedia.views.Upload = Backbone.View.extend({
         var button = this.$('#' + this.browseButton),
             text = button.val() + ' (Max ' + this.maxSize + ')';
         button.val(text);
-        this.uploader = new plupload.Uploader({
+
+        var settings = {
             runtimes : 'html5,html4',
             container : this.browseContainer,
             browse_button : this.browseButton,
@@ -68,10 +69,19 @@ KeyMedia.views.Upload = Backbone.View.extend({
             url : this.url(),
             multipart_params : {
                 'AttributeID' : this.model.id,
-                'ContentObjectVersion' : this.options.version,
+                'ContentObjectVersion' : this.options.version
             },
             headers : this.headers
-        });
+        };
+
+        if ($('#ezxform_token_js').length)
+        {
+            /**
+             * Ugly hack to go with ezformtoken
+             */
+            settings.multipart_params.ezxform_token = $('#ezxform_token_js').attr('title');
+        }
+        this.uploader = new plupload.Uploader(settings);
         this.uploader.init();
         this.uploader.bind('FileUploaded', this.uploaded);
         this.uploader.bind('UploadProgress', this.progress);
