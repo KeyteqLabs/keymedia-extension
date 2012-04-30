@@ -6,7 +6,7 @@
     {def $quality = false()}
 {/if}
 
-{def $media = keymedia($attribute,$format, $quality, 0)}
+{def $media = keymedia($attribute,$format, $quality, 1)}
 
 {if eq($attribute.content.id, 0)|not}
     {if $media.url|is_set()}
