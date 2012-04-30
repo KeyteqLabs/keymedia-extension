@@ -14,7 +14,7 @@
 </script>
 
 <script type="text/x-handlebars-template" id="tpl-keymedia-browser">
-    {include uri="design:handlebars/stack/item/header.tpl" noWrap=true()}
+{include uri='design:global/heading_handlebars.tpl'}
 {literal}
     <div class="stack-item-content">
         <div class="keymedia" id="keymedia-browser">
@@ -51,7 +51,7 @@
 </script>
 
 <script type="text/x-handlebars-template" id="tpl-keymedia-scaler">
-    {include uri="design:handlebars/stack/item/header.tpl" noWrap=true()}
+{include uri='design:global/heading_handlebars.tpl'}
 {literal}
     <div class="stack-item-content">
         <div class="keymedia" id="keymedia-scaler">
