@@ -8,7 +8,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         options = (options || {});
         this.init(options);
-        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage');
+        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage', 'getVersion');
         var data = this.$el.data();
         var prefix = KP.urlPrefix ? '/' + KP.urlPrefix : '';
         prefix = prefix + '/ezjscore/call';
@@ -17,6 +17,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             version : data.version,
             prefix : prefix
         });
+        this.model.controller = this;
 
         this.image = new KeyMedia.models.Image(this.$('.attribute-base').data('bootstrap'));
         this.image.attr = this.model;
@@ -48,8 +49,19 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             name : 'imageRemove',
             value : 1
         });
-        // Triggers autosave
-        this.editor.onHandlerSave(this.model.id, data);
+
+        var version = this.getVersion();
+
+        if (version)
+        {
+            // Triggers autosave
+            this.editor.onHandlerSave(this.model.id, version, data);
+        }
+        else
+        {
+            // Triggers autosave
+            this.editor.onHandlerSave(this.model.id, data);
+        }
     },
 
     browse : function(e)
@@ -96,8 +108,18 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             value : 1
         });
 
-        // Triggers autosave
-        this.editor.onHandlerSave(this.model.id, data);
+        var version = this.getVersion();
+
+        if (version)
+        {
+            // Triggers autosave
+            this.editor.onHandlerSave(this.model.id, version, data);
+        }
+        else
+        {
+            // Triggers autosave
+            this.editor.onHandlerSave(this.model.id, data);
+        }
         if (pop)
             this.editor.trigger('stack.pop');
     },
@@ -125,14 +147,23 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     },
 
     enableUpload : function() {
+        var version = this.getVersion() ? this.getVersion() : this.model.get('version');
         this.upload = new KeyMedia.views.Upload({
             model : this.model,
             uploaded : this.changeImage,
             el : this.$el,
             prefix : this.model.get('prefix'),
-            version : this.model.get('version')
+            version : version
         }).render();
         return this;
+    },
+
+    getVersion : function()
+    {
+        var language = this.$el.data('language');
+        if (language && _.isFunction(this.editor.getVersion))
+            return this.editor.getVersion(language);
+        return false;
     },
 
     success : function(response)

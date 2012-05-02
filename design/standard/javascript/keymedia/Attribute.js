@@ -2,16 +2,17 @@
 KeyMedia.models.Attribute = Backbone.Model.extend({
     prefix : null,
     images : null,
+    controller : null,
 
     initialize : function(options)
     {
-        _.bindAll(this, 'scale', 'onScale', 'addVanityUrl', 'image');
+        _.bindAll(this, 'scale', 'onScale', 'addVanityUrl', 'image', 'version');
         this.images = new KeyMedia.models.ImageCollection();
         this.images.attr = this;
     },
 
     url : function(method, extra) {
-        extra = (extra || [this.id,this.get('version')]);
+        extra = (extra || [this.id,this.version()]);
         return this.get('prefix') + '/' + ['keymedia', method].concat(extra).join('::');
     },
 
@@ -44,16 +45,20 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
             coords : coords,
             size : size
         };
-        var url = this.url('saveVersion', [this.get('id'), this.get('version')]),
+        var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::');
             context = this;
-        $.ajax({
-            url : url,
-            data : data,
-            dataType : 'json',
-            type : 'POST',
-            success : function(response) {
+        $.ez(url, data, function(response)
+            {
                 context.trigger('version.create', response.content);
-            }
-        });
+            });
+    },
+
+    version : function()
+    {
+        if (this.controller && this.controller.getVersion())
+        {
+            return this.controller.getVersion();
+        }
+        return this.get('version');
     }
 });
