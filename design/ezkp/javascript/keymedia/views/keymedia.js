@@ -8,7 +8,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
     {
         options = (options || {});
         this.init(options);
-        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage', 'getVersion');
+        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage', 'getVersion', 'versionCreated');
         var data = this.$el.data();
         var prefix = KP.urlPrefix ? '/' + KP.urlPrefix : '';
         prefix = prefix + '/ezjscore/call';
@@ -18,6 +18,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             prefix : prefix
         });
         this.model.controller = this;
+        this.model.bind('version.create', this.versionCreated);
 
         this.image = new KeyMedia.models.Image(this.$('.attribute-base').data('bootstrap'));
         this.image.attr = this.model;
@@ -156,6 +157,12 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             version : version
         }).render();
         return this;
+    },
+
+    versionCreated : function()
+    {
+        this.editor.trigger('autosave.saved');
+        this.editor.model.trigger('autosave.saved');
     },
 
     getVersion : function()

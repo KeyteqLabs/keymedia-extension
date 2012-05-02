@@ -383,7 +383,7 @@ class Handler
                     $data = array();
                 $this->attributeValues = $data;
             }
-            return $this->attributeValues;;
+            return $this->attributeValues;
         }
     }
 

@@ -113,6 +113,18 @@ class KeyMedia extends \ezote\lib\Controller
             // Store information on content object
             $imageAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
 
+            /**
+             * Update version modified
+             */
+            /** @var $versionObject \eZContentObjectVersion */
+            if ($versionObject = \eZContentObjectVersion::fetchVersion($imageAttribute->attribute('version'), $imageAttribute->attribute('contentobject_id')))
+            {
+                $versionObject->setAttribute('modified', time());
+                if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT)
+                    $versionObject->setAttribute('status', \eZContentObjectVersion::STATUS_DRAFT);
+                $versionObject->store();
+            }
+
             // @var \keymedia\models\image\Handler
             $handler = $imageAttribute->content();
             $data = $handler->addVersion($name, compact('coords', 'size'));
