@@ -73,9 +73,14 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             collection : this.model.images,
             onSelect : this.changeImage
         };
-
+        var headingOptions =
+        {
+            icon : '/extension/ezkp/design/ezkp/images/kp/32x32/Pictures.png',
+            name : 'Select image',
+            quotes : true,
+        };
         this.model.images.search('');
-        this.editor.trigger('stack.push', KeyMedia.views.Browser, options);
+        this.editor.trigger('stack.push', KeyMedia.views.Browser, options, {headingOptions : headingOptions});
     },
 
     // Start render of scaler sub-view
@@ -91,9 +96,15 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
             className : 'keymedia-scaler',
             app : this
         };
+        var headingOptions =
+        {
+            name : 'Select crops',
+            icon : '/extension/ezkp/design/ezkp/images/kp/32x32/Pictures-alt-2b.png',
+            quotes : true
+        };
 
         this.model.image(this.image);
-        this.editor.trigger('stack.push', KeyMedia.views.Scaler, options);
+        this.editor.trigger('stack.push', KeyMedia.views.Scaler, options, {headingOptions : headingOptions});
         return this;
     },
 

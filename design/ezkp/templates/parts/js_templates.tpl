@@ -14,25 +14,22 @@
 </script>
 
 <script type="text/x-handlebars-template" id="tpl-keymedia-browser">
-{include uri='design:global/heading_handlebars.tpl'}
 {literal}
-    <div class="stack-item-content">
-        <div class="keymedia" id="keymedia-browser">
-            <div class="header">
-                <form onsubmit="javascript: return false;" class="search">
-                    <div class="search-field">
-                        <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
-                        <span class="kp-icon16 search-icon"></span>
-                    </div>
-                    <button type="button" class="action">{{tr.search}}</button>
-                    <a class="prev">{{tr.prev}}</a>
-                    <a class="next">{{tr.next}}</a>
-                </form>
-            </div>
-    
-            <div class="body">
-            {{body}}
-            </div>
+    <div class="keymedia" id="keymedia-browser">
+        <div class="header">
+            <form onsubmit="javascript: return false;" class="search">
+                <div class="search-field">
+                    <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
+                    <span class="kp-icon16 search-icon"></span>
+                </div>
+                <button type="button" class="action">{{tr.search}}</button>
+                <a class="prev">{{tr.prev}}</a>
+                <a class="next">{{tr.next}}</a>
+            </form>
+        </div>
+
+        <div class="body">
+        {{body}}
         </div>
     </div>
 {/literal}
@@ -51,19 +48,16 @@
 </script>
 
 <script type="text/x-handlebars-template" id="tpl-keymedia-scaler">
-{include uri='design:global/heading_handlebars.tpl'}
 {literal}
-    <div class="stack-item-content">
-        <div class="keymedia" id="keymedia-scaler">
-            <div class="header">
-                <ul></ul>
+    <div class="keymedia" id="keymedia-scaler">
+        <div class="header">
+            <ul></ul>
+        </div>
+        <div class="body">
+            <div class="image-wrap">
+                <img src="{{image}}" />
             </div>
-            <div class="body">
-                <div class="image-wrap">
-                    <img src="{{image}}" />
-                </div>
-                <div id="keymedia-scaler-controls">
-                </div>
+            <div id="keymedia-scaler-controls">
             </div>
         </div>
     </div>
