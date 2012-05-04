@@ -20,13 +20,6 @@
         *}
         {def $template = 'design:content/datatype/view/image.tpl'}
 
-        {def $params = hash(
-            'title',  cond($title|is_set(), $title, ''),
-            'class',  cond($class|is_set(), $class, ''),
-            'width',  cond($width|is_set(), $width, $media.width),
-            'height', cond($height|is_set(), $height, $media.height)
-        )}
-
-        {include uri=$template media=$media param=$params}
+        {include uri=$template media=$media}
     {/if}
 {/if}
