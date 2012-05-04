@@ -29,6 +29,6 @@
             {/if}
         </button>
         
-        {attribute_view_gui format=array(200,200) attribute=$attribute}
+        {attribute_view_gui format=array(200,200) attribute=$attribute fetchinfo=true()}
     </div>
 {/if}
