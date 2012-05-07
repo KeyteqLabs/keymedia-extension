@@ -165,7 +165,6 @@ class Handler
      */
     public function attribute($name)
     {
-        $image = $this->image();
         switch ($name) {
             case 'backend':
                 return $this->backend();
@@ -176,17 +175,22 @@ class Handler
             case 'minSize':
                 return $this->minSize();
             case 'imageFits':
+                $image = $this->image();
                 $box = $this->minSize();
                 if ($box && $image)
                     return $box->fits($image->box());
                 return false;
             case 'image':
+                $image = $this->image();
                 return $image;
             case 'thumb':
+                $image = $this->image();
                 return $image ? $image->thumb(300, 200) : '';
             case 'filesize':
+                $image = $this->image();
                 return $image ? $image->file->size : 0;
             case 'mime_type':
+                $image = $this->image();
                 return $image ? $image->file->type : '';
             default:
                 $values = $this->values();
