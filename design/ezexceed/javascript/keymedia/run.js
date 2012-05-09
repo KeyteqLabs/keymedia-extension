@@ -9,7 +9,7 @@ $(function() {
             version : container.data('version')
         });
         var keymedia = new KeyMedia.views.KeyMedia({
-            container : KP.stack,
+            container : eZExceed.stack,
             search : function(e) {
                 var params = {
                     model : this.model,

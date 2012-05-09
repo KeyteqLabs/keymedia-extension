@@ -1,4 +1,4 @@
-KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
+KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
 {
     editor : null,
     image : null,
@@ -10,7 +10,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         this.init(options);
         _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage', 'getVersion', 'versionCreated');
         var data = this.$el.data();
-        var prefix = KP.urlPrefix ? '/' + KP.urlPrefix : '';
+        var prefix = eZExceed.urlPrefix ? '/' + eZExceed.urlPrefix : '';
         prefix = prefix + '/ezjscore/call';
         this.model = new KeyMedia.models.Attribute({
             id : data.id,
@@ -75,7 +75,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         };
         var headingOptions =
         {
-            icon : '/extension/ezkp/design/ezkp/images/kp/32x32/Pictures.png',
+            icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
             name : 'Select image',
             quotes : true,
         };
@@ -99,7 +99,7 @@ KeyMedia.views.KeyMedia = KP.ContentEditor.Base.extend(
         var headingOptions =
         {
             name : 'Select crops',
-            icon : '/extension/ezkp/design/ezkp/images/kp/32x32/Pictures-alt-2b.png',
+            icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures-alt-2b.png',
             quotes : true
         };
 

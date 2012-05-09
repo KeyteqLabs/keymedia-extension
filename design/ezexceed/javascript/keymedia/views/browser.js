@@ -51,7 +51,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
     render : function(response) {
         var content = $(this.tpl.browser({
             tr : _KeyMediaTranslations,
-            icon : '/extension/ezkp/design/ezkp/images/kp/32x32/Pictures.png',
+            icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
             heading : 'Select image'
         }));
 

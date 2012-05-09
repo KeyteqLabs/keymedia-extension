@@ -9,7 +9,7 @@
 
     <dependencies>
 	<uses>
-            <extension name="ezkp" />
+            <extension name="ezexceed" />
 	</uses>
         <requires>
             <extension name="ezote" />
