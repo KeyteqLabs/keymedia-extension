@@ -103,6 +103,8 @@
       background: transparent;
       border: 1px dotted #ccc;
       color: #fff; }
+      #keymedia-scaler .header ul li.uncropped a h2 {
+        color: #fff; }
       #keymedia-scaler .header ul li.uncropped a p {
         border: 1px dotted #ccc; }
       #keymedia-scaler .header ul li.uncropped a:hover {
