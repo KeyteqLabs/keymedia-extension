@@ -125,6 +125,8 @@
       background-image: linear-gradient(top, #ffbb00, #ff8d00);
       color: #000;
       border-color: transparent; }
+      #keymedia-scaler .header ul li.active a h2, #keymedia-scaler .header ul li.active a:hover h2 {
+        color: #000; }
       #keymedia-scaler .header ul li.active a p, #keymedia-scaler .header ul li.active a:hover p {
         border-color: #000; }
 #keymedia-scaler .body {

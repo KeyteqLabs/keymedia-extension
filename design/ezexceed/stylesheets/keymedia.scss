@@ -147,6 +147,8 @@
                     @include gradient(#ffbb00, #ff8d00);
                     color: #000;
                     border-color: transparent;
+
+                    h2 { color: #000; }
                     
                     p { border-color: #000;}
                 }
