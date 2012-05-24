@@ -69,7 +69,8 @@ KeyMedia.views.Upload = Backbone.View.extend({
             url : this.url(),
             multipart_params : {
                 'AttributeID' : this.model.id,
-                'ContentObjectVersion' : this.options.version
+                'ContentObjectVersion' : this.options.version,
+                'http_accept' : 'json' //Because of some strange failing when html4 is used
             },
             headers : this.headers
         };
