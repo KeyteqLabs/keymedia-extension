@@ -4,30 +4,6 @@
 {def $handler = $attribute.content
      $image = $handler.image }
 
-{run-once}
-    {if is_set($excludeJS)|not}
-    {ezcss( array('jquery.jcrop.css', 'keymedia.css') )}
-    {ezscript( array(
-        'libs/handlebars.js',
-        'libs/jquery.jcrop.min.js',
-
-        'keymedia/ns.js',
-        'keymedia/Attribute.js',
-        'keymedia/Image.js',
-
-        'keymedia/views/scaled_version.js',
-        'keymedia/views/scaler.js',
-        'keymedia/views/browser.js',
-        'keymedia/views/keymedia.js',
-
-        'keymedia/views/Modal.js',
-        'keymedia/views/Upload.js',
-        'keymedia/views/Tagger.js',
-    ) )}
-    {include uri="design:parts/js_templates.tpl"}
-    {/if}
-{/run-once}
-
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$image.data|json}' data-version='{$attribute.version}'>
     <section {if $image}class="image-container with-image"{else}class="image-container"{/if}>
