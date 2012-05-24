@@ -98,7 +98,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var outerBounds = this.outerBounds(this.versions, 4, 40), el, versions = this.versions;
         var _view, _container = this.$('.header ul'),
             className;
-        this.versionViews = this.versions.map(function(version) {
+        this.versionViews = _(this.versions).map(function(version) {
             if ('url' in version)
                 className = 'cropped';
             else
