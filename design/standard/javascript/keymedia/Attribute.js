@@ -6,7 +6,7 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'scale', 'onScale', 'addVanityUrl', 'image', 'version');
+        _.bindAll(this);
         this.images = new KeyMedia.models.ImageCollection();
         this.images.attr = this;
     },

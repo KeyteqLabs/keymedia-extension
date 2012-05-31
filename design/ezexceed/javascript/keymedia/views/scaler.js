@@ -72,16 +72,19 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     // new crop information
     createOverlay : function(node, data) {
         if (this.cropper && 'coords' in data && data.coords.length === 4) {
-            var scale = this.cropper.getScaleFactor(), container = this.$img.parent(), coords = data.coords;
+
+            var scale = this.cropper.getScaleFactor(),
+                container = node.parent(),
+                coords = data.coords;
 
             var x = parseInt(coords[0] / scale[0], 10),
                 y = parseInt(coords[1] / scale[1], 10),
                 x2 = parseInt(coords[2] / scale[0], 10),
-                y2 = parseInt(coords[3] / scale[1], 10),
-                offset = container.position();
+                y2 = parseInt(coords[3] / scale[1], 10);
+
             node.css({
-                'top' : parseInt((offset.top - 0) + y, 10),
-                left : parseInt((offset.left - 0) + x, 10),
+                'top' : y + container.outerHeight(true),
+                left : x,
                 width : parseInt(x2 - x, 10),
                 height : parseInt(y2 - y, 10)
             });
@@ -115,7 +118,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.$img = this.$('img');
 
         // Enable the first scaling by simulating a click
-        this.$('.header ul').find('a').first().click();
+        this.$('.header ul li:first-child a').click();
 
         return this;
     },
@@ -165,7 +168,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
         var scaleButtonVersions = this.versions;
         _(scaleButtonVersions).each(function(version, key){
-            if (version.name == name)
+            if (version.name === name)
             {
                 scaleButtonVersions[key].coords = coords;
             }
