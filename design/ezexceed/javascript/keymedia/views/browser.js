@@ -5,7 +5,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
     initialize : function(options)
     {
         options = (options || {});
-        _.bindAll(this, 'render', 'select', 'renderItems', 'page', 'onPage');
+        _.bindAll(this);
 
         this.collection.bind('reset', this.renderItems);
         this.collection.bind('add', this.renderItems);

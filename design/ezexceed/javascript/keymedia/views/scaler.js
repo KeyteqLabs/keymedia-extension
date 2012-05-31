@@ -50,20 +50,25 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.model.bind('scale', this.render);
         this.model.bind('version.create', this.versionCreated);
 
+        // When I get popped from stack
+        // i save my current scale
+        this.on('destruct', _.bind(function() {
+            this.changeScale();
+        }, this));
+
         return this;
     },
 
     events : {
         'click .header li' : 'changeScale',
-        'mouseenter .header li' : 'overlay'
+        'mouseenter .header li.cropped' : 'overlay'
     },
 
     overlay : function(e) {
-        var node = $(e.currentTarget),
-            overlay = node.find('div');
-
+        var node = $(e.currentTarget);
+        var overlay = node.find('div');
         if (node !== this.current) {
-            this.createOverlay(node.find('div'), node.data('scale'));
+            this.createOverlay(overlay, node.data('scale'));
         }
     },
 
@@ -181,7 +186,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     },
 
     changeScale : function(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         var scale;
 
         if (this.current !== null)
@@ -199,6 +204,10 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 }
             }
         }
+
+        // If method is triggered without click we
+        // should return after saving the current scale
+        if (!e) return;
 
         this.current = $(e.currentTarget);
         this.current.addClass('active');

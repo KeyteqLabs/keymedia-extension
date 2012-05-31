@@ -7,8 +7,8 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
     initialize : function(options)
     {
         options = (options || {});
+        _.bindAll(this);
         this.init(options);
-        _.bindAll(this, 'browse', 'scale', 'render', 'changeImage', 'enableUpload', 'removeImage', 'getVersion', 'versionCreated');
         var data = this.$el.data();
         var prefix = eZExceed.urlPrefix ? '/' + eZExceed.urlPrefix : '';
         prefix = prefix + '/ezjscore/call';
@@ -18,12 +18,12 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
             prefix : prefix
         });
         this.model.controller = this;
-        this.model.bind('version.create', this.versionCreated);
+        this.model.on('version.create', this.versionCreated);
 
         this.image = new KeyMedia.models.Image(this.$('.attribute-base').data('bootstrap'));
         this.image.attr = this.model;
-        this.image.bind('change', this.render);
-        this.image.bind('reset', this.render);
+        this.image.on('change', this.render);
+        this.image.on('reset', this.render);
 
         return this;
     },
