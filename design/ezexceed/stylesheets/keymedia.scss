@@ -94,7 +94,7 @@
                 
                 &:hover .overlay { display: block; opacity: 1;  }
                 &.active .overlay { border-color: #000; }
-                &.uncropped:hover, &.active:hover .overlay { display: none; }
+                &.active:hover .overlay { display: none; }
                 
                 a {
                     display: block;

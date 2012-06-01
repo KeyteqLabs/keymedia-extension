@@ -76,7 +76,7 @@
       opacity: 1; }
     #keymedia-scaler .header ul li.active .overlay {
       border-color: #000; }
-    #keymedia-scaler .header ul li.uncropped:hover, #keymedia-scaler .header ul li.active:hover .overlay {
+    #keymedia-scaler .header ul li.active:hover .overlay {
       display: none; }
     #keymedia-scaler .header ul li a {
       display: block;
