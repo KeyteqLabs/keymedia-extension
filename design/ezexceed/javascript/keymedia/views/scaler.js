@@ -50,20 +50,25 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.model.bind('scale', this.render);
         this.model.bind('version.create', this.versionCreated);
 
+        // When I get popped from stack
+        // i save my current scale
+        this.on('destruct', _.bind(function() {
+            this.changeScale();
+        }, this));
+
         return this;
     },
 
     events : {
         'click .header li' : 'changeScale',
-        'mouseenter .header li' : 'overlay'
+        'mouseenter .header li.cropped' : 'overlay'
     },
 
     overlay : function(e) {
-        var node = $(e.currentTarget),
-            overlay = node.find('div');
-
+        var node = $(e.currentTarget);
+        var overlay = node.find('div');
         if (node !== this.current) {
-            this.createOverlay(node.find('div'), node.data('scale'));
+            this.createOverlay(overlay, node.data('scale'));
         }
     },
 
@@ -72,16 +77,19 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     // new crop information
     createOverlay : function(node, data) {
         if (this.cropper && 'coords' in data && data.coords.length === 4) {
-            var scale = this.cropper.getScaleFactor(), container = this.$img.parent(), coords = data.coords;
+
+            var scale = this.cropper.getScaleFactor(),
+                container = node.parent(),
+                coords = data.coords;
 
             var x = parseInt(coords[0] / scale[0], 10),
                 y = parseInt(coords[1] / scale[1], 10),
                 x2 = parseInt(coords[2] / scale[0], 10),
-                y2 = parseInt(coords[3] / scale[1], 10),
-                offset = container.position();
+                y2 = parseInt(coords[3] / scale[1], 10);
+
             node.css({
-                'top' : parseInt((offset.top - 0) + y, 10),
-                left : parseInt((offset.left - 0) + x, 10),
+                'top' : y + container.outerHeight(true),
+                left : x,
                 width : parseInt(x2 - x, 10),
                 height : parseInt(y2 - y, 10)
             });
@@ -115,7 +123,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.$img = this.$('img');
 
         // Enable the first scaling by simulating a click
-        this.$('.header ul').find('a').first().click();
+        this.$('.header ul li:first-child a').click();
 
         return this;
     },
@@ -165,7 +173,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
         var scaleButtonVersions = this.versions;
         _(scaleButtonVersions).each(function(version, key){
-            if (version.name == name)
+            if (version.name === name)
             {
                 scaleButtonVersions[key].coords = coords;
             }
@@ -178,7 +186,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     },
 
     changeScale : function(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         var scale;
 
         if (this.current !== null)
@@ -196,6 +204,10 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 }
             }
         }
+
+        // If method is triggered without click we
+        // should return after saving the current scale
+        if (!e) return;
 
         this.current = $(e.currentTarget);
         this.current.addClass('active');
