@@ -363,6 +363,61 @@ class Handler
     }
 
     /**
+     * Report usage of media back to keymedia
+     *
+     * @param $contentObject
+     * @return bool|\keymedia\models\Image
+     */
+    public function reportUsage($contentObject)
+    {
+        $values = $this->values();
+        if (empty($values['id']))
+            return false;
+
+        $attr = $this->attr;
+        $version = $this->version();
+        $language = $attr->attribute('language_code');
+
+        // Use version name of default to name
+        $name = $version->versionName($language) ? : $version->name($language);
+        $mainNode = $contentObject->attribute('main_node');
+
+        /**
+         * Find main siteaccess and main domain
+         */
+        $siteINI = \eZINI::instance('site.ini');
+        $defaultAccess = $siteINI->variable('SiteSettings', 'DefaultAccess');
+        $defaultSiteINI = \eZINI::instance('site.ini.append.php', 'settings/siteaccess/' . $defaultAccess, null, null, null, true);
+        $domain = $defaultSiteINI->variable('SiteSettings', 'SiteURL');
+
+        $urlArr = parse_url($domain);
+        $pathArr = array_filter(explode('/', $urlArr['path']));
+        $url = isset($urlArr['host']) ? $urlArr['host'] . '/' : '';
+        $url .= implode('/', $pathArr) . '/' . $mainNode->attribute('url');
+
+        if (!empty($urlArr['scheme']))
+            $url = $urlArr['scheme'] . '://' . $url;
+        else
+            $url = 'http://' . $url;
+
+        /**
+         * Create an external id for Keymedia
+         */
+        $urlArr = parse_url($url);
+        $externalId = md5($urlArr['host'] . '|' . $contentObject->ID . '|' . $attr->ID);
+
+        $reference = array(
+            'title' => $name,
+            'url' => $url,
+            'externalId' => $externalId
+        );
+
+        $backend = $this->backend();
+
+        return $backend->reportUsage($values['id'], $reference);
+    }
+
+    /**
      * Save or get values for this content object attribute
      *
      * @param array|false $save Values to save

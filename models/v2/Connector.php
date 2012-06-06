@@ -127,6 +127,21 @@ class Connector extends \keymedia\models\ConnectorBase
     }
 
     /**
+     * Report media usage to keymedia
+     *
+     * @param $id
+     * @param array $reference
+     * @return bool
+     */
+    public function reportUsage($id, array $reference)
+    {
+        $reference += compact('id');
+
+        $response = $this->makeRequest('/media/references.json', $reference, 'POST');
+        return isset($response->media) ? $response->media : false;
+    }
+
+    /**
      * Add new version
      *
      * @param string $id

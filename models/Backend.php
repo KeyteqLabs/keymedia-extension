@@ -294,4 +294,27 @@ class Backend extends \eZPersistentObject
         }
         return $this->connection;
     }
+
+    /**
+     * Report media usage to keymedia
+     *
+     * @param $id
+     * @param array $reference
+     * @return bool|Image
+     */
+    public function reportUsage($id, array $reference)
+    {
+        if ($con = $this->connection())
+        {
+            $result = $con->reportUsage($id, $reference);
+            if ($result && isset($result->media))
+            {
+                $image = new Image($result->media);
+                $image->host($this->host);
+                return $image;
+            }
+        }
+
+        return false;
+    }
 }

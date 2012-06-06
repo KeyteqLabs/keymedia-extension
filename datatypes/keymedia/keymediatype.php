@@ -117,6 +117,12 @@ class KeyMedia extends eZDataType
     {
         return new Handler($attribute);
     }
+
+    public function onPublish($attribute, $contentObject, $publishedNodes)
+    {
+        $handler = $this->objectAttributeContent($attribute);
+        $handler->reportUsage($contentObject);
+    }
 }
 
 eZDataType::register(
