@@ -61,6 +61,7 @@
     <div class="keymedia-interactions actions">
         <input type="hidden" name="{$attribute_base}_media_id_{$attribute.id}" value="{$media.id}" class="media-id"/>
         <input type="hidden" name="{$attribute_base}_host_{$attribute.id}" value="{$media.host}" class="media-host"/>
+        <input type="hidden" name="{$attribute_base}_type_{$attribute.id}" value="{$media.type}" class="media-type"/>
         <input type="hidden" name="{$attribute_base}_ending_{$attribute.id}" value="{$media.ending}" class="media-ending"/>
         {if $handler.backend}
             <section class="edit-buttons"{if $media} style="display:none"{/if}>

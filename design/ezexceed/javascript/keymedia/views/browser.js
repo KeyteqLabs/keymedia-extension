@@ -33,7 +33,12 @@ KeyMedia.views.Browser = Backbone.View.extend({
         var node = $(e.currentTarget), id = node.data('id');
         var model = this.model.medias.get(id);
         if (this.onSelect) {
-            this.onSelect(id, model.get('host'), model.get('scalesTo').ending, true);
+            this.onSelect({
+                id : id,
+                host : model.get('host'),
+                type : model.get('type'),
+                ending : model.get('scalesTo').ending
+            }, true);
         }
         this.$('.close').click();
     },
@@ -56,6 +61,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
         }));
 
         this.$el.append(content);
+        this.$body = this.$('.body');
         this.renderItems(true);
         this.input = this.$('.q');
         return this;
@@ -69,12 +75,12 @@ KeyMedia.views.Browser = Backbone.View.extend({
         }, this);
         
         if (clear)
-            this.$('.body').html(html);
+            this.$body.html(html);
         else
-            this.$('.body').append(html);
+            this.$body.append(html);
 
         if (this.collection.total > this.collection.length)
-            this.$('.body').append('<a class="more-hits button">Show more</a>');
+            this.$body.append('<a class="more-hits button">Show more</a>');
         else
             this.$('.more-hits').hide();
 

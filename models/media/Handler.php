@@ -61,7 +61,12 @@ class Handler
 
         $filename = $this->mediaName($this->attr, $this->version());
         $media = $this->backend()->upload($filepath, $filename, $tags, compact('title'));
-        $this->setMedia($media->id, $media->host(), $media->ending());
+        $this->setMedia(array(
+            'id' => $media->id,
+            'host' => $media->host(),
+            'type' => $media->type(),
+            'ending' => $media->ending()
+        ));
         return $media;
     }
 
@@ -202,14 +207,22 @@ class Handler
      * Update the media set in db for the ContentObjectAttribute loaded
      * in the handler at the moment.
      *
-     * @param string $id Remote id from KeyMedia
+     * @param string|array $id Remote id from KeyMedia or all data to save
      * @param string $host Host that will serve the media later on
      * @return bool
      */
-    public function setMedia($id, $host, $ending = 'jpg')
+    public function setMedia($id, $host = false, $ending = 'jpg')
     {
-        if (!$this->hasMedia($id))
-            $this->values(compact('id', 'host', 'ending'));
+        if (is_array($id)) {
+            $values = $id;
+            $id = $values['id'];
+        }
+        else {
+            $values = compact('id', 'host', 'ending');
+        }
+        if (!$this->hasMedia($id)) {
+            $this->values($values);
+        }
         return true;
     }
 

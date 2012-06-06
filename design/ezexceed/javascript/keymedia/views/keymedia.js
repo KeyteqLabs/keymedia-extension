@@ -44,6 +44,7 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
         e.preventDefault();
         this.$('.media-id').val('');
         this.$('.media-host').val('');
+        this.$('.media-type').val('');
         this.$('.media-ending').val('');
         var data = this.$(':input').serializeArray();
         data.push({
@@ -108,11 +109,12 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
         return this;
     },
 
-    changeMedia : function(id, host, ending, pop)
+    changeMedia : function(data, pop)
     {
-        this.$('.media-id').val(id);
-        this.$('.media-host').val(host);
-        this.$('.media-ending').val(ending);
+        this.$('.media-id').val(data.id);
+        this.$('.media-host').val(data.host);
+        this.$('.media-type').val(data.type);
+        this.$('.media-ending').val(data.ending);
 
         var data = this.$(':input').serializeArray();
         data.push({

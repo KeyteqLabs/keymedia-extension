@@ -19,6 +19,7 @@ $(function() {
                 model : model,
                 destination : container.find('.media-id'),
                 host : container.find('.media-host'),
+                type : container.find('.media-type'),
                 ending : container.find('.media-ending')
             }).render();
             var tagger = new KeyMedia.views.Tagger({

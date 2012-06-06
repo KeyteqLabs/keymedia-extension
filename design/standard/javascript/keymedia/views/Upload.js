@@ -33,7 +33,12 @@ KeyMedia.views.Upload = Backbone.View.extend({
             var media = data.content.media;
             if (this.uploadCallback)
             {
-                this.uploadCallback(media.id, media.host, media.scalesTo.ending);
+                this.uploadCallback({
+                    id : media.id,
+                    host : media.host,
+                    type : media.type,
+                    ending : media.scalesTo.ending
+                });
             }
         }
 

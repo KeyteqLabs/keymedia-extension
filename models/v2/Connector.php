@@ -204,12 +204,19 @@ class Connector extends \keymedia\models\ConnectorBase
         $width = 160;
         $height = 120;
         $ending = $media->scalesTo->ending;
-        $thumb = (object) array(
-            'url' => 'http://' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.' . $ending
-        );
+        $mimeParts = explode('/', $media->file->type);
+        // Should not be hardcoded references to brightcove here
+        if (isset($media->brightcove) && isset($media->brightcove->thumb)) {
+            $thumbUrl = $media->brightcove->thumb;
+        }
+        else {
+            $thumbUrl = 'http://' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.' . $ending;
+        }
+        $thumb = (object) array('url' => $thumbUrl);
         return (object) array(
             'id' => $media->_id,
             'tags' => $media->tags,
+            'type' => $mimeParts[0],
             'filesize' => $media->file->size,
             'width' => (int) $media->file->width,
             'height' => (int) $media->file->height,

@@ -4,7 +4,8 @@ KeyMedia.models.Media = Backbone.Model.extend({
     defaults : function() {
         return {
             id : '',
-            host : ''
+            host : '',
+            type : ''
         };
     },
 

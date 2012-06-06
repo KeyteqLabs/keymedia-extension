@@ -38,7 +38,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         else {
             this.media = new KeyMedia.models.Media({
                 id : options.mediaId,
-                host : options.host
+                host : options.host,
+                type : options.type
             });
         }
 

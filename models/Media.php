@@ -123,6 +123,12 @@ class Media
         return isset($this->host) ? $this->_data->host : '';
     }
 
+    public function type()
+    {
+        $mimeParts = explode('/', $this->file->type);
+        return $mimeParts[0];
+    }
+
     /**
      * Get media Box (dimensions of media)
      * @return keymedia\models\Box

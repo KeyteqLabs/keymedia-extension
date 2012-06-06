@@ -3,6 +3,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     view : null,
     destination : null,
     host : null,
+    type : null,
     wrapper : null,
 
     container : false,
@@ -15,6 +16,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         // DOM node to store selected media id into
         this.destination = options.destination;
         this.host = options.host;
+        this.type = options.type;
         this.ending = options.ending;
         this.wrapper = options.wrapper;
 
@@ -48,6 +50,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         e.preventDefault();
         this.destination.val('');
         this.host.val('');
+        this.type.val('');
         this.ending.val('');
         this.wrapper.find('.keymedia-image').remove();
         this.$('.keymedia-scale').remove();
@@ -55,10 +58,12 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         return this;
     },
 
-    changeMedia : function(id, host, ending) {
-        this.destination.val(id);
-        this.host.val(host);
-        this.ending.val(ending);
+    changeMedia : function(data)
+    {
+        this.destination.val(data.id);
+        this.host.val(data.host);
+        this.type.val(data.type);
+        this.ending.val(data.ending);
         return this;
     },
 
@@ -97,6 +102,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
             versions : node.data('versions'),
             trueSize : node.data('truesize'),
             host : this.host.val(),
+            type : this.type.val(),
             model : this.model,
             el : this.container.show().contentEl
         };

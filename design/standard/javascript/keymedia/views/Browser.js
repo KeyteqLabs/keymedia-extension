@@ -24,7 +24,12 @@ KeyMedia.views.Browser = Backbone.View.extend({
     select : function(e) {
         e.preventDefault();
         var node = $(e.currentTarget).parent();
-        this.onSelect(node.data('id'), node.data('host'), node.data('ending'));
+        this.onSelect({
+            id : node.data('id'),
+            host : node.data('host'),
+            type : node.data('type'),
+            ending : node.data('ending')
+        );
         this.$('.close').click();
     },
 
@@ -53,6 +58,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
             view.data({
                 id : item.id,
                 host : item.get('host'),
+                type : item.get('type'),
                 ending : item.get('scalesTo').ending
             });
             body.append(view);
