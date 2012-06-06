@@ -87,6 +87,17 @@ class Connector extends \keymedia\models\ConnectorBase
     }
 
     /**
+     * Return media information for given image id
+     *
+     * @param string $id
+     * @return object
+     */
+    public function media($id)
+    {
+        return $this->makeRequest('media/' . $id);
+    }
+
+    /**
      * Put tags on an existing media
      *
      * @param $id
@@ -98,6 +109,19 @@ class Connector extends \keymedia\models\ConnectorBase
     {
         $payload = compact('tags');
         return $this->makeRequest($id, $payload, 'POST');
+    }
+
+    /**
+     * Report media usage to keymedia
+     *
+     * @param $id
+     * @param array $reference
+     * @return bool
+     */
+    public function reportUsage($id, array $reference)
+    {
+        $reference += compact('id');
+        return $this->makeRequest('usage', $reference, 'POST');
     }
 
     /**
