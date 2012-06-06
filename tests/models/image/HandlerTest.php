@@ -1,8 +1,8 @@
 <?php
 
-namespace keymedia\tests\models\image;
+namespace keymedia\tests\models\media;
 
-use \keymedia\models\image\Handler;
+use \keymedia\models\media\Handler;
 use \eZContentObjectAttribute;
 
 class HandlerTest extends \PHPUnit_Framework_TestCase
@@ -37,12 +37,12 @@ class HandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(json_encode($values)));
 
         $handler = new Handler($emptyAttr);
-        $this->assertFalse($handler->hasImage());
+        $this->assertFalse($handler->hasMedia());
 
         $handler = new Handler($attr);
-        $this->assertTrue($handler->hasImage());
-        $this->assertFalse($handler->hasImage(12));
-        $this->assertTrue($handler->hasImage(123));
+        $this->assertTrue($handler->hasMedia());
+        $this->assertFalse($handler->hasMedia(12));
+        $this->assertTrue($handler->hasMedia(123));
     }
     
     public function testGetMedia()

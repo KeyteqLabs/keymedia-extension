@@ -1,6 +1,6 @@
 <?php
 
-namespace keymedia\models\image;
+namespace keymedia\models\media;
 
 use \eZMimeType;
 use \eZHTTPFile;
@@ -8,7 +8,7 @@ use \eZContentObjectVersion;
 use \eZURLAliasML;
 use \ezpI18n;
 use \keymedia\models\Backend;
-use \keymedia\models\Image;
+use \keymedia\models\Media;
 use \Exception;
 use \ezote\lib\Inflector;
 use \keymedia\models\Box;
@@ -17,7 +17,7 @@ class Handler
 {
     protected $attr;
     protected $_backend;
-    protected $_image;
+    protected $_media;
     protected $attributeValues = false;
 
     /**
@@ -44,13 +44,13 @@ class Handler
     }
 
     /**
-     * Upload image to KeyMedia and connect to this attribute afterwards
+     * Upload media to KeyMedia and connect to this attribute afterwards
      *
-     * @param eZHTTPFile|string $file The uploaded image or a local file
-     * @param array $tags Tags to add to image in KeyMedia
-     * @param string $title Alternative image text
+     * @param eZHTTPFile|string $file The uploaded media or a local file
+     * @param array $tags Tags to add to media in KeyMedia
+     * @param string $title Alternative media text
      *
-     * @return \keymedia\models\Image|false
+     * @return \keymedia\models\Media|false
      */
     public function uploadFile($file, array $tags = array(), $title = '')
     {
@@ -59,14 +59,14 @@ class Handler
         elseif (is_string($file))
             $filepath = $file;
 
-        $filename = $this->imageName($this->attr, $this->version());
-        $image = $this->backend()->upload($filepath, $filename, $tags, compact('title'));
-        $this->setImage($image->id, $image->host(), $image->ending());
-        return $image;
+        $filename = $this->mediaName($this->attr, $this->version());
+        $media = $this->backend()->upload($filepath, $filename, $tags, compact('title'));
+        $this->setMedia($media->id, $media->host(), $media->ending());
+        return $media;
     }
 
     /**
-     * Create a new version of the currently loaded image attributes image
+     * Create a new version of the currently loaded media attributes media
      * Will both store the version-information (slug, coords, size) locally
      * as well as notify KeyMedia about the vanity url to make it actually work
      *
@@ -81,7 +81,7 @@ class Handler
      *
      * @param string $name The postfix to use for the filename
      * @param array $transformations
-     * @return string Returns the image url
+     * @return string Returns the media url
      */
     public function addVersion($name, array $transformations = array())
     {
@@ -89,9 +89,9 @@ class Handler
         $data = $this->values();
 
         if (!isset($data['id']))
-            throw new Exception(__CLASS__ . '::' . __METHOD__ . ' called without an image connection made first');
+            throw new Exception(__CLASS__ . '::' . __METHOD__ . ' called without an media connection made first');
 
-        $filename = $this->imageName($this->attr, $this->version(), false, $name);
+        $filename = $this->mediaName($this->attr, $this->version(), false, $name);
 
         // Push to backend
         $backend = $this->backend();
@@ -114,19 +114,19 @@ class Handler
     }
 
     /**
-     * The image name will generated from the name of the current version.
+     * The media name will generated from the name of the current version.
      * If this is empty it will use the object name or the alternative text.
      *
-     * This ensures that the image has a name which corresponds to the object it belongs to.
+     * This ensures that the media has a name which corresponds to the object it belongs to.
      *
      * The normalization ensures that the name only contains filename and URL friendly characters.
      *
      * @param object $attribute
      * @param object $version
      * @param string $language
-     * @return string Normalized name for the image.
+     * @return string Normalized name for the media.
     */
-    public function imageName($attr, $version, $language = false, $postfix = '')
+    public function mediaName($attr, $version, $language = false, $postfix = '')
     {
         // Use either passed language or the attributes language_code
         $language = $language ?: $attr->attribute('language_code');
@@ -134,7 +134,7 @@ class Handler
         // Use version name of default to name
         $name = $version->versionName($language) ?: $version->name($language);
         // Finally fall back ona  default name
-        $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'image', 'Default image name' );
+        $name = $name ?: ezpI18n::tr( 'kernel/classes/datatypes', 'media', 'Default media name' );
         if ($postfix) $name .= '-' . $postfix;
         $name .= implode('-', array('', $attr->ContentObjectID, $attr->Version));
         return Inflector::slug($name);
@@ -149,8 +149,8 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'image',
-            'toscale', 'minsize', 'imagefits');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media',
+            'toscale', 'minsize', 'mediafits');
         if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -174,24 +174,24 @@ class Handler
                 return $this->toScale();
             case 'minSize':
                 return $this->minSize();
-            case 'imageFits':
-                $image = $this->image();
+            case 'mediaFits':
+                $media = $this->getMedia();
                 $box = $this->minSize();
-                if ($box && $image)
-                    return $box->fits($image->box());
+                if ($box && $media)
+                    return $box->fits($media->box());
                 return false;
-            case 'image':
-                $image = $this->image();
-                return $image;
+            case 'media':
+                $media = $this->getMedia();
+                return $media;
             case 'thumb':
-                $image = $this->image();
-                return $image ? $image->thumb(300, 200) : '';
+                $media = $this->getMedia();
+                return $media ? $media->thumb(300, 200) : '';
             case 'filesize':
-                $image = $this->image();
-                return $image ? $image->file->size : 0;
+                $media = $this->getMedia();
+                return $media ? $media->file->size : 0;
             case 'mime_type':
-                $image = $this->image();
-                return $image ? $image->file->type : '';
+                $media = $this->getMedia();
+                return $media ? $media->file->type : '';
             default:
                 $values = $this->values();
                 return $values[$name];
@@ -199,27 +199,27 @@ class Handler
     }
 
     /**
-     * Update the image set in db for the ContentObjectAttribute loaded
+     * Update the media set in db for the ContentObjectAttribute loaded
      * in the handler at the moment.
      *
      * @param string $id Remote id from KeyMedia
-     * @param string $host Host that will serve the image later on
+     * @param string $host Host that will serve the media later on
      * @return bool
      */
-    public function setImage($id, $host, $ending = 'jpg')
+    public function setMedia($id, $host, $ending = 'jpg')
     {
-        if (!$this->hasImage($id))
+        if (!$this->hasMedia($id))
             $this->values(compact('id', 'host', 'ending'));
         return true;
     }
 
     /**
-     * Check if Handlers attribute has image set
+     * Check if Handlers attribute has media set
      *
      * @param string|null $id
      * @return bool
      */
-    public function hasImage($id = null)
+    public function hasMedia($id = null)
     {
         $values = $this->values();
         $hasId = isset($values['id']);
@@ -239,15 +239,15 @@ class Handler
 
         // If format array, go on and just rescale
         if (!$availableFormats && !is_array($format))
-            return null; //throw new Exception("Image attribute does not contain any information.");
+            return null; //throw new Exception("media attribute does not contain any information.");
 
         if ($fetchInfo)
         {
-            // Fetch image data and build original part of return array
-            if (!($image = $this->image())) return null;
-            if ($data = $image->data())
+            // Fetch media data and build original part of return array
+            if (!($media = $this->getMedia())) return null;
+            if ($data = $media->data())
             {
-                $originalImageInfo =  array(
+                $originalMediaInfo =  array(
                     'size' => $data->file->size,
                     'width' => $data->file->width,
                     'height' => $data->file->height,
@@ -283,10 +283,10 @@ class Handler
                     return null;
                 list($versionWidth, $versionHeight) = $formatSize;
 
-                if (empty($image) && !($image = $this->image()))
+                if (empty($media) && !($media = $this->getMedia()))
                     return null;
 
-                $bestFit = $image->boxInside($versionWidth, $versionHeight);
+                $bestFit = $media->boxInside($versionWidth, $versionHeight);
                 $bestFit['size'] = array($versionWidth, $versionHeight);
 
                 // Autocreate the best fit version
@@ -305,7 +305,7 @@ class Handler
             $typeArr = explode('/', $data->file->type);
             $mediaInfo['mime-type'] = $data->file->type;
             $mediaInfo['type'] = array_shift($typeArr);
-            $mediaInfo['original'] = $originalImageInfo;
+            $mediaInfo['original'] = $originalMediaInfo;
         }
 
         if (isset($mediaUrl))
@@ -335,7 +335,7 @@ class Handler
                 default :
                     $ext = '.jpg';
             }
-            $host = !empty($image) ? $image->host() : $availableFormats['host'];
+            $host = !empty($media) ? $media->host() : $availableFormats['host'];
 
             $url = $this->addQualityToUrl($version['url'], $quality);
             $mediaUrl = "http://" . $host . $url . $ext;
@@ -351,7 +351,7 @@ class Handler
     }
 
     /**
-     * Remove the image
+     * Remove the media
      *
      * @return mixed
      */
@@ -366,7 +366,7 @@ class Handler
      * Report usage of media back to keymedia
      *
      * @param $contentObject
-     * @return bool|\keymedia\models\Image
+     * @return bool|\keymedia\models\Media
      */
     public function reportUsage($contentObject)
     {
@@ -492,9 +492,9 @@ class Handler
     }
 
     /**
-     * Cached loading of the image for this content object attribute
+     * Cached loading of the media for this content object attribute
      *
-     * @return \keymedia\models\Image
+     * @return \keymedia\models\Media
      */
     protected function toScale()
     {
@@ -524,7 +524,7 @@ class Handler
     }
 
     /**
-     * Get min size an image must be to be used for this attribute instance
+     * Get min size an media must be to be used for this attribute instance
      *
      * @return array $width, $height
      */
@@ -541,13 +541,13 @@ class Handler
     }
 
     /**
-     * Cached loading of the image for this content object attribute
+     * Cached loading of the media for this content object attribute
      *
-     * @return \keymedia\models\Image
+     * @return \keymedia\models\Media
      */
-    protected function image()
+    protected function getMedia()
     {
-        if (!$this->_image)
+        if (!$this->_media)
         {
             if (!($backend = $this->backend()))
                 return false;
@@ -556,11 +556,11 @@ class Handler
             $data = json_decode($data);
 
             if (is_object($data) && isset($data->id) && $data->id)
-                $this->_image = $backend->get($data->id);
+                $this->_media = $backend->get($data->id);
             else
-                $this->_image = false;
+                $this->_media = false;
         }
-        return $this->_image;
+        return $this->_media;
     }
 
     /**
@@ -580,7 +580,7 @@ class Handler
         return $this->_version;
     }
     /**
-     * Build a thumb string for the currently selected image
+     * Build a thumb string for the currently selected media
      *
      * @param int $width
      * @param int $height
@@ -589,9 +589,9 @@ class Handler
     protected function thumb($width, $height, $quality = false)
     {
         $data = $this->values();
-        $host = $data['host'];
+        $host = isset($data['host']) ? $data['host'] : '';
         $ending = isset($data['ending']) ? $data['ending'] : 'jpg';
-        $id = $data['id'];
+        $id = isset($data['id']) ? $data['id'] : '';
         if ($quality)
             $quality = 'q' . $quality;
         return 'http://' . $host . "/{$width}x{$height}{$quality}/{$id}.{$ending}";

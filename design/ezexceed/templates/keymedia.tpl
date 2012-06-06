@@ -4,7 +4,7 @@
         <div class="header">
             <form onsubmit="javascript: return false;" class="search">
                 <input type="text" name="keymedia-search" placeholder="…"{{if q}} value="${q}"{{/if}} />
-                <button type="submit" class="search">Search for images</button>
+                <button type="submit" class="search">Search for medias</button>
                 <a class="prev">&gt;</a>
                 <a class="next">&lt;</a>
 

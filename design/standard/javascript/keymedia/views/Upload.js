@@ -28,18 +28,13 @@ KeyMedia.views.Upload = Backbone.View.extend({
         if (!('response' in info)) return true;
 
         var data = JSON.parse(info.response);
-        if ('content' in data && 'image' in data.content)
+        if ('content' in data && 'media' in data.content)
         {
-            var image = data.content.image;
+            var media = data.content.media;
             if (this.uploadCallback)
             {
-                this.uploadCallback(image.id, image.host, image.scalesTo.ending);
+                this.uploadCallback(media.id, media.host, media.scalesTo.ending);
             }
-
-            /* Commenting this out might break image update shizzle in standard design
-            if ('html' in data.content)
-                this.$('.keymedia-image').replaceWith($(data.content.html));
-            */
         }
 
         this.$('.upload-progress').fadeOut();

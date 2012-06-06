@@ -8,21 +8,21 @@
     data-contentobject-id="{$attribute.contentobject_id}"
     data-version="{$attribute.version}">
 
-    <input type="hidden" name="{$base}_image_id_{$attribute.id}" value="{$image.id}" class="image-id" />
-    <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$image.host}" class="image-host" />
-    <input type="hidden" name="{$base}_ending_{$attribute.id}" value="{$image.ending}" class="image-ending" />
+    <input type="hidden" name="{$base}_media_id_{$attribute.id}" value="{$media.id}" class="media-id" />
+    <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$media.host}" class="media-host" />
+    <input type="hidden" name="{$base}_ending_{$attribute.id}" value="{$media.ending}" class="media-ending" />
 
-    {if $image}
+    {if $media}
     <input type="button" class="keymedia-scale hid button"
-        data-truesize='{$image.size|json}'
-        {if $handler.imageFits}
+        data-truesize='{$media.size|json}'
+        {if $handler.mediaFits}
         value="{'Scale'|i18n( 'content/edit' )}"
         {else}
         disabled="disabled"
-        value="{'Requires a bigger image'|i18n( 'content/edit' )}"
+        value="{'Requires a bigger media'|i18n( 'content/edit' )}"
         {/if}
         data-versions='{$handler.toscale|json}'>
-        <input type="button" class="keymedia-remove-file button" value="{'Remove image'|i18n( 'content/edit' )}">
+        <input type="button" class="keymedia-remove-file button" value="{'Remove media'|i18n( 'content/edit' )}">
     {/if}
 
     <input type="button" class="keymedia-remote-file button" value="{'Choose from KeyMedia'|i18n( 'content/edit' )}">

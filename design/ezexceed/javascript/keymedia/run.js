@@ -20,7 +20,7 @@ $(function() {
             },
             el : container,
             model : model,
-            destination : container.find('.image-id')
+            destination : container.find('.media-id')
         }).render();
     });
 });

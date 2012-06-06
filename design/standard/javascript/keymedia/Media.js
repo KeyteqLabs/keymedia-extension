@@ -1,4 +1,4 @@
-KeyMedia.models.Image = Backbone.Model.extend({
+KeyMedia.models.Media = Backbone.Model.extend({
     prefix : '',
 
     defaults : function() {
@@ -22,7 +22,7 @@ KeyMedia.models.Image = Backbone.Model.extend({
     },
 
     url : function(method, extra) {
-        return this.prefix + '/' + ['keymedia', 'image', this.id].join('::');
+        return this.prefix + '/' + ['keymedia', 'media', this.id].join('::');
     },
 
     saveAttr : function()
@@ -64,8 +64,8 @@ KeyMedia.models.Image = Backbone.Model.extend({
     }
 });
 
-KeyMedia.models.ImageCollection = Backbone.Collection.extend({
-    model : KeyMedia.models.Image,
+KeyMedia.models.MediaCollection = Backbone.Collection.extend({
+    model : KeyMedia.models.Media,
 
     // Must end in trailing slash
     prefix : '/',

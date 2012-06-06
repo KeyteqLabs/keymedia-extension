@@ -8,27 +8,27 @@ $(function() {
                 prefix : container.data('prefix'),
                 version : container.data('version')
             });
-            var image = new KeyMedia.models.Image({
-                id : container.find('.image-id').val(),
+            var media = new KeyMedia.models.Media({
+                id : container.find('.media-id').val(),
                 prefix : container.data('prefix')
             });
-            image.attr = model;
+            media.attr = model;
             var controller = new KeyMedia.views.KeyMedia({
                 el : container,
                 wrapper : wrapper,
                 model : model,
-                destination : container.find('.image-id'),
-                host : container.find('.image-host'),
-                ending : container.find('.image-ending')
+                destination : container.find('.media-id'),
+                host : container.find('.media-host'),
+                ending : container.find('.media-ending')
             }).render();
             var tagger = new KeyMedia.views.Tagger({
                 el : wrapper.find('.tagger'),
-                model : image
+                model : media
             }).render();
-            if (wrapper.data('bootstrap-image'))
-                image.set(wrapper.data('bootstrap-image'));
+            if (wrapper.data('bootstrap-media'))
+                media.set(wrapper.data('bootstrap-media'));
             wrapper.data('objects', {
-                image : image,
+                media : media,
                 tagger : tagger,
                 model : model,
                 controller : controller

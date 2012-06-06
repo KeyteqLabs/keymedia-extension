@@ -2,7 +2,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     // constants
     TRANSLATIONS : null,
 
-    // size of cropping image
+    // size of cropping media
     SIZE : {
         w : 830,
         h : 580
@@ -32,12 +32,12 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         };
         this.TRANSLATIONS = _KeyMediaTranslations;
 
-        if ('image' in options) {
-            this.image = options.image;
+        if ('media' in options) {
+            this.media = options.media;
         }
         else {
-            this.image = new KeyMedia.models.Image({
-                id : options.imageId,
+            this.media = new KeyMedia.models.Media({
+                id : options.mediaId,
                 host : options.host
             });
         }
@@ -99,7 +99,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     render : function() {
         var content = this.tpl.scaler({
             tr : this.TRANSLATIONS,
-            image : this.image.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
+            media : this.media.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
         });
         this.$el.append(content);
 
@@ -257,7 +257,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
             }, function(a) {
                 // Store reference to API
                 context.cropper = this;
-                // Set true size of image
+                // Set true size of media
                 this.setOptions({
                     aspectRatio : ratio,
                     setSelect : select,

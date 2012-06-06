@@ -31,7 +31,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
     select : function(e) {
         e.preventDefault();
         var node = $(e.currentTarget), id = node.data('id');
-        var model = this.model.images.get(id);
+        var model = this.model.medias.get(id);
         if (this.onSelect) {
             this.onSelect(id, model.get('host'), model.get('scalesTo').ending, true);
         }
@@ -45,14 +45,14 @@ KeyMedia.views.Browser = Backbone.View.extend({
         if (this.input) {
             q = this.input.val();
         }
-        this.model.images.search(this.input.val());
+        this.model.medias.search(this.input.val());
     },
 
     render : function(response) {
         var content = $(this.tpl.browser({
             tr : _KeyMediaTranslations,
             icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
-            heading : 'Select image'
+            heading : 'Select media'
         }));
 
         this.$el.append(content);

@@ -10,9 +10,9 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     initialize : function(options)
     {
         options = (options || {});
-        _.bindAll(this, 'render', 'search', 'close', 'enableUpload', 'changeImage');
+        _.bindAll(this, 'render', 'search', 'close', 'enableUpload', 'changeMedia');
 
-        // DOM node to store selected image id into
+        // DOM node to store selected media id into
         this.destination = options.destination;
         this.host = options.host;
         this.ending = options.ending;
@@ -55,7 +55,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
         return this;
     },
 
-    changeImage : function(id, host, ending) {
+    changeMedia : function(id, host, ending) {
         this.destination.val(id);
         this.host.val(host);
         this.ending.val(ending);
@@ -65,7 +65,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     enableUpload : function() {
         this.upload = new KeyMedia.views.Upload({
             model : this.model,
-            uploaded : this.changeImage,
+            uploaded : this.changeMedia,
             el : this.$el.parent(),
             prefix : this.$el.data('prefix'),
             version : this.$el.data('version')
@@ -77,12 +77,12 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
     search : function()
     {
         this.view = new KeyMedia.views.Browser({
-            collection : this.model.images,
-            onSelect : this.changeImage,
+            collection : this.model.medias,
+            onSelect : this.changeMedia,
             el : this.container.show().contentEl
         }).render();
 
-        this.model.images.search('');
+        this.model.medias.search('');
     },
 
     // Open a scaling gui
@@ -93,7 +93,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
 
         var node = $(e.currentTarget);
         settings = {
-            imageId : this.destination.val(),
+            mediaId : this.destination.val(),
             versions : node.data('versions'),
             trueSize : node.data('truesize'),
             host : this.host.val(),
@@ -101,7 +101,7 @@ KeyMedia.views.KeyMedia = Backbone.View.extend({
             el : this.container.show().contentEl
         };
         this.view = new KeyMedia.views.Scaler(settings);
-        this.model.scale(settings.imageId);
+        this.model.scale(settings.mediaId);
     },
 
     close : function() {

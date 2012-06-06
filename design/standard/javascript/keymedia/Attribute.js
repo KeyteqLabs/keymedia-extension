@@ -1,14 +1,14 @@
 // A Keymedia attributes model
 KeyMedia.models.Attribute = Backbone.Model.extend({
     prefix : null,
-    images : null,
+    medias : null,
     controller : null,
 
     initialize : function(options)
     {
         _.bindAll(this);
-        this.images = new KeyMedia.models.ImageCollection();
-        this.images.attr = this;
+        this.medias = new KeyMedia.models.MediaCollection();
+        this.medias.attr = this;
     },
 
     url : function(method, extra) {
@@ -16,18 +16,18 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
         return this.get('prefix') + '/' + ['keymedia', method].concat(extra).join('::');
     },
 
-    image : function(image) {
-        $.getJSON(this.url('image'), function(resp) {
-            var content = resp.content, data = content.image;
+    media : function(media) {
+        $.getJSON(this.url('media'), function(resp) {
+            var content = resp.content, data = content.media;
             if ('content' in content)
                 data.content = content.content;
-            image.set(data);
+            media.set(data);
         });
-        return image;
+        return media;
     },
 
-    scale : function(image) {
-        $.getJSON(this.url('scaler', [image]), this.onScale);
+    scale : function(media) {
+        $.getJSON(this.url('scaler', [media]), this.onScale);
     },
 
     onScale : function(response) {

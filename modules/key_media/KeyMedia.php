@@ -111,13 +111,13 @@ class KeyMedia extends \ezote\lib\Controller
             $name = $http->variable('name');
 
             // Store information on content object
-            $imageAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
+            $mediaAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
 
             /**
              * Update version modified
              */
             /** @var $versionObject \eZContentObjectVersion */
-            if ($versionObject = \eZContentObjectVersion::fetchVersion($imageAttribute->attribute('version'), $imageAttribute->attribute('contentobject_id')))
+            if ($versionObject = \eZContentObjectVersion::fetchVersion($mediaAttribute->attribute('version'), $mediaAttribute->attribute('contentobject_id')))
             {
                 $versionObject->setAttribute('modified', time());
                 if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT)
@@ -125,8 +125,8 @@ class KeyMedia extends \ezote\lib\Controller
                 $versionObject->store();
             }
 
-            // @var \keymedia\models\image\Handler
-            $handler = $imageAttribute->content();
+            // @var \keymedia\models\media\Handler
+            $handler = $mediaAttribute->content();
             $data = $handler->addVersion($name, compact('coords', 'size'));
         }
         return $data;
@@ -161,7 +161,7 @@ class KeyMedia extends \ezote\lib\Controller
     }
 
     /**
-     * Upload an image from disk
+     * Upload an media from disk
      */
     public static function upload()
     {
@@ -173,14 +173,14 @@ class KeyMedia extends \ezote\lib\Controller
 
         $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
         $handler = $attribute->content();
-        if (!$image = $handler->uploadFile($httpFile))
+        if (!$media = $handler->uploadFile($httpFile))
             return array('error' => 'Failed upload');
 
         $tpl = \eZTemplate::factory();
         $tpl->setVariable('attribute', $attribute);
         $tpl->setVariable('excludeJS', true);
         return array(
-            'image' => $image->data(),
+            'media' => $media->data(),
             'toScale' == $handler->attribute('toscale'),
             'content' => $tpl->fetch('design:content/datatype/edit/keymedia.tpl'),
             'ok' => true
@@ -188,25 +188,25 @@ class KeyMedia extends \ezote\lib\Controller
     }
 
     /**
-     * Get image preview
+     * Get media preview
      */
-    public static function image(array $args = array())
+    public static function media(array $args = array())
     {
         list($attributeId, $version) = $args;
         if ($attributeId && $version)
         {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();
-            if ($handler && $image = $handler->attribute('image'))
+            if ($handler && $media = $handler->attribute('media'))
             {
                 $toScale = $handler->attribute('toscale');
-                $image = $image->data();
+                $media = $media->data();
             }
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
             $tpl->setVariable('excludeJS', true);
             $content = $tpl->fetch('design:content/datatype/edit/keymedia.tpl');
-            return compact('image', 'content', 'toScale');
+            return compact('media', 'content', 'toScale');
         }
     }
 
@@ -224,8 +224,8 @@ class KeyMedia extends \ezote\lib\Controller
             $http = \eZHTTPTool::instance();
             $tags = (array) $http->variable('tags');
             $id = $http->variable('id');
-            $image = $backend->tag(compact('id'), $tags);
-            return $image->data();
+            $media = $backend->tag(compact('id'), $tags);
+            return $media->data();
         }
         return false;
     }

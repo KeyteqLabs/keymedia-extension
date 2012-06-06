@@ -1,7 +1,7 @@
 <?php
 
 use \keymedia\models\Backend;
-use \keymedia\models\image\Handler;
+use \keymedia\models\media\Handler;
 
 class KeyMedia extends eZDataType
 {
@@ -80,16 +80,16 @@ class KeyMedia extends eZDataType
     */
     public function fetchObjectAttributeHTTPInput( $http, $base, $attribute )
     {
-        // Get value of connected image id
+        // Get value of connected media id
         $attributeId = $attribute->attribute('id');
-        $id = $http->variable($base . '_image_id_' . $attributeId);
+        $id = $http->variable($base . '_media_id_' . $attributeId);
         $host = $http->variable($base . '_host_' . $attributeId);
         $ending = $http->variable($base . '_ending_' . $attributeId);
         $handler = new Handler($attribute);
 
         if (!$id)
             return $handler->remove();
-        return $handler->setImage($id, $host, $ending);
+        return $handler->setMedia($id, $host, $ending);
     }
 
     /**
@@ -103,7 +103,7 @@ class KeyMedia extends eZDataType
     public function hasObjectAttributeContent($attribute)
     {
         $handler = $this->objectAttributeContent($attribute);
-        return $handler->hasImage();
+        return $handler->hasMedia();
     }
 
     /**
@@ -111,7 +111,7 @@ class KeyMedia extends eZDataType
      * This method is triggered when a template states {$attribute.content}
      *
      * @param object $attribute
-     * @return \keymedia\models\image\Handler
+     * @return \keymedia\models\media\Handler
      */
     public function objectAttributeContent($attribute)
     {

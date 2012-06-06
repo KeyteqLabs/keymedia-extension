@@ -2,63 +2,63 @@
 
 namespace keymedia\tests;
 
-use \keymedia\models\Image;
+use \keymedia\models\Media;
 
-class ImageTest extends \PHPUnit_Framework_TestCase
+class MediaTest extends \PHPUnit_Framework_TestCase
 {
     public function testIdAttribute()
     {
         // Create the Array fixture.
         $fixture = array();
-        $image = new Image(array(
+        $media = new Media(array(
             'id' => 1
         ));
-        $imageUnder = new Image(array(
+        $mediaUnder = new Media(array(
             '_id' => 2
         ));
 
-        $imageObject = new Image((object) array(
+        $mediaObject = new Media((object) array(
             '_id' => 2
         ));
  
         // Assert that the size of the Array fixture is 0.
-        $this->assertEquals(1, $image->id);
-        $this->assertNotEquals(2, $image->id);
-        $this->assertEquals(2, $imageUnder->id);
-        $this->assertEquals(2, $imageObject->id);
+        $this->assertEquals(1, $media->id);
+        $this->assertNotEquals(2, $media->id);
+        $this->assertEquals(2, $mediaUnder->id);
+        $this->assertEquals(2, $mediaObject->id);
     }
 
     public function testDataMethodRespectsIdAttribute()
     {
-        $image = new Image(array(
+        $media = new Media(array(
             '_id' => 2
         ));
-        $data = $image->data();
+        $data = $media->data();
         $this->assertEquals(2, $data->id);
-        $this->assertEquals(2, $image->id);
+        $this->assertEquals(2, $media->id);
     }
 
     public function testSetHost()
     {
-        $image = new Image((object) array(
+        $media = new Media((object) array(
             'id' => 1
         ));
         $host = 'example.com';
-        $image->host($host);
-        $data = $image->data();
+        $media->host($host);
+        $data = $media->data();
         $this->assertEquals($host, $data->host);
-        $this->assertEquals($host, $image->host());
+        $this->assertEquals($host, $media->host());
     }
 
     public function testFitInside()
     {
         $width = $height = 1000;
-        $image = new Image((object) array(
+        $media = new Media((object) array(
             'file' => (object) compact('width', 'height')
         ));
         $w = $h = 500;
-        $expect = Image::fitToBox($w, $h, $width, $height);
-        $actual = $image->boxInside($w, $h);
+        $expect = Media::fitToBox($w, $h, $width, $height);
+        $actual = $media->boxInside($w, $h);
 
         $this->assertEquals($expect, $actual);
     }

@@ -1,7 +1,7 @@
 KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
 {
     editor : null,
-    image : null,
+    media : null,
     versions : null,
 
     initialize : function(options)
@@ -20,10 +20,10 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
         this.model.controller = this;
         this.model.on('version.create', this.versionCreated);
 
-        this.image = new KeyMedia.models.Image(this.$('.attribute-base').data('bootstrap'));
-        this.image.attr = this.model;
-        this.image.on('change', this.render);
-        this.image.on('reset', this.render);
+        this.media = new KeyMedia.models.Media(this.$('.attribute-base').data('bootstrap'));
+        this.media.attr = this.model;
+        this.media.on('change', this.render);
+        this.media.on('reset', this.render);
 
         return this;
     },
@@ -32,22 +32,22 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
     {
         'click button.from-keymedia' : 'browse',
         'click button.scale' : 'scale',
-        'click .image-wrap .remove' : 'removeImage'
+        'click .image-wrap .remove' : 'removeMedia'
     },
 
     parseEdited : function()
     {
     },
 
-    removeImage : function(e)
+    removeMedia : function(e)
     {
         e.preventDefault();
-        this.$('.image-id').val('');
-        this.$('.image-host').val('');
-        this.$('.image-ending').val('');
+        this.$('.media-id').val('');
+        this.$('.media-host').val('');
+        this.$('.media-ending').val('');
         var data = this.$(':input').serializeArray();
         data.push({
-            name : 'imageRemove',
+            name : 'mediaRemove',
             value : 1
         });
 
@@ -70,16 +70,16 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
         e.preventDefault();
         var options = {
             model : this.model,
-            collection : this.model.images,
-            onSelect : this.changeImage
+            collection : this.model.medias,
+            onSelect : this.changeMedia
         };
         var headingOptions =
         {
             icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
-            name : 'Select image',
+            name : 'Select media',
             quotes : true,
         };
-        this.model.images.search('');
+        this.model.medias.search('');
         this.editor.trigger('stack.push', KeyMedia.views.Browser, options, {headingOptions : headingOptions});
     },
 
@@ -90,7 +90,7 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
         var node = $(e.currentTarget);
         var options = {
             model : this.model,
-            image : this.image,
+            media : this.media,
             versions : this.versions,
             trueSize : node.data('truesize'),
             className : 'keymedia-scaler',
@@ -103,20 +103,20 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
             quotes : true
         };
 
-        this.model.image(this.image);
+        this.model.media(this.media);
         this.editor.trigger('stack.push', KeyMedia.views.Scaler, options, {headingOptions : headingOptions});
         return this;
     },
 
-    changeImage : function(id, host, ending, pop)
+    changeMedia : function(id, host, ending, pop)
     {
-        this.$('.image-id').val(id);
-        this.$('.image-host').val(host);
-        this.$('.image-ending').val(ending);
+        this.$('.media-id').val(id);
+        this.$('.media-host').val(host);
+        this.$('.media-ending').val(ending);
 
         var data = this.$(':input').serializeArray();
         data.push({
-            name : 'changeImage',
+            name : 'changeMedia',
             value : 1
         });
 
@@ -138,18 +138,18 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
 
     render : function()
     {
-        if (this.image.get('content'))
+        if (this.media.get('content'))
         {
-            var content = $(this.image.get('content'));
+            var content = $(this.media.get('content'));
             if (content.first().hasClass('attribute-base'))
-                this.$('.attribute-base').replaceWith(this.image.get('content'));
+                this.$('.attribute-base').replaceWith(this.media.get('content'));
             else
-                this.$el.html(this.image.get('content'));
+                this.$el.html(this.media.get('content'));
         }
 
         this.taggerView = new KeyMedia.views.Tagger({
             el : this.$('.tagger'),
-            model : this.image
+            model : this.media
         }).render();
 
         this.versions = this.$('button.scale').data('versions');
@@ -162,7 +162,7 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
         var version = this.getVersion() ? this.getVersion() : this.model.get('version');
         this.upload = new KeyMedia.views.Upload({
             model : this.model,
-            uploaded : this.changeImage,
+            uploaded : this.changeMedia,
             el : this.$el,
             prefix : this.model.get('prefix'),
             version : version
@@ -187,12 +187,12 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
     success : function(response)
     {
         var remove = _(response).find(function(el){
-            if (_(el).has('imageRemove') || (_(el).has('name') && el.name == 'imageRemove'))
+            if (_(el).has('mediaRemove') || (_(el).has('name') && el.name == 'mediaRemove'))
                 return true;
         });
-        var changeImage = _(response).find(function(el)
+        var changeMedia = _(response).find(function(el)
         {
-            if (_(el).has('changeImage') || (_(el).has('name') && el.name == 'changeImage'))
+            if (_(el).has('changeMedia') || (_(el).has('name') && el.name == 'changeMedia'))
                 return true;
         });
         if (remove)
@@ -204,10 +204,10 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
             this.$('.image-container').removeClass('with-image');
             this.$('.upload-container').show();
         }
-        else if(changeImage)
+        else if(changeMedia)
         {
-            // Reloads image from server
-            this.model.image(this.image);
+            // Reloads media from server
+            this.model.media(this.media);
         }
     }
 });

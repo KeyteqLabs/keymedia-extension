@@ -1,6 +1,6 @@
 {def $base='ContentObjectAttribute'
     $handler = $attribute.content
-    $image = $handler.image
+    $media = $handler.media
 }
 
 {run-once}
@@ -19,7 +19,7 @@
 
     'keymedia/ns.js',
     'keymedia/Attribute.js',
-    'keymedia/Image.js',
+    'keymedia/Media.js',
 
     'keymedia/views/Modal.js',
     'keymedia/views/KeyMedia.js',
@@ -35,7 +35,7 @@
 {include uri="design:parts/js_templates.tpl"}
 {/run-once}
 
-<div class="keymedia-type" data-bootstrap-image='{$image.data|json}'>
+<div class="keymedia-type" data-bootstrap-media='{$media.data|json}'>
     {include uri="design:parts/keymedia/preview.tpl" attribute=$attribute}
     {include uri="design:parts/keymedia/interactions.tpl" attribute=$attribute base=$base}
 </div>

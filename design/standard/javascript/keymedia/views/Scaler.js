@@ -7,7 +7,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     trueSize : [],
 
-    // size of cropping image
+    // size of cropping media
     size : {
         w : 830,
         h : 580
@@ -20,8 +20,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     {
         _.bindAll(this, 'render', 'changeScale', 'versionCreated', 'createOverlay');
 
-        this.image = new KeyMedia.models.Image({
-            id : options.imageId,
+        this.media = new KeyMedia.models.Media({
+            id : options.mediaId,
             host : options.host
         });
 
@@ -76,7 +76,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
 
         this.$('img').attr({
-            src : this.image.thumb(this.size.w, this.size.h, 'jpg')
+            src : this.media.thumb(this.size.w, this.size.h, 'jpg')
         });
         this.container = this.$('#keymedia-scaler-image');
 
@@ -216,7 +216,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
             }, function(a) {
                 // Store reference to API
                 context.cropper = this;
-                // Set true size of image
+                // Set true size of media
                 this.setOptions({
                     aspectRatio : ratio,
                     setSelect : select,

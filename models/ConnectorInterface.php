@@ -64,7 +64,7 @@ interface ConnectorInterface
 
     /**
      *
-     * Retrieves images matching one or more tags.
+     * Retrieves medias matching one or more tags.
      *
      * @param array $tags A list of tags
      * @param mixed $operator and (default is or)

@@ -119,7 +119,7 @@ class Backend extends \eZPersistentObject
      *
      * Example:
      * <code>
-     *     $imagesOfCatsWithDogs = $backend->tagged(array('cat','dog'), array('operator' => 'and'));
+     *     $mediasOfCatsWithDogs = $backend->tagged(array('cat','dog'), array('operator' => 'and'));
      * </code>
      *
      * @param array|string $tagged An array of tags, or string for a single tag
@@ -173,9 +173,9 @@ class Backend extends \eZPersistentObject
             $result = $con->tagMedia($criteria['id'], $tags);
             if ($result && isset($result->media))
             {
-                $image = new Image($result->media);
-                $image->host($this->host);
-                return $image;
+                $media = new Media($result->media);
+                $media->host($this->host);
+                return $media;
             }
         }
 
@@ -196,24 +196,24 @@ class Backend extends \eZPersistentObject
     }
 
     /**
-     * Get a single image information
+     * Get a single media information
      *
      * @param string $id
-     * @return \keymedia\models\Image
+     * @return \keymedia\models\Media
      */
     public function get($id)
     {
         if (($con = $this->connection()) && $data = $con->media($id))
         {
-            // Default to backend host if no specific (cdn) host is set for image
+            // Default to backend host if no specific (cdn) host is set for media
             if (!isset($data->host)) $data->host = $this->host;
-            return new Image($data);
+            return new Media($data);
         }
         return null;
     }
 
     /**
-     * Create a new version for specified image id
+     * Create a new version for specified media id
      *
      * @param string $id
      * @param string $name
@@ -241,7 +241,7 @@ class Backend extends \eZPersistentObject
      *          - `attributes`
      *          - `collection`
      *
-     * @return \keymedia\models\Image|false Image object if a successfull upload
+     * @return \keymedia\models\Media|false Media object if a successfull upload
      */
     public function upload($filepath, $filename, array $tags = array(), array $data = array())
     {
@@ -251,10 +251,10 @@ class Backend extends \eZPersistentObject
             $result = $con->uploadMedia($filepath, $filename, $tags, $data['attributes']);
             if ($result && isset($result->media))
             {
-                $image = new Image($result->media);
+                $media = new Media($result->media);
                 $host = isset($result->host) ? $result->host : $this->host;
-                $image->host($host);
-                return $image;
+                $media->host($host);
+                return $media;
             }
         }
 
@@ -300,7 +300,7 @@ class Backend extends \eZPersistentObject
      *
      * @param $id
      * @param array $reference
-     * @return bool|Image
+     * @return bool|Media
      */
     public function reportUsage($id, array $reference)
     {
@@ -309,9 +309,9 @@ class Backend extends \eZPersistentObject
             $result = $con->reportUsage($id, $reference);
             if ($result && isset($result->media))
             {
-                $image = new Image($result->media);
-                $image->host($this->host);
-                return $image;
+                $media = new Media($result->media);
+                $media->host($this->host);
+                return $media;
             }
         }
 

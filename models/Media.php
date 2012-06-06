@@ -2,10 +2,10 @@
 
 namespace keymedia\models;
 
-class Image
+class Media
 {
     /**
-     * Image values
+     * Media values
      * @var array
      */
     protected $_data = array();
@@ -31,7 +31,7 @@ class Image
     }
 
     /**
-     * Return the value of an attribute in this image
+     * Return the value of an attribute in this media
      * 
      * @param string $key Key to get
      * @return mixed
@@ -90,7 +90,7 @@ class Image
     }
 
     /**
-     * Build thumb string for current image with given width and height
+     * Build thumb string for current media with given width and height
      * 
      * @param int $width
      * @param int $height
@@ -112,7 +112,7 @@ class Image
     }
 
     /**
-     * Get or set the host to use for image urls
+     * Get or set the host to use for media urls
      *
      * @param string|null $host
      * @return string
@@ -124,7 +124,7 @@ class Image
     }
 
     /**
-     * Get image Box (dimensions of image)
+     * Get media Box (dimensions of media)
      * @return keymedia\models\Box
      */
     public function box()
@@ -133,7 +133,7 @@ class Image
     }
 
     /**
-     * Get a file ending to use for this image
+     * Get a file ending to use for this media
      * Defaults to jpg if no ending is found
      */
     public function ending()
@@ -144,7 +144,7 @@ class Image
     }
 
     /**
-     * Find a sized box inside this images original size
+     * Find a sized box inside this medias original size
      * Used to calculate an initial version
      *
      * @param int $width Minimal crop width
@@ -159,8 +159,8 @@ class Image
      * @static
      * @param $width Width of box to fit
      * @param $height Height of box to fit
-     * @param $boxWidth Width of original image
-     * @param $boxHeight Height of original image
+     * @param $boxWidth Width of original media
+     * @param $boxHeight Height of original media
      * @return array
      */
     public static function fitToBox($width, $height, $boxWidth, $boxHeight)
@@ -269,7 +269,7 @@ class Image
     }
 
     /**
-     * Fetch image data
+     * Fetch media data
      *
      * @return object
      */

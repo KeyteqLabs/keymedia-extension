@@ -75,7 +75,7 @@ class Connector extends \keymedia\models\ConnectorBase
 
     /**
      *
-     * Retrieves images matching one or more tags.
+     * Retrieves medias matching one or more tags.
      *
      * @param array $tags A list of tags
      * @param string $operator and (default is or)
@@ -102,7 +102,7 @@ class Connector extends \keymedia\models\ConnectorBase
     }
 
     /**
-     * Return media information for given image id
+     * Return media information for given media id
      *
      * @param string $id
      * @return object

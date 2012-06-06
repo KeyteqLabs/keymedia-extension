@@ -1,5 +1,5 @@
 {def $searchPlaceholder = 'Search for media'|i18n( 'content/keymedia' )
-    $search = 'Search for images'|i18n( 'content/keymedia' )
+    $search = 'Search for medias'|i18n( 'content/keymedia' )
     $next = 'Next 25 &gt;'
     $prev = '&lt; Previous 25'
 }
@@ -55,7 +55,7 @@
         </div>
         <div class="body">
             <div class="image-wrap">
-                <img src="{{image}}" />
+                <img src="{{media}}" />
             </div>
             <div id="keymedia-scaler-controls">
             </div>
