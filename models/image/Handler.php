@@ -222,7 +222,7 @@ class Handler
     public function hasImage($id = null)
     {
         $values = $this->values();
-        $hasId = !!$values['id'];
+        $hasId = isset($values['id']);
         if (!$hasId) return false;
         return $id ? $id === $values['id'] : true;
     }
