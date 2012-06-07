@@ -40,17 +40,8 @@
                                    value="{'Remove current media'|i18n( 'content/edit' )}"/>
                         </div>
                     {/if}
-                    <button type="button" class="edit-image scale action"
-                            {if not( $handler.mediaFits )}disabled="disabled"{/if}
-                            data-truesize='{$media.size|json}'
-                            data-versions='{$handler.toscale|json}'>
-
-                        {if $handler.mediaFits}
-                        {'Scale variants'|i18n( 'content/edit' )}
-                        {else}
-                        {'Requires a bigger media'|i18n( 'content/edit' )}
-                        {/if}
-                    </button>
+                    {include uri="design:parts/overlay_action_button.tpl"
+                        media=$media handler=$handler}
 
                     {attribute_view_gui format=array(200,200) attribute=$attribute, fetchinfo=true()}
                 </div>

@@ -14,17 +14,8 @@
 {if $handler.backend}<!--
     <section class="edit-buttons">
         {if $media}
-        <button type="button" class="scale action"
-            {if not( $handler.mediaFits )}disabled="disabled"{/if}
-            data-truesize='{$media.size|json}'
-            data-versions='{$handler.toscale|json}'>
-
-            {if $handler.mediaFits}
-            {'Scale variants'|i18n( 'content/edit' )}
-            {else}
-            {'Requires a bigger media'|i18n( 'content/edit' )}
-            {/if}
-        </button>
+            {include uri="design:parts/overlay_action_button.tpl"
+                media=$media handler=$handler}
         {/if}
         <button type="button" class="from-keymedia">{'Fetch from KeyMedia'|i18n( 'content/edit' )}</button>
 

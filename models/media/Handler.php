@@ -186,14 +186,15 @@ class Handler
                     return $box->fits($media->box());
                 return false;
             case 'media':
-                $media = $this->getMedia();
-                return $media;
+                return $this->getMedia();
             case 'thumb':
                 $media = $this->getMedia();
                 return $media ? $media->thumb(300, 200) : '';
             case 'filesize':
                 $media = $this->getMedia();
                 return $media ? $media->file->size : 0;
+            case 'type':
+                return $this->getMedia()->type();
             case 'mime_type':
                 $media = $this->getMedia();
                 return $media ? $media->file->type : '';
@@ -355,7 +356,9 @@ class Handler
 
             $mediaInfo['url'] = $mediaUrl;
 
-            return $mediaInfo;
+            return $mediaInfo + array(
+                'type' => 'image', // When no type found, image is default
+            );
         }
         else {
             //throw new Exception("Unable to generate version.");

@@ -46,8 +46,8 @@ class Box
     public function fits(Box $box)
     {
         return (
-            $box->width() > $this->width() &&
-            $box->height() > $this->height()
+            $box->width() >= $this->width() &&
+            $box->height() >= $this->height()
         );
     }
 }
