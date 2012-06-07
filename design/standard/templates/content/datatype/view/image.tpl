@@ -1,4 +1,3 @@
-{$param}
 <img src="{$media.url}"
     {if $class}class="{$class}"{/if}
     {if $width}width="{$width}"{/if}
