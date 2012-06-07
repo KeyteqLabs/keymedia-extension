@@ -14,7 +14,6 @@
 {if eq($attribute.content.id, 0)|not}
     {if $media.url|is_set()}
         {def $template = 'design:content/datatype/view/'|concat($media.type)|concat('.tpl')}
-
         {include uri=$template media=$media}
     {/if}
 {/if}

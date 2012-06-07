@@ -249,83 +249,63 @@ class Handler
      */
     public function media($format = array(300, 200), $quality = null, $fetchInfo = false)
     {
-        $availableFormats = $this->values();
+        $attributeValues = $this->values();
 
-        // If format array, go on and just rescale
-        if (!$availableFormats && !is_array($format))
-            return null; //throw new Exception("media attribute does not contain any information.");
+        // With no attribute values (keymedia id, host etc) we can't do much
+        if (!$attributeValues)
+            return null;
 
-        if ($fetchInfo)
-        {
-            // Fetch media data and build original part of return array
-            if (!($media = $this->getMedia())) return null;
-            if ($data = $media->data())
-            {
-                $originalMediaInfo =  array(
-                    'size' => $data->file->size,
-                    'width' => $data->file->width,
-                    'height' => $data->file->height,
-                    'name' => isset($data->file->name) ? $data->file->name : null,
-                    'ratio' => $data->file->ratio
-                );
-            }
-        }
-
-        // Init version to null
+        /**
+         * Figure out what scale-version to use
+         * To do this we need to know that the format actually
+         * supports scaling, leaving out videos for example
+         */
         $version = null;
 
-        if (!isset($format))
-        {
-            $urls = array_filter($availableFormats['versions'], function($v) {
+        if (!isset($format)) {
+            $urls = array_filter($attributeValues['versions'], function($v) {
                 return isset($v['url']);
             });
             $version = array_shift($urls);
 
         }
-        elseif (is_array($format))
-        {
-            $mediaUrl = $this->thumb($format[0], $format[1], $quality);
-            $version = array();
-        }
-        else {
-            if (isset($availableFormats['versions']) && isset($availableFormats['versions'][$format]))
-                $version = $availableFormats['versions'][$format];
-            else
-            {
-                // No version available - we need to autogenerate
-                if (!$formatSize = $this->formatSize($format))
-                    return null;
-                list($versionWidth, $versionHeight) = $formatSize;
-
-                if (empty($media) && !($media = $this->getMedia()))
-                    return null;
-
-                $bestFit = $media->boxInside($versionWidth, $versionHeight);
-                $bestFit['size'] = array($versionWidth, $versionHeight);
-
-                // Autocreate the best fit version
-                self::addVersion($format, $bestFit);
-
-                $availableFormats = $this->values();
-                $version = $availableFormats['versions'][$format];
+        elseif (is_string($format)) {
+            // String as format means a named format from this attributes
+            // initial setup in the GUI. An example can be
+            // a named format "main" with "500x500" as its settings
+            $versions = isset($attributeValues['versions']) ? $attributeValues['versions'] : false;
+            if (!$versions || !isset($versions[$format])) {
+                if ($this->generateNamedVersion($format))
+                    $attributeValues = $this->values();
             }
+
+            $version = $attributeValues['versions'][$format];
         }
 
-        $mediaInfo = array(
-            'format' => $format
-        );
-        if ($fetchInfo && $data)
-        {
-            $typeArr = explode('/', $data->file->type);
-            $mediaInfo['mime-type'] = $data->file->type;
-            $mediaInfo['type'] = array_shift($typeArr);
-            $mediaInfo['original'] = $originalMediaInfo;
+        $result = array();
+        if (isset($attributeValues['type'])) {
+            $result['type'] = $attributeValues['type'];
         }
 
-        if (isset($mediaUrl))
-        {
-            $url = $mediaUrl;
-            return compact('url') + $mediaInfo;
+        if ($result['type'] === 'video') $fetchInfo = true;
+
+        if ($fetchInfo && ($media = $this->getMedia())) {
+            if (!isset($result['type'])) {
+                $typeArr = explode('/', $media->file->type);
+                $result['type'] = array_shift($typeArr);
+            }
+            $result['mime-type'] = $media->file->type;
+            $result['original'] = $this->fetchMediaInfo();
+        }
+
+        // For backwards compatibility default the type as its not always
+        // set in the local attributes values
+        $result += array('type' => 'image');
+
+        if (is_array($format)) {
+            return array(
+                'url' => $this->thumb($format[0], $format[1], $quality)
+            ) + $result;
         }
         else
         {
@@ -334,36 +314,28 @@ class Handler
             $coords = $version['coords'];
             if ($width && $height)
                 $ratio = $width / $height;
-            $mediaInfo = array_merge($mediaInfo, compact('width', 'height', 'ratio', 'coords'));
-        }
+            $result = compact('width', 'height', 'ratio', 'coords') + $result;
 
-        if (isset($version) && !isset($mediaUrl))
-        {
-            switch($availableFormats['ending'])
-            {
-                case 'png':
-                case 'jpg':
-                case 'gif':
-                    $ext = '.' . $availableFormats['ending'];
-                    break;
-                default :
-                    $ext = '.jpg';
+            if ($result['type'] === 'image') {
+                // Image specific handling
+                switch($attributeValues['ending'])
+                {
+                    case 'png':
+                    case 'jpg':
+                    case 'gif':
+                        $ext = '.' . $attributeValues['ending'];
+                        break;
+                    default :
+                        $ext = '.jpg';
+                }
+                $host = !empty($media) ? $media->host() : $attributeValues['host'];
+                $url = $this->addQualityToUrl($version['url'], $quality);
+                $result['url'] = "http://" . $host . $url . $ext;
             }
-            $host = !empty($media) ? $media->host() : $availableFormats['host'];
 
-            $url = $this->addQualityToUrl($version['url'], $quality);
-            $mediaUrl = "http://" . $host . $url . $ext;
-
-            $mediaInfo['url'] = $mediaUrl;
-
-            return $mediaInfo + array(
-                'type' => 'image', // When no type found, image is default
-            );
+            return $result;
         }
-        else {
-            //throw new Exception("Unable to generate version.");
-        }
-
+        return null;
     }
 
     /**
@@ -635,5 +607,51 @@ class Handler
         array_splice($pathArr, $index, 0, $quality);
 
         return join('/', $pathArr);
+    }
+
+    /**
+     * Helper to load a specialized set of media information
+     * from the KeyMedia backend
+     * Will do a http request so this is expensive
+     *
+     * @return array
+     */
+    protected function fetchMediaInfo()
+    {
+        $media = $this->getMedia();
+        if ($media && ($data = $media->data())) {
+            return array(
+                'size' => $data->file->size,
+                'width' => $data->file->width,
+                'height' => $data->file->height,
+                'name' => isset($data->file->name) ? $data->file->name : null,
+                'ratio' => $data->file->ratio,
+                'remotes' => $this->toArray($data->remotes)
+            );
+        }
+        return false;
+    }
+
+    protected function generateNamedVersion($format)
+    {
+        $formatSize = $this->formatSize($format);
+        if ($formatSize && ($media = $this->getMedia())) {
+            list($versionWidth, $versionHeight) = $formatSize;
+            $bestFit = $media->boxInside($versionWidth, $versionHeight);
+            $bestFit['size'] = array($versionWidth, $versionHeight);
+
+            // Autocreate the best fit version
+            self::addVersion($format, $bestFit);
+
+            $attributeValues = $this->values();
+            $versions = $attributeValues['versions'];
+        }
+        return null;
+    }
+    protected function toArray($object) {
+        $new = array();
+        foreach ($object as $key => $val)
+            $new[$key] = is_object($val) ? $this->toArray($val) : $val;
+        return $new;
     }
 }
