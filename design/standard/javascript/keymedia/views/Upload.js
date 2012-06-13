@@ -64,7 +64,7 @@ KeyMedia.views.Upload = Backbone.View.extend({
         var settings = {
             runtimes : 'html5,flash,html4',
             container : this.browseContainer,
-            flash_swf_url : eZExceed.plupload.pluploadFlash,
+            flash_swf_url : '/extension/keymedia/design/standard/javascript/libs/plupload/plupload.flash.swf',
             browse_button : this.browseButton,
             max_file_size : this.maxSize,
             url : this.url(),

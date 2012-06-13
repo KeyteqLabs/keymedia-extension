@@ -29,7 +29,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
             host : node.data('host'),
             type : node.data('type'),
             ending : node.data('ending')
-        );
+        });
         this.$('.close').click();
     },
 
