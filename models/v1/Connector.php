@@ -94,7 +94,7 @@ class Connector extends \keymedia\models\ConnectorBase
      */
     public function media($id)
     {
-        return $this->makeRequest('media/' . $id);
+        return $this->makeRequest($id . '/info.json');
     }
 
     /**
