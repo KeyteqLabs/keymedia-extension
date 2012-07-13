@@ -11,45 +11,15 @@
 <input type="hidden" name="{$base}_host_{$attribute.id}" value="{$media.host}" class="media-host" />
 <input type="hidden" name="{$base}_type_{$attribute.id}" value="{$media.type}" class="media-type" />
 <input type="hidden" name="{$base}_ending_{$attribute.id}" value="{$media.ending}" class="media-ending" />
-{if $handler.backend}<!--
-    <section class="edit-buttons">
-        {if $media}
-            {include uri="design:parts/overlay_action_button.tpl"
-                media=$media handler=$handler}
-        {/if}
-        <button type="button" class="from-keymedia">{'Fetch from KeyMedia'|i18n( 'content/edit' )}</button>
+{if $handler.backend}
 
-        <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
-            <button type="button" class="upload" id="keymedia-local-file-{$attribute.id}">{'Upload new media'|i18n( 'content/edit' )}</button>
-            <div class="upload-progress hid"><div class="progress"></div></div>
-        </div>
-    </section>
-
-    {if $media}
-    <div class="meta">
-        <p>
-        {$media.name|wash}
-        </p>
-        <div class="tagger">
-            <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}" />
-            <button type="button" class="tagit">
-                {'Add tag'|i18n( 'content/edit' )}
-            </button>
-            <ul>
-            </ul>
-        </div>
-    </div> -->
-
-
-    <div class="new-wrap"{if $hasMedia} style="display:none"{/if}>
+    <div class="new-wrap"{if $media} style="display:none"{/if}>
         <span class="kp-icon50 pictures-icon"></span>
 
         <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
             <button type="button" class="upload" id="keymedia-local-file-{$attribute.id}">{'Upload new media'|i18n( 'content/edit' )}</button>
         </div>
     </div>
-
-    </section>
 
 
     {if $media}

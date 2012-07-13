@@ -5,7 +5,7 @@
     {def $media = $handler.media}
 {/if}
 
-{if $hasMedia}
+{if $media}
     <div class="image-wrap">
         {if eq($attribute.content.id, 0)|not}
         <div class="remove-wrap">

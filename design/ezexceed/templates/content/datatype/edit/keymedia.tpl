@@ -27,24 +27,16 @@
 {/run-once}
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$media.data|json}' data-version='{$attribute.version}'>
+    {if and( $media, $handler.mediaFits|not )}
+        <p class="error">{'Requires a bigger media'|i18n( 'content/edit' )}</p>
+    {/if}
     <section {if $media}class="image-container with-image"{else}class="image-container"{/if}>
     {if $media}
         <div class="keymedia-preview current-image">
-                <div class="image-wrap">
-                    {if eq($attribute.content.id, 0)|not}
-                        <div class="remove-wrap">
-                            <span class="kp-icon16 remove-black"></span>
-                            <input class="button remove"
-                                   type="submit"
-                                   name="CustomActionButton[{$attribute.id}_delete_image]"
-                                   value="{'Remove current media'|i18n( 'content/edit' )}"/>
-                        </div>
-                    {/if}
-                    {include uri="design:parts/overlay_action_button.tpl"
-                        media=$media handler=$handler}
-
-                    {attribute_view_gui format=array(200,200) attribute=$attribute, fetchinfo=true()}
-                </div>
+            {include uri="design:parts/keymedia/preview.tpl"
+                attribute=$attribute
+                media=$media
+                handler=$handler}
         </div>
     {/if}
     
@@ -62,7 +54,6 @@
                         <div class="upload-progress hid"><div class="progress"></div></div>
                 </div>
             </section>
-
             
         {else}
             <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
