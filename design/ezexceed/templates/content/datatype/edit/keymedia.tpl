@@ -28,7 +28,7 @@
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$media.data|json}' data-version='{$attribute.version}'>
     {if and( $media, $handler.mediaFits|not )}
-        <p class="error">{'Requires a bigger media'|i18n( 'content/edit' )}</p>
+        <p class="error">{'The uploaded image might be too small for this format'|i18n( 'content/edit' )}</p>
     {/if}
     <section {if $media}class="image-container with-image"{else}class="image-container"{/if}>
     {if $media}

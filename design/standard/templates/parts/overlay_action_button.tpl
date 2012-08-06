@@ -4,6 +4,6 @@
     value="{'Scale'|i18n( 'content/edit' )}"
     {else}
     disabled="disabled"
-    value="{'Requires a bigger media'|i18n( 'content/edit' )}"
+    value="{'The uploaded image might be too small for this format'|i18n( 'content/edit' )}"
     {/if}
     data-versions='{$handler.toscale|json}'>
