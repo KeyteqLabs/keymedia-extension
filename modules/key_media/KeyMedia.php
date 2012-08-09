@@ -152,9 +152,9 @@ class KeyMedia extends \ezote\lib\Controller
         else
         {
             /**
-             * If no attribute is specified, use the first DAM fro browsing
+             * If no attribute is specified, use the first DAM
              */
-            $backends = $this->backends();
+            $backends = self::backends();
             if (count($backends))
                 $backend = $backends[0];
             else

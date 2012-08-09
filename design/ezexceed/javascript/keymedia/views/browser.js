@@ -31,13 +31,14 @@ KeyMedia.views.Browser = Backbone.View.extend({
         e.preventDefault();
         var node = $(e.currentTarget), id = node.data('id');
         var model = this.model.medias.get(id);
+        var options = {
+            id : id,
+            host : model.get('host'),
+            type : model.get('type'),
+            ending : model.get('scalesTo').ending
+        };
         if (this.onSelect) {
-            this.onSelect({
-                id : id,
-                host : model.get('host'),
-                type : model.get('type'),
-                ending : model.get('scalesTo').ending
-            }, true);
+            this.onSelect(options, true);
         }
         this.$('.close').click();
     },
