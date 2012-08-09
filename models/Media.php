@@ -98,7 +98,7 @@ class Media
      */
     public function thumb($width, $height)
     {
-        return 'http://' . $this->host() . "/{$width}x{$height}/{$this->id}.jpg";
+        return '//' . $this->host() . "/{$width}x{$height}/{$this->id}.jpg";
     }
 
     /**

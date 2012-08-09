@@ -19,7 +19,7 @@ KeyMedia.models.Media = Backbone.Model.extend({
 
     domain : function()
     {
-        return 'http://' + this.get('host');
+        return '//' + this.get('host');
     },
 
     url : function(method, extra) {

@@ -48,9 +48,10 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
         var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::');
             context = this;
         $.ez(url, data, function(response)
-            {
-                context.trigger('version.create', response.content);
-            });
+        {
+            context.trigger('version.create', response.content);
+        });
+        return this;
     },
 
     version : function()

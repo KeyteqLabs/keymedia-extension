@@ -210,7 +210,7 @@ class Connector extends \keymedia\models\ConnectorBase
             $thumbUrl = $media->brightcove->thumb;
         }
         else {
-            $thumbUrl = 'http://' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.' . $ending;
+            $thumbUrl = '//' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.' . $ending;
         }
         $thumb = (object) array('url' => $thumbUrl);
         return (object) array(

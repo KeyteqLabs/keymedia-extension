@@ -7,8 +7,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
         options = (options || {});
         _.bindAll(this);
 
-        this.collection.bind('reset', this.renderItems);
-        this.collection.bind('add', this.renderItems);
+        this.collection.on('add reset', this.renderItems);
 
         this.tpl = {
             browser : Handlebars.compile($('#tpl-keymedia-browser').html()),

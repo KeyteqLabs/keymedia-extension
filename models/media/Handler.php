@@ -331,7 +331,7 @@ class Handler
                 }
                 $host = !empty($media) ? $media->host() : $attributeValues['host'];
                 $url = $this->addQualityToUrl($version['url'], $quality);
-                $result['url'] = "http://" . $host . $url . $ext;
+                $result['url'] = "//" . $host . $url . $ext;
             }
 
             return $result;
@@ -583,7 +583,7 @@ class Handler
         $id = isset($data['id']) ? $data['id'] : '';
         if ($quality)
             $quality = 'q' . $quality;
-        return 'http://' . $host . "/{$width}x{$height}{$quality}/{$id}.{$ending}";
+        return '//' . $host . "/{$width}x{$height}{$quality}/{$id}.{$ending}";
     }
 
     /**
