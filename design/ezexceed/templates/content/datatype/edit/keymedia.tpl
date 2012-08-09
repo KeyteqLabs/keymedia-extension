@@ -21,6 +21,8 @@
         'keymedia/views/Modal.js',
         'keymedia/views/Upload.js',
         'keymedia/views/Tagger.js',
+
+        'keymedia/views/EzOE.js'
         ) )}
     {include uri="design:parts/js_templates.tpl"}
     {/if}

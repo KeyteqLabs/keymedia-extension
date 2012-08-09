@@ -28,8 +28,9 @@
     'keymedia/views/Browser.js',
     'keymedia/views/Upload.js',
     'keymedia/views/Tagger.js',
+    'keymedia/views/EzOE.js',
 
-    'keymedia/run.js',
+    'keymedia/run.js'
 ) )}
 
 {include uri="design:parts/js_templates.tpl"}
