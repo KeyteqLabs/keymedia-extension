@@ -9,6 +9,7 @@ namespace keymedia\modules\key_media;
 
 use \eZPersistentObject;
 use \keymedia\models\Backend;
+use \keymedia\models\media\Handler;
 
 use \eZHTTPFile;
 use \eZHTTPTool;
@@ -137,26 +138,38 @@ class KeyMedia extends \ezote\lib\Controller
      */
     public static function browse(array $args = array())
     {
+        $criteria = array();
         list($attributeId, $version) = $args;
         if ($attributeId && $version)
         {
-            $http = \eZHTTPTool::instance();
-            $q = $http->variable('q', '');
-            $width = 160;
-            $height = 120;
-            $offset = $http->variable('offset', 0);
-            $limit = $http->variable('limit', 25);
-
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();
             $box = $handler->attribute('minSize');
-            $minWidth = $box->width();
-            $minHeight = $box->height();
+            $criteria['minWidth'] = $box->width();
+            $criteria['minHeight'] = $box->height();
             $backend = $handler->attribute('backend');
-            $results = $backend->search($q, compact('minWidth', 'minHeight'), compact('width', 'height', 'offset', 'limit'));
-
-            $data = compact('results');
         }
+        else
+        {
+            /**
+             * If no attribute is specified, use the first DAM fro browsing
+             */
+            $backends = $this->backends();
+            if (count($backends))
+                $backend = $backends[0];
+            else
+                return array('error' => 'No DAM is configured');
+        }
+        $http = \eZHTTPTool::instance();
+        $q = $http->variable('q', '');
+        $width = 160;
+        $height = 120;
+        $offset = $http->variable('offset', 0);
+        $limit = $http->variable('limit', 25);
+
+        $results = $backend->search($q, $criteria, compact('width', 'height', 'offset', 'limit'));
+
+        $data = compact('results');
         return $data;
     }
 
