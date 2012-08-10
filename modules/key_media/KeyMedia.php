@@ -169,7 +169,8 @@ class KeyMedia extends \ezote\lib\Controller
 
         $results = $backend->search($q, $criteria, compact('width', 'height', 'offset', 'limit'));
 
-        $data = compact('results');
+        $keymediaId = $backend->id;
+        $data = compact('results', 'keymediaId');
         return $data;
     }
 
@@ -206,7 +207,23 @@ class KeyMedia extends \ezote\lib\Controller
     public static function media(array $args = array())
     {
         list($attributeId, $version) = $args;
-        if ($attributeId && $version)
+        if ($attributeId === 'ezoe')
+        {
+            /**
+             * Use the first DAM
+             */
+            $backends = self::backends();
+            if (count($backends))
+            {
+                $backend = $backends[0];
+                $media = $backend->get($version);
+                $media = $media->data();
+                return compact('media');
+            }
+            else
+                return array('error' => 'No DAM is configured');
+        }
+        else if ($attributeId && $version)
         {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();

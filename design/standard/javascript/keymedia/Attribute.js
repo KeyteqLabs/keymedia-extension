@@ -16,8 +16,8 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
         return this.get('prefix') + '/' + ['keymedia', method].concat(extra).join('::');
     },
 
-    media : function(media) {
-        $.getJSON(this.url('media'), function(resp) {
+    media : function(media, extra) {
+        $.getJSON(this.url('media', extra), function(resp) {
             var content = resp.content, data = content.media;
             if ('content' in content)
                 data.content = content.content;

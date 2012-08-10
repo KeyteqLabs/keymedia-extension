@@ -35,7 +35,9 @@ KeyMedia.views.Browser = Backbone.View.extend({
             id : id,
             host : model.get('host'),
             type : model.get('type'),
-            ending : model.get('scalesTo').ending
+            ending : model.get('scalesTo').ending,
+            keymediaId : this.model.medias.keymediaId,
+            model : model
         };
         if (this.onSelect) {
             this.onSelect(options, true);

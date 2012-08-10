@@ -9,7 +9,6 @@
             ed.addCommand('mceKeymedia', function()
             {
                 var test = new KeyMedia.views.EzOE();
-                console.log(test);
                 //ed.execCommand('mceCustom', false, 'Keymedia');
             });
 
