@@ -19,11 +19,13 @@ KeyMedia.views.ScaledVersion = Backbone.View.extend({
 
     render : function()
     {
-        var size = this.boxSize(this.model.size, this.MAX_SIZE, this.MAX_SIZE, this.MIN_SIZE);
+        var modelSize = (this.model.size || [this.MAX_SIZ, this.MAX_SIZ]);
+        var size = this.boxSize(modelSize, this.MAX_SIZE, this.MAX_SIZE, this.MIN_SIZE);
 
         var data = _.extend(this.model);
-        data.width = data.size[0];
-        data.height = data.size[1];
+
+        data.width = (_(data).has('size') ? data.size[0] : 0);
+        data.height = (_(data).has('size') ? data.size[1] : 0);
         this.$el.html(this.tpl(data)).data({
             scale : this.model
         });

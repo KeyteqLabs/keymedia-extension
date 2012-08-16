@@ -107,28 +107,57 @@ class KeyMedia extends \ezote\lib\Controller
         {
             $http = \eZHTTPTool::instance();
 
-            $coords = $http->variable('coords');
-            $size = $http->variable('size');
+            $transformations = array(
+                'coords' => $http->variable('coords'),
+                'size' => $http->variable('size')
+            );
+
             $name = $http->variable('name');
 
             // Store information on content object
-            $mediaAttribute = eZContentObjectAttribute::fetch($attributeId, $version);
+            $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
 
-            /**
-             * Update version modified
-             */
-            /** @var $versionObject \eZContentObjectVersion */
-            if ($versionObject = \eZContentObjectVersion::fetchVersion($mediaAttribute->attribute('version'), $mediaAttribute->attribute('contentobject_id')))
+            $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
+
+            $versionObject = \eZContentObjectVersion::fetchVersion($attribute->attribute('version'), $attribute->attribute('contentobject_id'));
+
+            if ($isKeymediaAttribute)
             {
-                $versionObject->setAttribute('modified', time());
-                if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT)
-                    $versionObject->setAttribute('status', \eZContentObjectVersion::STATUS_DRAFT);
-                $versionObject->store();
-            }
+                /**
+                 * Update version modified
+                 */
+                /** @var $versionObject \eZContentObjectVersion */
+                if ($versionObject)
+                {
+                    $versionObject->setAttribute('modified', time());
+                    if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT)
+                        $versionObject->setAttribute('status', \eZContentObjectVersion::STATUS_DRAFT);
+                    $versionObject->store();
+                }
 
-            // @var \keymedia\models\media\Handler
-            $handler = $mediaAttribute->content();
-            $data = $handler->addVersion($name, compact('coords', 'size'));
+                // @var \keymedia\models\media\Handler
+                $handler = $attribute->content();
+                $data = $handler->addVersion($name, $transformations);
+            }
+            else
+            {
+                $handler = new Handler();
+                $filename = $handler->mediaName($attribute, $versionObject, false, $name);
+
+                // Push to backend
+                $keymediaId = $http->variable('keymediaId');
+                $mediaId = $http->variable('mediaId');
+
+                $backend = Backend::first(array('id' => $keymediaId));
+                $resp = $backend->addVersion($mediaId, $filename, $transformations);
+
+                if (isset($resp->error))
+                    $data = array('ok' => false, 'error' => $resp->error);
+                else {
+                    $url = $resp->url;
+                    $data = compact('name', 'url') + $transformations;
+                }
+            }
         }
         return $data;
     }
@@ -143,22 +172,27 @@ class KeyMedia extends \ezote\lib\Controller
         if ($attributeId && $version)
         {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-            $handler = $attribute->content();
-            $box = $handler->attribute('minSize');
-            $criteria['minWidth'] = $box->width();
-            $criteria['minHeight'] = $box->height();
-            $backend = $handler->attribute('backend');
-        }
-        else
-        {
-            /**
-             * If no attribute is specified, use the first DAM
-             */
-            $backends = self::backends();
-            if (count($backends))
-                $backend = $backends[0];
+            $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
+
+            if ($isKeymediaAttribute)
+            {
+                $handler = $attribute->content();
+                $box = $handler->attribute('minSize');
+                $criteria['minWidth'] = $box->width();
+                $criteria['minHeight'] = $box->height();
+                $backend = $handler->attribute('backend');
+            }
             else
-                return array('error' => 'No DAM is configured');
+            {
+                /**
+                 * If ezxmltext attribute is specified, use the first DAM
+                 */
+                $backends = self::backends();
+                if (count($backends))
+                    $backend = $backends[0];
+                else
+                    return array('error' => 'No DAM is configured');
+            }
         }
         $http = \eZHTTPTool::instance();
         $q = $http->variable('q', '');

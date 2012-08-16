@@ -8,7 +8,8 @@
             // Register commands
             ed.addCommand('mceKeymedia', function()
             {
-                var test = new KeyMedia.views.EzOE();
+                var textarea = ed.getElement();
+                var test = new KeyMedia.views.EzOE({textEl : textarea});
                 //ed.execCommand('mceCustom', false, 'Keymedia');
             });
 

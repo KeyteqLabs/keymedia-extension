@@ -104,7 +104,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         });
         this.$el.append(content);
 
-        var outerBounds = this.outerBounds(this.versions, 4, 40), el, versions = this.versions;
+        var outerBounds = this.outerBounds(this.versions, 4, 40);
         var _view, _container = this.$('.header ul'),
             className;
         this.versionViews = _(this.versions).map(function(version) {
@@ -134,8 +134,16 @@ KeyMedia.views.Scaler = Backbone.View.extend({
     {
         var i, w, h, min = {w:0,h:0}, max = {w:0,h:0};
         for (i = 0; i < versions.length; i++) {
-            w = parseInt(versions[i].size[0], 10);
-            h = parseInt(versions[i].size[1], 10);
+            if (_(versions[i]).has('size') && _(versions[i].size).isArray())
+            {
+                w = parseInt(versions[i].size[0], 10);
+                h = parseInt(versions[i].size[1], 10);
+            }
+            else
+            {
+                w = parseInt(this.media.get('width'), 10);
+                h = parseInt(this.media.get('height'), 10);
+            }
 
             if (w > max.w) max.w = w;
             if (h > max.h) max.h = h;
@@ -157,10 +165,13 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var vanityName = scale.name,
             size = scale.size;
 
+        if (!size)
+            size = [selection.w, selection.h];
+
         // Must store scale coords back onto object
         scale.coords = [selection.x, selection.y, selection.x2, selection.y2];
 
-        return this.model.addVanityUrl(vanityName, scale.coords, size);
+        return this.model.addVanityUrl(vanityName, scale.coords, size, {media : this.media});
     },
 
     versionCreated : function(data)
@@ -237,19 +248,30 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
         var select = [x,y,x2,y2];
 
-        var ratio = (scale.size[0] / scale.size[1]);
+        var ratio = null,
+            minSize = null;
+
+        if (scale && scale.size)
+        {
+            ratio = (scale.size[0] / scale.size[1]);
+            minSize = scale.size;
+        }
 
         // If an API exists we dont need to build Jcrop
         // but can just change crop
         var context = this, size = this.trueSize;
+        var cropperOptions = {
+            setSelect : select
+        };
+        if (ratio)
+            cropperOptions.aspectRatio = ratio;
+        if (minSize)
+            cropperOptions.minSize = minSize;
+
         if (this.cropper)
         {
             // Change selection to new selection
-            this.cropper.setOptions({
-                setSelect : select,
-                aspectRatio : ratio,
-                minSize : scale.size
-            });
+            this.cropper.setOptions(cropperOptions);
         }
         else
         {
@@ -259,11 +281,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 // Store reference to API
                 context.cropper = this;
                 // Set true size of media
-                this.setOptions({
-                    aspectRatio : ratio,
-                    setSelect : select,
-                    minSize : scale.size
-                });
+                this.setOptions(cropperOptions);
             });
         }
     },

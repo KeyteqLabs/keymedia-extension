@@ -38,13 +38,18 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
     // name should be a string to put on the back of the object name
     // coords should be an array [x,y,x2,y2]
     // size shoudl be an array [width,height]
-    addVanityUrl : function(name, coords, size)
+    addVanityUrl : function(name, coords, size, options)
     {
+        options = (options || {});
         var data = {
             name : name,
             coords : coords,
-            size : size
+            size : size,
+            keymediaId : this.medias.keymediaId
         };
+        if (_(options).has('media'))
+            data.mediaId = options.media.id;
+
         var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::');
             context = this;
         $.ez(url, data, function(response)
