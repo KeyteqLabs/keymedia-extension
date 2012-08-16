@@ -3,25 +3,20 @@
     tinymce.create('tinymce.plugins.KeymediaPlugin', {
         init : function(ed, url)
         {
-            //var n = ed.dom.getNode();
-
             // Register commands
             ed.addCommand('mceKeymedia', function()
             {
                 var textarea = ed.getElement();
-                var test = new KeyMedia.views.EzOE({textEl : textarea, tinymceEditor : ed});
-                //ed.execCommand('mceCustom', false, 'Keymedia');
+                new KeyMedia.views.EzOE({textEl : textarea, tinymceEditor : ed});
             });
 
             // Register buttons
             ed.addButton('keymedia', {title : 'Keymedia', cmd : 'mceKeymedia'});
 
-            ed.onNodeChange.add(function(ed, cm, n)
+            /*ed.onNodeChange.add(function(ed, cm, n)
             {
                 cm.setActive('keymedia', n.nodeName === 'SPAN');
-            });
-
-
+            });*/
         },
 
         getInfo : function()

@@ -13,13 +13,12 @@ KeyMedia.views.EzOE = Backbone.View.extend({
 
         _.bindAll(this);
 
-        /**
-         * Fetch info about DAM's from server
-         * Show media from DAM
-         */
-
-        var prefix = eZExceed.urlPrefix ? '/' + eZExceed.urlPrefix : '';
+        var prefix = (eZExceed && _(eZExceed).has('urlPrefix')) ? '/' + eZExceed.urlPrefix : '';
         prefix = prefix + '/ezjscore/call';
+
+        /**
+         * TODO: The attributeEl is eZExceed spesific so this won't work in vanilla version
+         */
         this.model = new KeyMedia.models.Attribute({
             id : this.attributeEl.data('id'),
             version : this.attributeEl.data('version'),
@@ -39,24 +38,17 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         };
         this.model.medias.search('');
 
-        this.model.bind('version.create', this.insertVersion);
+        this.model.bind('version.create', this.updateEditor);
 
-        this.view = eZExceed.stack.push(KeyMedia.views.Browser, options, {headingOptions : headingOptions});
-
-        //this.editor.trigger('stack.push', KeyMedia.views.Browser, options, {headingOptions : headingOptions});
-
-        //tinyMCE.execCommand('mceInsertContent', false, '<b>Hello world!!</b>');
+        this.browser = eZExceed.stack.push(KeyMedia.views.Browser, options, {headingOptions : headingOptions});
+        this.browser.on('destruct', this.showScaler);
 
         return this;
     },
 
     changeMedia : function(params)
     {
-        /**
-         * Not cool to have this here
-         */
         this.media = params;
-        this.view.on('destruct', this.showScaler);
         eZExceed.stack.pop();
     },
 
@@ -76,9 +68,7 @@ KeyMedia.views.EzOE = Backbone.View.extend({
                 versions : [{name : 'Test'}],
                 trueSize : [media.get('width'), media.get('height')],
                 className : 'keymedia-scaler'
-                //app : this
             };
-            console.log(options);
             var headingOptions =
             {
                 name : 'Select crops',
@@ -90,22 +80,19 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         });
     },
 
-    insertVersion : function(data)
+    updateEditor : function(data)
     {
-        console.log(data);
         var media = this.media.model;
         var fileUrl = '//' + media.get('host') + data.url + '.' + media.get('scalesTo').ending;
         var mediaId = media.id,
             keymediaId = this.media.keymediaId;
-        //var content = '<div class="ezoeItemCustomTag keymedia" type="custom" customattributes="mediaid|324"><p><img src="' + fileUrl + '" /></p></div>';
-        var content = '<div class="ezoeItemCustomTag keymedia" type="custom" ' +
-            'customattributes="mediaId|' + mediaId + 'attribute_separationkeymediaId|' + keymediaId +
-            'attribute_separationurl|' + fileUrl + '"><img src="'+fileUrl+'" /></div>';
+
         var content = '<img id="__mce_tmp" class="ezoeItemCustomTag keymedia" type="custom" ' +
             'customattributes="mediaId|' + mediaId + 'attribute_separationkeymediaId|' + keymediaId +
             'attribute_separationimage_url|' + fileUrl + '" src="' + fileUrl + '" />';
        // eZOEPopupUtils.insertHTMLCleanly(this.tinymceEditor, '<img id="__mce_tmp" type="custom" src="' + fileUrl + '" \/>', '__mce_tmp');
-        tinyMCE.execCommand('mceInsertRawHTML', false, content);
+        this.tinymceEditor.execCommand('mceInsertRawHTML', false, content);
+        //tinyMCE.execCommand('mceInsertRawHTML', false, content);
 
     }
 });
