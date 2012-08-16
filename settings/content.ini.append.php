@@ -12,6 +12,7 @@ CustomAttributes[]
 CustomAttributes[]=mediaId
 CustomAttributes[]=keymediaId
 CustomAttributes[]=url
+CustomAttributes[]=image_url
 
 
 */

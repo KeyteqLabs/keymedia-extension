@@ -9,7 +9,7 @@
             ed.addCommand('mceKeymedia', function()
             {
                 var textarea = ed.getElement();
-                var test = new KeyMedia.views.EzOE({textEl : textarea});
+                var test = new KeyMedia.views.EzOE({textEl : textarea, tinymceEditor : ed});
                 //ed.execCommand('mceCustom', false, 'Keymedia');
             });
 

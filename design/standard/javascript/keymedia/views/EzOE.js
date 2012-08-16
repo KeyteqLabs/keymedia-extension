@@ -1,5 +1,6 @@
 KeyMedia.views.EzOE = Backbone.View.extend({
     attributeEl : null,
+    tinymceEditor : null,
 
     initialize : function(options)
     {
@@ -7,6 +8,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
 
         if (_(options).has('textEl'))
             this.attributeEl = $(options.textEl).closest('.attribute');
+        if (_(options).has('tinymceEditor'))
+            this.tinymceEditor = options.tinymceEditor;
 
         _.bindAll(this);
 
@@ -85,7 +88,6 @@ KeyMedia.views.EzOE = Backbone.View.extend({
 
             eZExceed.stack.push(KeyMedia.views.Scaler, options, {headingOptions : headingOptions});
         });
-
     },
 
     insertVersion : function(data)
@@ -98,8 +100,12 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         //var content = '<div class="ezoeItemCustomTag keymedia" type="custom" customattributes="mediaid|324"><p><img src="' + fileUrl + '" /></p></div>';
         var content = '<div class="ezoeItemCustomTag keymedia" type="custom" ' +
             'customattributes="mediaId|' + mediaId + 'attribute_separationkeymediaId|' + keymediaId +
-            'attribute_separationurl|' + fileUrl + '"><p>Keymedia</p></div>';
-        tinyMCE.execCommand('mceInsertContent', false, content);
+            'attribute_separationurl|' + fileUrl + '"><img src="'+fileUrl+'" /></div>';
+        var content = '<img id="__mce_tmp" class="ezoeItemCustomTag keymedia" type="custom" ' +
+            'customattributes="mediaId|' + mediaId + 'attribute_separationkeymediaId|' + keymediaId +
+            'attribute_separationimage_url|' + fileUrl + '" src="' + fileUrl + '" />';
+       // eZOEPopupUtils.insertHTMLCleanly(this.tinymceEditor, '<img id="__mce_tmp" type="custom" src="' + fileUrl + '" \/>', '__mce_tmp');
+        tinyMCE.execCommand('mceInsertRawHTML', false, content);
 
     }
 });
