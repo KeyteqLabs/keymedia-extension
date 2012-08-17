@@ -1,6 +1,7 @@
 KeyMedia.views.EzOE = Backbone.View.extend({
     attributeEl : null,
     tinymceEditor : null,
+    bookmark : null,
 
     initialize : function(options)
     {
@@ -8,8 +9,10 @@ KeyMedia.views.EzOE = Backbone.View.extend({
 
         if (_(options).has('textEl'))
             this.attributeEl = $(options.textEl).closest('.attribute');
-        if (_(options).has('tinymceEditor'))
+        if (_(options).has('tinymceEditor')) {
             this.tinymceEditor = options.tinymceEditor;
+            this.bookmark = this.tinymceEditor.selection.getBookmark();
+        }
 
         _.bindAll(this);
 
@@ -65,7 +68,7 @@ KeyMedia.views.EzOE = Backbone.View.extend({
             var options = {
                 model : _this.model,
                 media : media,
-                versions : [{name : 'Test'}],
+                versions : [{name : ''}],
                 trueSize : [media.get('width'), media.get('height')],
                 className : 'keymedia-scaler'
             };
@@ -98,13 +101,55 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         var customAttributes = _(values).map(function(value, key){
             return key + '|' + value;
         });
-        console.log(customAttributes);
         var customAttributesString = customAttributes.join('attribute_separation');
-        console.log(customAttributesString);
 
-        var content = '<img id="__mce_tmp" class="ezoeItemCustomTag keymedia" type="custom" ' +
-            'customattributes="' + customAttributesString + '" src="' + values.image_url + '" />';
-        this.tinymceEditor.execCommand('mceInsertRawHTML', false, content);
+        var imgAttribute = {
+            src : values.image_url,
+            customattributes : customAttributesString
+        }
+        this.updateTinyMCE(imgAttribute);
+    },
+
+    updateTinyMCE : function(attributes)
+    {
+        var ed = this.tinymceEditor,
+            args = {
+                src : '',
+                alt : '',
+                style : '',
+                'class' : '',
+                width : '',
+                height : '',
+                onmouseover : '',
+                onmouseout : '',
+                type : 'custom'
+            };
+
+        _(args).extend(attributes);
+
+        if (args.class.length)
+            args.class += ' ';
+        args.class = args.class.concat('ezoeItemCustomTag keymedia');
+
+        // Fixes crash in Safari
+        if (tinymce.isWebKit)
+            ed.getWin().focus();
+
+        if (this.bookmark)
+            ed.selection.moveToBookmark(this.bookmark);
+
+        var el = ed.selection.getNode();
+
+        if (el && el.nodeName == 'IMG')
+            ed.dom.setAttribs(el, args);
+        else
+        {
+            ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" />', {skip_undo : 1});
+            ed.dom.setAttribs('__mce_tmp', args);
+            ed.dom.setAttrib('__mce_tmp', 'id', '');
+            ed.undoManager.add();
+        }
+        ed.execCommand('mceRepaint');
     }
 });
 
