@@ -50,7 +50,7 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
         if (_(options).has('media'))
             data.mediaId = options.media.id;
 
-        var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::');
+        var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::'),
             context = this;
         $.ez(url, data, function(response)
         {

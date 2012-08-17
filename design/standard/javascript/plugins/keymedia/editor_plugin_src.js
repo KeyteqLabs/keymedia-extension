@@ -23,9 +23,9 @@
         {
             return {
                 longname : 'Keymedia',
-                author : 'Fumaggo',
-                authorurl : 'http://www.fumaggo.com',
-                infourl : 'http://www.fumaggo.com',
+                author : 'Keyteq AS',
+                authorurl : 'http://www.keyteq.no',
+                infourl : 'http://www.keyteq.no',
                 version : tinymce.majorVersion + "." + tinymce.minorVersion
             };
         }

@@ -83,17 +83,28 @@ KeyMedia.views.EzOE = Backbone.View.extend({
     updateEditor : function(data)
     {
         var media = this.media.model;
-        var fileUrl = '//' + media.get('host') + data.url + '.' + media.get('scalesTo').ending;
-        var mediaId = media.id,
-            keymediaId = this.media.keymediaId;
+
+        var values = {
+            mediaId : this.media.model.id,
+            keymediaId : this.media.keymediaId,
+            x1 : data.coords[0],
+            y1 : data.coords[1],
+            x2 : data.coords[2],
+            y2 : data.coords[3],
+            width : data.size[0],
+            height : data.size[1],
+            image_url : '//' + media.get('host') + data.url + '.' + media.get('scalesTo').ending
+        };
+        var customAttributes = _(values).map(function(value, key){
+            return key + '|' + value;
+        });
+        console.log(customAttributes);
+        var customAttributesString = customAttributes.join('attribute_separation');
+        console.log(customAttributesString);
 
         var content = '<img id="__mce_tmp" class="ezoeItemCustomTag keymedia" type="custom" ' +
-            'customattributes="mediaId|' + mediaId + 'attribute_separationkeymediaId|' + keymediaId +
-            'attribute_separationimage_url|' + fileUrl + '" src="' + fileUrl + '" />';
-       // eZOEPopupUtils.insertHTMLCleanly(this.tinymceEditor, '<img id="__mce_tmp" type="custom" src="' + fileUrl + '" \/>', '__mce_tmp');
+            'customattributes="' + customAttributesString + '" src="' + values.image_url + '" />';
         this.tinymceEditor.execCommand('mceInsertRawHTML', false, content);
-        //tinyMCE.execCommand('mceInsertRawHTML', false, content);
-
     }
 });
 
