@@ -211,6 +211,12 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 scale = this.current.data('scale');
                 if (this.cropper && scale)
                 {
+                    if (!scale.size) {
+                        //Use the actually viewed size
+                        var tellScaled = this.cropper.tellScaled();
+                        scale.size = [tellScaled.w, tellScaled.h];
+                    }
+
                     this.storeVersion(this.cropper.tellSelect(), scale);
                     this.current.removeClass('uncropped').addClass('cropped');
                 }
