@@ -63,18 +63,19 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         this.model.media(this.media.model, ['ezoe', this.media.id]);
 
         var _this = this;
-        this.media.model.on('change', function(){
+        this.media.model.on('change', function(response){
             var media = _this.media.model;
             var options = {
                 model : _this.model,
                 media : media,
-                versions : [{name : ''}],
+                versions : _this.model.get('toScale'),
                 trueSize : [media.get('width'), media.get('height')],
-                className : 'keymedia-scaler'
+                className : 'keymedia-scaler',
+                singleVersion : true
             };
             var headingOptions =
             {
-                name : 'Select crops',
+                name : 'Select crop',
                 icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures-alt-2b.png',
                 quotes : true
             };
@@ -90,6 +91,7 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         var values = {
             mediaId : this.media.model.id,
             keymediaId : this.media.keymediaId,
+            version : data.name,
             x1 : data.coords[0],
             y1 : data.coords[1],
             x2 : data.coords[2],

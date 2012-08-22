@@ -252,7 +252,24 @@ class KeyMedia extends \ezote\lib\Controller
                 $backend = $backends[0];
                 $media = $backend->get($version);
                 $media = $media->data();
-                return compact('media');
+
+                $keymediaINI = \eZINI::instance('keymedia.ini');
+                $aliasList = $keymediaINI->variable('EditorAlias', 'AliasList');
+                $toScale = array();
+                if (!empty($aliasList) && is_array($aliasList)) {
+                    foreach ($aliasList as $name)
+                    {
+                        if ($size = $keymediaINI->variable($name, 'Size')) {
+                            $size = explode('x', $size);
+                            $toScale[] = array(
+                                'name' => $name,
+                                'size' => $size
+                            );
+                        }
+                    }
+                }
+
+                return compact('media', 'toScale');
             }
             else
                 return array('error' => 'No DAM is configured');

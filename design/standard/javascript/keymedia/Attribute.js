@@ -17,11 +17,16 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
     },
 
     media : function(media, extra) {
+        var _this = this;
         $.getJSON(this.url('media', extra), function(resp) {
             var content = resp.content, data = content.media;
+            if (_(content).has('toScale'))
+                _this.set('toScale', content.toScale);
+
             if ('content' in content)
                 data.content = content.content;
             media.set(data);
+
         });
         return media;
     },

@@ -22,30 +22,27 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     versionViews : null,
 
+    singleVersion : false,
+
     initialize : function(options)
     {
         options = (options || {});
-        _.bindAll(this, 'render', 'changeScale', 'versionCreated', 'createOverlay');
+        _.bindAll(this);
         this.versionViews = [];
         this.tpl = {
             scaler : Handlebars.compile($('#tpl-keymedia-scaler').html())
         };
         this.TRANSLATIONS = _KeyMediaTranslations;
 
-        if ('media' in options) {
-            this.media = options.media;
-        }
-        else {
+        _(this).extend(options);
+
+        if (!_(options).has('media')) {
             this.media = new KeyMedia.models.Media({
                 id : options.mediaId,
                 host : options.host,
                 type : options.type
             });
         }
-
-        this.versions = options.versions;
-        this.trueSize = options.trueSize;
-        this.app = options.app;
 
         // Model is an instance of Attribute
         this.model.bind('scale', this.render);
@@ -54,7 +51,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         // When I get popped from stack
         // i save my current scale
         this.on('destruct', _.bind(function() {
-            this.changeScale();
+            this.saveCrop();
         }, this));
 
         return this;
@@ -190,11 +187,29 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 scaleButtonVersions[key].coords = coords;
             }
         });
-        this.app.versions = scaleButtonVersions;
+        if (this.app)
+            this.app.versions = scaleButtonVersions;
 
         var menuElement = this.$('#scaled-' + data.name.toLowerCase());
         menuElement.data('scale', data);
         this.createOverlay(menuElement, data);
+    },
+
+    saveCrop : function()
+    {
+        var scale = this.current.data('scale');
+        if (this.cropper && scale)
+        {
+            if (!scale.size)
+            {
+                //Use the actually viewed size
+                var tellScaled = this.cropper.tellScaled();
+                scale.size = [tellScaled.w, tellScaled.h];
+            }
+
+            this.storeVersion(this.cropper.tellSelect(), scale);
+            this.current.removeClass('uncropped').addClass('cropped');
+        }
     },
 
     changeScale : function(e) {
@@ -204,23 +219,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         if (this.current !== null)
         {
             this.current.removeClass('active');
-
-            if (this.cropper !== null)
-            {
-                // If a previous crop exists, save the coordinates as a new vanity url
-                scale = this.current.data('scale');
-                if (this.cropper && scale)
-                {
-                    if (!scale.size) {
-                        //Use the actually viewed size
-                        var tellScaled = this.cropper.tellScaled();
-                        scale.size = [tellScaled.w, tellScaled.h];
-                    }
-
-                    this.storeVersion(this.cropper.tellSelect(), scale);
-                    this.current.removeClass('uncropped').addClass('cropped');
-                }
-            }
+            if (!this.singleVersion)
+                this.saveCrop();
         }
 
         // If method is triggered without click we
