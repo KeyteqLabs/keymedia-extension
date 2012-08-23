@@ -83,6 +83,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
 
     showScaler : function()
     {
+        if (!this.media)
+            return;
         /**
          * Show the editor
          */
