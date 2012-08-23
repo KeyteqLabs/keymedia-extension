@@ -1,3 +1,1 @@
-<img src="{$url}" />
-{$mediaId}
-{$keymediaId}
+<img src="{$image_url}" />
