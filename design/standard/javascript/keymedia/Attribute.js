@@ -26,7 +26,6 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
             if ('content' in content)
                 data.content = content.content;
             media.set(data);
-
         });
         return media;
     },
@@ -49,11 +48,12 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
         var data = {
             name : name,
             coords : coords,
-            size : size,
-            keymediaId : this.medias.keymediaId
+            size : size
         };
-        if (_(options).has('media'))
+        if (_(options).has('media')) {
             data.mediaId = options.media.id;
+            data.keymediaId = options.media.get('keymediaId');
+        }
 
         var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::'),
             context = this;

@@ -24,6 +24,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     singleVersion : false,
 
+    selectedVersion : null,
+
     initialize : function(options)
     {
         options = (options || {});
@@ -119,9 +121,25 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         });
 
         this.$img = this.$('img');
+        var selectedEl;
 
-        // Enable the first scaling by simulating a click
-        this.$('.header ul li:first-child a').click();
+        if (this.selectedVersion) {
+            var scale;
+            var _this = this;
+            selectedEl = this.$('.header ul li').filter(function(){
+                scale = $(this).data('scale');
+                if (scale && _(scale).has('name') && scale.name == _this.selectedVersion)
+                    return true;
+                return false;
+            });
+
+            selectedEl.find('a').click();
+        }
+
+        if (!selectedEl) {
+            // Enable the first scaling by simulating a click
+            this.$('.header ul li:first-child a').click();
+        }
 
         return this;
     },

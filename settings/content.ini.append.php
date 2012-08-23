@@ -18,6 +18,7 @@ CustomAttributes[]=x2
 CustomAttributes[]=y2
 CustomAttributes[]=width
 CustomAttributes[]=height
+CustomAttributes[]=version
 
 
 */

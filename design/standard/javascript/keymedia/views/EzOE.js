@@ -2,6 +2,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
     attributeEl : null,
     tinymceEditor : null,
     bookmark : null,
+    selectedContent : null,
+    editorAttributes : null,
 
     initialize : function(options)
     {
@@ -12,6 +14,7 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         if (_(options).has('tinymceEditor')) {
             this.tinymceEditor = options.tinymceEditor;
             this.bookmark = this.tinymceEditor.selection.getBookmark();
+            this.selectedContent = $(this.tinymceEditor.selection.getContent());
         }
 
         _.bindAll(this);
@@ -27,24 +30,47 @@ KeyMedia.views.EzOE = Backbone.View.extend({
             version : this.attributeEl.data('version'),
             prefix : prefix
         });
-
-        var options = {
-            model : this.model,
-            collection : this.model.medias,
-            onSelect : this.changeMedia
-        };
-        var headingOptions =
-        {
-            icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
-            name : 'Select media',
-            quotes : true
-        };
-        this.model.medias.search('');
-
         this.model.bind('version.create', this.updateEditor);
 
-        this.browser = eZExceed.stack.push(KeyMedia.views.Browser, options, {headingOptions : headingOptions});
-        this.browser.on('destruct', this.showScaler);
+        if (this.selectedContent && this.selectedContent.is('img') && this.selectedContent.hasClass('keymedia'))
+        {
+            /**
+             * Preselected image. Show scaler with selected crop
+             */
+            var customAttributes = this.selectedContent.attr('customattributes');
+            var attributes = {},
+                tmpArr;
+            _(customAttributes.split('attribute_separation')).each(function(value){
+                tmpArr = value.split('|');
+                attributes[tmpArr[0]] = tmpArr[1];
+            });
+            this.editorAttributes = attributes;
+            var options = {
+                id : attributes.mediaId,
+                keymediaId : attributes.keymediaId,
+                model : new KeyMedia.models.Media()
+            };
+            this.media = options;
+            this.showScaler();
+        }
+        else
+        {
+            var options = {
+                model : this.model,
+                collection : this.model.medias,
+                onSelect : this.changeMedia
+            };
+            var headingOptions =
+            {
+                icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
+                name : 'Select media',
+                quotes : true
+            };
+            this.model.medias.search('');
+
+            this.browser = eZExceed.stack.push(KeyMedia.views.Browser, options, {headingOptions : headingOptions});
+            this.browser.on('destruct', this.showScaler);
+        }
 
         return this;
     },
@@ -60,19 +86,44 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         /**
          * Show the editor
          */
-        this.model.media(this.media.model, ['ezoe', this.media.id]);
-
         var _this = this;
-        this.media.model.on('change', function(response){
+        this.media.model.on('change', function(response)
+        {
             var media = _this.media.model;
+            var versions = _this.model.get('toScale');
+
             var options = {
                 model : _this.model,
                 media : media,
-                versions : _this.model.get('toScale'),
-                trueSize : [media.get('width'), media.get('height')],
+                versions : versions,
+                trueSize : [media.get('file').width, media.get('file').height],
                 className : 'keymedia-scaler',
                 singleVersion : true
             };
+
+            if (_this.editorAttributes)
+            {
+                var attr = _this.editorAttributes;
+
+                if (_(attr).has('version'))
+                {
+                    var currentVersion = _(versions).find(function(value){
+                        return value.name == attr.version;
+                    });
+
+                    if (currentVersion) {
+                        options.selectedVersion = attr.version;
+                        var attrUnderscore = _(attr);
+
+                        if (attrUnderscore.has('x1') && attrUnderscore.has('y1')
+                            && attrUnderscore.has('x2') && attrUnderscore.has('y2'))
+                        {
+                            currentVersion.coords = [attr.x1, attr.y1, attr.x2, attr.y2];
+                        }
+                    }
+                }
+            }
+
             var headingOptions =
             {
                 name : 'Select crop',
@@ -82,6 +133,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
 
             eZExceed.stack.push(KeyMedia.views.Scaler, options, {headingOptions : headingOptions});
         });
+
+        this.model.media(this.media.model, ['ezoe', this.media.id]);
     },
 
     updateEditor : function(data)
@@ -89,8 +142,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         var media = this.media.model;
 
         var values = {
-            mediaId : this.media.model.id,
-            keymediaId : this.media.keymediaId,
+            mediaId : media.id,
+            keymediaId : media.get('keymediaId'),
             version : data.name,
             x1 : data.coords[0],
             y1 : data.coords[1],

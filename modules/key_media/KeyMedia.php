@@ -252,6 +252,7 @@ class KeyMedia extends \ezote\lib\Controller
                 $backend = $backends[0];
                 $media = $backend->get($version);
                 $media = $media->data();
+                $media->keymediaId = $backend->id;
 
                 $keymediaINI = \eZINI::instance('keymedia.ini');
                 $aliasList = $keymediaINI->variable('EditorAlias', 'AliasList');
