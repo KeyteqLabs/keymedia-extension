@@ -206,7 +206,13 @@ KeyMedia.views.EzOE = Backbone.View.extend({
             ed.dom.setAttrib('__mce_tmp', 'id', '');
             ed.undoManager.add();
         }
+        /**
+         * Trigger eZExceed autosave
+         */
         ed.execCommand('mceRepaint');
+        ed.save();
+        $(ed.getElement()).trigger('focusout');
+        ed.getWin().focus();
     }
 });
 
