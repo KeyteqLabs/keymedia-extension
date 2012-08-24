@@ -2,6 +2,7 @@
     $search = 'Search for medias'|i18n( 'content/keymedia' )
     $next = 'Next 25 &gt;'
     $prev = '&lt; Previous 25'
+    $upload = 'Upload new media'|i18n( 'content/edit' )
 }
 
 <script type="text/javascript">
@@ -9,7 +10,8 @@
     searchPlaceholder : '{$searchPlaceholder}',
     search : '{$search}',
     next : '{$next}',
-    prev : '{$prev}'
+    prev : '{$prev}',
+    upload : '{$upload}'
 {literal} }; {/literal}
 </script>
 
@@ -22,10 +24,11 @@
                     <input class="q" type="text" name="keymedia-search" placeholder="{{tr.searchPlaceholder}}" />
                     <span class="kp-icon16 search-icon"></span>
                 </div>
-                <button type="button" class="action">{{tr.search}}</button>
-                <a class="prev">{{tr.prev}}</a>
-                <a class="next">{{tr.next}}</a>
             </form>
+            <div class="upload-container" id="keymedia-local-file-container-{{attribute.id}}">
+                <button type="button" class="upload" id="keymedia-local-file-{{attribute.id}}">{{tr.upload}}
+                </button>
+            </div>
         </div>
 
         <div class="body">

@@ -10,7 +10,7 @@ KeyMedia.views.Upload = Backbone.View.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'uploaded', 'added', 'progress');
+        _.bindAll(this);
         this.browseButton = 'keymedia-local-file-' + this.model.id;
         this.browseContainer = 'keymedia-local-file-container-' + this.model.id;
         this.options = options;
@@ -50,7 +50,8 @@ KeyMedia.views.Upload = Backbone.View.extend({
                     id : media.id,
                     host : media.host,
                     type : media.type,
-                    ending : media.scalesTo.ending
+                    ending : media.scalesTo.ending,
+                    media : media
                 });
             }
         }

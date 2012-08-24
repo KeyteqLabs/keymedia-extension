@@ -13,8 +13,6 @@
   padding: 0 0 10px 0; }
   #keymedia-browser .header input[type="text"] {
     width: 400px; }
-  #keymedia-browser .header button, #keymedia-browser .header .prev, #keymedia-browser .header .next {
-    display: none; }
 #keymedia-browser .body {
   clear: both;
   -webkit-transform: translate3d(0, 0, 0); }

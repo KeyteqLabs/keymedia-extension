@@ -220,19 +220,49 @@ class KeyMedia extends \ezote\lib\Controller
         $version = $http->postVariable('ContentObjectVersion');
 
         $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-        $handler = $attribute->content();
-        if (!$media = $handler->uploadFile($httpFile))
-            return array('error' => 'Failed upload');
+        $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
 
-        $tpl = \eZTemplate::factory();
-        $tpl->setVariable('attribute', $attribute);
-        $tpl->setVariable('excludeJS', true);
-        return array(
-            'media' => $media->data(),
-            'toScale' == $handler->attribute('toscale'),
-            'content' => $tpl->fetch('design:content/datatype/edit/keymedia.tpl'),
-            'ok' => true
-        );
+        if ($isKeymediaAttribute)
+        {
+            $handler = $attribute->content();
+            if (!$media = $handler->uploadFile($httpFile))
+                return array('error' => 'Failed upload');
+
+            $tpl = \eZTemplate::factory();
+            $tpl->setVariable('attribute', $attribute);
+            $tpl->setVariable('excludeJS', true);
+            return array(
+                'media' => $media->data(),
+                'toScale' == $handler->attribute('toscale'),
+                'content' => $tpl->fetch('design:content/datatype/edit/keymedia.tpl'),
+                'ok' => true
+            );
+        }
+        else
+        {
+            /**
+             * If ezxmltext attribute is specified, use the first DAM
+             */
+            $backends = self::backends();
+            if (count($backends))
+                $backend = $backends[0];
+            else
+                return array('error' => 'No DAM is configured');
+
+            $filepath = $httpFile->Filename;
+            $handler = new Handler();
+            $versionObject = \eZContentObjectVersion::fetchVersion($attribute->attribute('version'), $attribute->attribute('contentobject_id'));
+            $filename = $handler->mediaName($attribute, $versionObject);
+
+            $media = $backend->upload($filepath, $filename);
+
+            if (!$media)
+                return array('error' => 'Failed upload');
+            return array(
+                'media' => $media->data(),
+                'ok' => true
+            );
+        }
     }
 
     /**

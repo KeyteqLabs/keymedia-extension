@@ -59,13 +59,15 @@ KeyMedia.views.Browser = Backbone.View.extend({
         var content = $(this.tpl.browser({
             tr : _KeyMediaTranslations,
             icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
-            heading : 'Select media'
+            heading : 'Select media',
+            attribute : this.model.attributes
         }));
 
         this.$el.append(content);
         this.$body = this.$('.body');
         this.renderItems(true);
         this.input = this.$('.q');
+        this.enableUpload();
         return this;
     },
 
@@ -97,5 +99,36 @@ KeyMedia.views.Browser = Backbone.View.extend({
     onPage : function()
     {
         this.renderItems();
+    },
+
+    enableUpload : function()
+    {
+        var version = this.model.get('version');
+        this.upload = new KeyMedia.views.Upload({
+            model : this.model,
+            uploaded : this.uplodedMedia,
+            el : this.$el,
+            prefix : this.model.get('prefix'),
+            version : version
+        }).render();
+        return this;
+    },
+
+    uplodedMedia : function(data)
+    {
+        var model = new KeyMedia.models.Media(data.media);
+        var options = {
+            id : data.id,
+            host : data.host,
+            type : data.type,
+            ending : data.ending,
+            keymediaId : this.model.medias.keymediaId,
+            model : model
+        };
+        if (this.onSelect)
+        {
+            this.onSelect(options, true);
+        }
+        this.$('.close').click();
     }
 });
