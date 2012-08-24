@@ -91,6 +91,10 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         var _this = this;
         this.media.model.on('change', function(response)
         {
+            /**
+             * Remove the change event
+             */
+            _this.media.model.off('change', this);
             var media = _this.media.model;
             var versions = _this.model.get('toScale');
 
