@@ -26,6 +26,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     selectedVersion : null,
 
+    hasSelection : false,
+
     initialize : function(options)
     {
         options = (options || {});
@@ -184,9 +186,9 @@ KeyMedia.views.Scaler = Backbone.View.extend({
             size = [selection.w, selection.h];
 
         // Must store scale coords back onto object
-        scale.coords = [selection.x, selection.y, selection.x2, selection.y2];
+        var coords = [selection.x, selection.y, selection.x2, selection.y2];
 
-        return this.model.addVanityUrl(vanityName, scale.coords, size, {media : this.media});
+        return this.model.addVanityUrl(vanityName, coords, size, {media : this.media});
     },
 
     versionCreated : function(data)
@@ -218,14 +220,28 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var scale = this.current.data('scale');
         if (this.cropper && scale)
         {
-            if (!scale.size)
-            {
-                //Use the actually viewed size
+            var selection = this.cropper.tellSelect();
+
+            if (!this.hasSelection) {
+                selection.x = 0;
+                selection.y = 0;
+                selection.x2 = this.trueSize[0];
+                selection.y2 = this.trueSize[1];
+                if (!parseInt(scale.size[0]))
+                    scale.size[0] = this.trueSize[0];
+                if (!parseInt(scale.size[1]))
+                    scale.size[1] = this.trueSize[0];
+            }
+            else {
                 var tellScaled = this.cropper.tellScaled();
-                scale.size = [tellScaled.w, tellScaled.h];
+                var ratio = (tellScaled.w / tellScaled.h);
+                if (!parseInt(scale.size[0]))
+                    scale.size[0] = Math.ceil(scale.size[1] * ratio);
+                else if (!parseInt(scale.size[1]))
+                    scale.size[1] = Math.ceil(scale.size[0] / ratio);
             }
 
-            this.storeVersion(this.cropper.tellSelect(), scale);
+            this.storeVersion(selection, scale);
             this.current.removeClass('uncropped').addClass('cropped');
         }
     },
@@ -277,7 +293,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
         if (scale && scale.size)
         {
-            ratio = (scale.size[0] / scale.size[1]);
+            if (parseInt(scale.size[0]) && parseInt(scale.size[1]))
+                ratio = (scale.size[0] / scale.size[1]);
             minSize = scale.size;
         }
 
@@ -287,10 +304,14 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var cropperOptions = {
             setSelect : select
         };
-        if (ratio)
-            cropperOptions.aspectRatio = ratio;
-        if (minSize)
-            cropperOptions.minSize = minSize;
+
+        cropperOptions.aspectRatio = ratio;
+        cropperOptions.minSize = minSize;
+
+        /**
+         * Make sure user can't remove selection if width and height has bounded dimension
+         */
+        cropperOptions.allowSelect = (parseInt(minSize[0]) && parseInt(minSize[1])) ? false : true;
 
         if (this.cropper)
         {
@@ -300,7 +321,9 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         else
         {
             this.$('.image-wrap img').Jcrop({
-                trueSize : size
+                trueSize : size,
+                onSelect : function(){context.hasSelection = true;},
+                onRelease : function(){context.hasSelection = false;}
             }, function(a) {
                 // Store reference to API
                 context.cropper = this;

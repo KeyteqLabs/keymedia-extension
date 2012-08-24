@@ -147,14 +147,17 @@ KeyMedia.views.EzOE = Backbone.View.extend({
             mediaId : media.id,
             keymediaId : media.get('keymediaId'),
             version : data.name,
-            x1 : data.coords[0],
-            y1 : data.coords[1],
-            x2 : data.coords[2],
-            y2 : data.coords[3],
-            width : data.size[0],
-            height : data.size[1],
+            image_width : data.size[0],
+            image_height : data.size[1],
             image_url : '//' + media.get('host') + data.url + '.' + media.get('scalesTo').ending
         };
+        if (data.coords)
+        {
+            values.x1 = data.coords[0];
+            values.y1 = data.coords[1];
+            values.x2 = data.coords[2];
+            values.y2 = data.coords[3];
+        }
         var customAttributes = _(values).map(function(value, key){
             return key + '|' + value;
         });

@@ -4,7 +4,7 @@
 ExtensionDirectories[]=keymedia
 AvailableDataTypes[]=keymedia
 
- [CustomTagSettings]
+[CustomTagSettings]
 AvailableCustomTags[]=keymedia
 
 [keymedia]
@@ -16,8 +16,8 @@ CustomAttributes[]=x1
 CustomAttributes[]=y1
 CustomAttributes[]=x2
 CustomAttributes[]=y2
-CustomAttributes[]=width
-CustomAttributes[]=height
+CustomAttributes[]=image_width
+CustomAttributes[]=image_height
 CustomAttributes[]=version
 
 

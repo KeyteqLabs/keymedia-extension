@@ -47,9 +47,12 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
         options = (options || {});
         var data = {
             name : name,
-            coords : coords,
             size : size
         };
+
+        if (coords)
+            data.coords = coords;
+
         if (_(options).has('media')) {
             data.mediaId = options.media.id;
             data.keymediaId = options.media.get('keymediaId');
