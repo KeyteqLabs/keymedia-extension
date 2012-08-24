@@ -292,10 +292,12 @@ class KeyMedia extends \ezote\lib\Controller
                     {
                         if ($size = $keymediaINI->variable($name, 'Size')) {
                             $size = explode('x', $size);
-                            $toScale[] = array(
-                                'name' => $name,
-                                'size' => $size
-                            );
+                            if (count($size) == 2 && is_integer($size[0]) && is_integer($size[1])) {
+                                $toScale[] = array(
+                                    'name' => $name,
+                                    'size' => $size
+                                );
+                            }
                         }
                     }
                 }
