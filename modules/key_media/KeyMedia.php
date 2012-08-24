@@ -285,19 +285,25 @@ class KeyMedia extends \ezote\lib\Controller
                 $media->keymediaId = $backend->id;
 
                 $keymediaINI = \eZINI::instance('keymedia.ini');
-                $aliasList = $keymediaINI->variable('EditorAlias', 'AliasList');
+                $aliasList = $keymediaINI->variable('EditorVersion', 'VersionList');
                 $toScale = array();
                 if (!empty($aliasList) && is_array($aliasList)) {
                     foreach ($aliasList as $name)
                     {
                         if ($size = $keymediaINI->variable($name, 'Size')) {
-                            $size = explode('x', $size);
-                            if (count($size) == 2 && is_integer($size[0]) && is_integer($size[1])) {
-                                $toScale[] = array(
-                                    'name' => $name,
-                                    'size' => $size
-                                );
-                            }
+                            $size = array_map(function($value){ return (int) $value;}, explode('x', $size));
+                            if (count($size) != 2 || !is_integer($size[0]) && !is_integer($size[1]))
+                                continue;
+                            /**
+                             * Both dimensions can't be unbound
+                             */
+                            if ($size[0] == 0 && $size[1] == 0)
+                                continue;
+
+                            $toScale[] = array(
+                                'name' => $name,
+                                'size' => $size
+                            );
                         }
                     }
                 }
