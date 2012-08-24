@@ -11,8 +11,10 @@ KeyMedia.views.Upload = Backbone.View.extend({
     initialize : function(options)
     {
         _.bindAll(this);
-        this.browseButton = 'keymedia-local-file-' + this.model.id;
-        this.browseContainer = 'keymedia-local-file-container-' + this.model.id;
+        if (_(options).has('uploadContainer'))
+            this.browseButton = options.uploadContainer;
+        this.browseButton = _(options).has('browseButton') ? options.browseButton : 'keymedia-local-file-' + this.model.id;
+        this.browseContainer = _(options).has('browseContainer') ? options.browseContainer : 'keymedia-local-file-container-' + this.model.id;
         this.options = options;
         this.uploadCallback = options.uploaded;
         return this;

@@ -25,8 +25,8 @@
                     <span class="kp-icon16 search-icon"></span>
                 </div>
             </form>
-            <div class="upload-container" id="keymedia-local-file-container-{{attribute.id}}">
-                <button type="button" class="upload" id="keymedia-local-file-{{attribute.id}}">{{tr.upload}}
+            <div class="upload-container" id="keymedia-browser-local-file-container-{{attribute.id}}">
+                <button type="button" class="upload" id="keymedia-browser-local-file-{{attribute.id}}">{{tr.upload}}
                 </button>
             </div>
         </div>

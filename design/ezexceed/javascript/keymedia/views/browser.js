@@ -109,7 +109,9 @@ KeyMedia.views.Browser = Backbone.View.extend({
             uploaded : this.uplodedMedia,
             el : this.$el,
             prefix : this.model.get('prefix'),
-            version : version
+            version : version,
+            browseContainer : 'keymedia-browser-local-file-container-' + this.model.id,
+            browseButton : 'keymedia-browser-local-file-' + this.model.id
         }).render();
         return this;
     },
