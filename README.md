@@ -21,6 +21,18 @@ _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
 Head over to _Admin Dashboard_ -> _KeyMedia_ and add your KeyMedia API connection information.
 
+### Make keymedia available in eZOe
+
+In your ezoe.ini in settings/override you must add the following:
+
+[EditorSettings]
+Plugins[]=keymedia
+
+[EditorLayout]
+Buttons[]=keymedia
+
+The keymedia button could be placed anywhere in the editor. See the eZOe doc on how to arrange buttons
+
 ## Usage
 
 ### Lookup on tags

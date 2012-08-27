@@ -6,6 +6,7 @@ AvailableDataTypes[]=keymedia
 
 [CustomTagSettings]
 AvailableCustomTags[]=keymedia
+IsInline[keymedia]=image
 
 [keymedia]
 CustomAttributes[]
