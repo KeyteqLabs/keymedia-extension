@@ -5,26 +5,7 @@
      $media = $handler.media }
 {run-once}
     {if is_set($excludeJS)|not}
-        {ezscript( array(
-        'libs/handlebars.js',
-        'libs/jquery.jcrop.min.js',
-
-        'keymedia/ns.js',
-        'keymedia/Media.js',
-        'keymedia/Attribute.js',
-
-        'keymedia/views/scaled_version.js',
-        'keymedia/views/scaler.js',
-        'keymedia/views/browser.js',
-        'keymedia/views/keymedia.js',
-
-        'keymedia/views/Modal.js',
-        'keymedia/views/Upload.js',
-        'keymedia/views/Tagger.js',
-
-        'keymedia/views/EzOE.js'
-        ) )}
-    {include uri="design:parts/js_templates.tpl"}
+        {include uri="design:keymedia/js.tpl"}
     {/if}
 {/run-once}
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
