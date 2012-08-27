@@ -117,8 +117,13 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         if (this.model.get('classList'))
         {
             var classes = this.model.get('classList'),
-                selectedClass = this.editorAttributes.cssclass,
+                selectedClass = false,
+                alttext = '';
+            if (this.editorAttributes) {
                 alttext = (this.editorAttributes.alttext || '');
+                selectedClass = (this.editorAttributes.cssclass || false);
+            }
+
             var classesObj = _(classes).map(function(value){
                 return {name : value, selected : (value == selectedClass)};
             });

@@ -3,7 +3,7 @@ KeyMedia.views.EzOE = Backbone.View.extend({
     tinymceEditor : null,
     bookmark : null,
     selectedContent : null,
-    editorAttributes : null,
+    editorAttributes : {},
 
     initialize : function(options)
     {
