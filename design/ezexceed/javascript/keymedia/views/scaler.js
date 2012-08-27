@@ -239,7 +239,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         var _this = this;
         if (this.editorAttributes)
         {
-            var inputEl = this.$('.attributes :input'),
+            var inputEl = this.$('.customattributes :input'),
                 el;
             inputEl.each(function(){
                 el = $(this);
