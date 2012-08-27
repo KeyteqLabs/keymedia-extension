@@ -3,6 +3,7 @@
     $next = 'Next 25 &gt;'
     $prev = '&lt; Previous 25'
     $upload = 'Upload new media'|i18n( 'content/edit' )
+    $alttext = 'Alternative text'|i18n( 'content/keymedia' )
 }
 
 <script type="text/javascript">
@@ -11,7 +12,8 @@
     search : '{$search}',
     next : '{$next}',
     prev : '{$prev}',
-    upload : '{$upload}'
+    upload : '{$upload}',
+    alttext : '{$alttext}'
 {literal} }; {/literal}
 </script>
 
@@ -53,6 +55,7 @@
 <script type="text/x-handlebars-template" id="tpl-keymedia-scaler">
 {literal}
     <div class="keymedia" id="keymedia-scaler">
+        <div class="customattributes"></div>
         <div class="header">
             <ul></ul>
         </div>
@@ -76,5 +79,21 @@
             <span class="share{{#if shared}} shared{{/if}}"></span>
         </a>
     </div>
+{/literal}
+</script>
+
+<script type="text/x-handlebars-template" id="tpl-keymedia-scalerattributes">
+{literal}
+    <input type="text" name="alttext" placeholder="{{tr.alttext}}"{{#if alttext}} value="{{alttext}}"{{/if}} />
+    {{#if classes}}
+        <label>Class
+        <select name="cssclass">
+            <option value=""> - </option>
+            {{#each classes}}
+                <option value="{{name}}"{{#if selected}} selected{{/if}}>{{name}}</option>
+            {{/each}}
+        </select>
+        </label>
+    {{/if}}
 {/literal}
 </script>

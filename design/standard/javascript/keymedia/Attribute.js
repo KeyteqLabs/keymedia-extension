@@ -22,6 +22,8 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
             var content = resp.content, data = content.media;
             if (_(content).has('toScale'))
                 _this.set('toScale', content.toScale);
+            if (_(content).has('classList'))
+                _this.set('classList', content.classList);
 
             if ('content' in content)
                 data.content = content.content;

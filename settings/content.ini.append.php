@@ -19,6 +19,10 @@ CustomAttributes[]=y2
 CustomAttributes[]=image_width
 CustomAttributes[]=image_height
 CustomAttributes[]=version
+CustomAttributes[]=alttext
+CustomAttributes[]=title
+CustomAttributes[]=style
+CustomAttributes[]=cssclass
 
 
 */

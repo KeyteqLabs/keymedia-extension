@@ -28,6 +28,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     hasSelection : false,
 
+    editorAttributes : false,
+
     initialize : function(options)
     {
         options = (options || {});
@@ -106,8 +108,22 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         this.$el.append(content);
 
         var outerBounds = this.outerBounds(this.versions, 4, 40);
-        var _view, _container = this.$('.header ul'),
+        var _view,
+            _container = this.$('.header ul'),
+            imageAttributesContainer = this.$('.customattributes'),
+            attrTemplate = Handlebars.compile($('#tpl-keymedia-scalerattributes').html()),
             className;
+
+        if (this.model.get('classList'))
+        {
+            var classes = this.model.get('classList'),
+                selectedClass = this.editorAttributes.cssclass,
+                alttext = (this.editorAttributes.alttext || '');
+            var classesObj = _(classes).map(function(value){
+                return {name : value, selected : (value == selectedClass)};
+            });
+            imageAttributesContainer.html(attrTemplate({classes : classesObj, alttext : alttext, tr : this.TRANSLATIONS}));
+        }
         this.versionViews = _(this.versions).map(function(version) {
             if ('url' in version)
                 className = 'cropped';
@@ -217,6 +233,19 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     saveCrop : function()
     {
+        /**
+         * Set editor attribute values if any
+         */
+        var _this = this;
+        if (this.editorAttributes)
+        {
+            var inputEl = this.$('.attributes :input'),
+                el;
+            inputEl.each(function(){
+                el = $(this);
+                _this.editorAttributes[el.attr('name')] = el.val();
+            });
+        }
         var scale = this.current.data('scale');
         if (this.cropper && scale)
         {

@@ -104,7 +104,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
                 versions : versions,
                 trueSize : [media.get('file').width, media.get('file').height],
                 className : 'keymedia-scaler',
-                singleVersion : true
+                singleVersion : true,
+                editorAttributes : _this.editorAttributes
             };
 
             if (_this.editorAttributes)
@@ -146,15 +147,16 @@ KeyMedia.views.EzOE = Backbone.View.extend({
     updateEditor : function(data)
     {
         var media = this.media.model;
+        var values = this.editorAttributes;
 
-        var values = {
+        values = _(values).extend({
             mediaId : media.id,
             keymediaId : media.get('keymediaId'),
             version : data.name,
             image_width : data.size[0],
             image_height : data.size[1],
             image_url : '//' + media.get('host') + data.url + '.' + media.get('scalesTo').ending
-        };
+        });
         if (data.coords)
         {
             values.x1 = data.coords[0];
