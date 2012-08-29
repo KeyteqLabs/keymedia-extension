@@ -117,17 +117,31 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         if (this.model.get('classList'))
         {
             var classes = this.model.get('classList'),
+                viewModes = this.model.get('viewModes'),
                 selectedClass = false,
+                selectedView = false,
+                classesObj = false,
+                viewsObj = false,
                 alttext = '';
             if (this.editorAttributes) {
                 alttext = (this.editorAttributes.alttext || '');
                 selectedClass = (this.editorAttributes.cssclass || false);
+                selectedView = (this.editorAttributes.viewmode || false);
             }
 
-            var classesObj = _(classes).map(function(value){
-                return {name : value, selected : (value == selectedClass)};
-            });
-            imageAttributesContainer.html(attrTemplate({classes : classesObj, alttext : alttext, tr : this.TRANSLATIONS}));
+            if (classes) {
+                classesObj = _(classes).map(function(value) {
+                    return {name : value, selected : (value == selectedClass)};
+                });
+            }
+            if (viewModes)
+            {
+                viewsObj = _(viewModes).map(function(value)
+                {
+                    return {name : value, selected : (value == selectedView)};
+                });
+            }
+            imageAttributesContainer.html(attrTemplate({classes : classesObj, viewmodes : viewsObj, alttext : alttext, tr : this.TRANSLATIONS}));
         }
         this.versionViews = _(this.versions).map(function(version) {
             if ('url' in version)

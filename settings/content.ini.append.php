@@ -24,6 +24,7 @@ CustomAttributes[]=alttext
 CustomAttributes[]=title
 CustomAttributes[]=style
 CustomAttributes[]=cssclass
+CustomAttributes[]=viewmode
 
 
 */

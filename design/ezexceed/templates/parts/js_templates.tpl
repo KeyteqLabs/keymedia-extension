@@ -95,5 +95,16 @@
         </select>
         </label>
     {{/if}}
+    {{#if viewmodes}}
+    <label>View
+        <select name="viewmode">
+            <option value=""> - </option>
+            {{#each viewmodes}}
+            <option value="{{name}}"
+            {{#if selected}} selected{{/if}}>{{name}}</option>
+            {{/each}}
+        </select>
+    </label>
+    {{/if}}
 {/literal}
 </script>

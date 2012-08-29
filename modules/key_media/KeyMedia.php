@@ -308,8 +308,9 @@ class KeyMedia extends \ezote\lib\Controller
                     }
                 }
                 $classList = $keymediaINI->variable('EditorVersion', 'ClassList');
+                $viewModes = $keymediaINI->variable('EditorVersion', 'ViewModes');
 
-                return compact('media', 'toScale', 'classList');
+                return compact('media', 'toScale', 'classList', 'viewModes');
             }
             else
                 return array('error' => 'No DAM is configured');

@@ -1,5 +1,6 @@
-<img src="{$image_url}"
-     {if $cssclass}class="{$cssclass}"{/if}
-     {if $style}style="{$style}"{/if}
-     {if $title}title="{$title}"{/if}
-     {if $alttext}alt="{$alttext}"{/if} />
+{def $viewmode = 'keymedia-standard'}
+{if $viewmode}
+    {set $viewmode = $viewmode}
+{/if}
+{def $template = 'design:content/datatype/view/ezxmltags/'|concat($viewmode)|concat('.tpl')}
+{include uri=$template}

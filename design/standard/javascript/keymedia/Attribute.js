@@ -24,6 +24,8 @@ KeyMedia.models.Attribute = Backbone.Model.extend({
                 _this.set('toScale', content.toScale);
             if (_(content).has('classList'))
                 _this.set('classList', content.classList);
+            if (_(content).has('viewModes'))
+                _this.set('viewModes', content.viewModes);
 
             if ('content' in content)
                 data.content = content.content;
