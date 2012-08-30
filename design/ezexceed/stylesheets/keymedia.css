@@ -143,3 +143,8 @@
 #keymedia-scaler .jcrop-holder {
   border: 1px solid #fff;
   overflow: hidden; }
+
+.kp .attribute.keymedia .image-container .upload-container form {
+    top:0px !important;
+    left:0px !important;
+}
