@@ -100,7 +100,7 @@
         <select name="viewmode">
             <option value=""> - </option>
             {{#each viewmodes}}
-            <option value="{{name}}"
+            <option value="{{value}}"
             {{#if selected}} selected{{/if}}>{{name}}</option>
             {{/each}}
         </select>

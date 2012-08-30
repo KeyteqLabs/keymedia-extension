@@ -114,11 +114,12 @@ KeyMedia.views.Scaler = Backbone.View.extend({
             attrTemplate = Handlebars.compile($('#tpl-keymedia-scalerattributes').html()),
             className;
 
-        if (this.model.get('classList'))
+        var classes = this.model.get('classList'),
+            viewModes = this.model.get('viewModes');
+
+        if (classes || viewModes)
         {
-            var classes = this.model.get('classList'),
-                viewModes = this.model.get('viewModes'),
-                selectedClass = false,
+            var selectedClass = false,
                 selectedView = false,
                 classesObj = false,
                 viewsObj = false,
@@ -128,17 +129,20 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 selectedClass = (this.editorAttributes.cssclass || false);
                 selectedView = (this.editorAttributes.viewmode || false);
             }
+            var tmpArr = [];
 
             if (classes) {
                 classesObj = _(classes).map(function(value) {
-                    return {name : value, selected : (value == selectedClass)};
+                    tmpArr = value.split('|');
+                    return {value : tmpArr[0], name : _(tmpArr).last(), selected : (tmpArr[0] == selectedClass)};
                 });
             }
             if (viewModes)
             {
                 viewsObj = _(viewModes).map(function(value)
                 {
-                    return {name : value, selected : (value == selectedView)};
+                    tmpArr = value.split('|');
+                    return {value : tmpArr[0], name : _(tmpArr).last(), selected : (tmpArr[0] == selectedView)};
                 });
             }
             imageAttributesContainer.html(attrTemplate({classes : classesObj, viewmodes : viewsObj, alttext : alttext, tr : this.TRANSLATIONS}));
