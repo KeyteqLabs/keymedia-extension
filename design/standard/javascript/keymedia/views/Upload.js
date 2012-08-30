@@ -27,7 +27,20 @@ KeyMedia.views.Upload = Backbone.View.extend({
     {
         if (!('response' in info)) return true;
 
-        var data = JSON.parse(info.response);
+        try
+        {
+            var data = $.parseJSON(info.response);
+        } catch (e)
+        {
+            if (this.uploadCallback)
+            {
+                this.uploadCallback({
+                    refresh : true
+                });
+            }
+            return true;
+        }
+
         if ('content' in data && 'media' in data.content)
         {
             var media = data.content.media;

@@ -111,6 +111,11 @@ KeyMedia.views.KeyMedia = eZExceed.ContentEditor.Base.extend(
 
     changeMedia : function(data, pop)
     {
+        if (data.refresh)
+        {
+            this.model.media(this.media);
+            return;
+        }
         this.$('.media-id').val(data.id);
         this.$('.media-host').val(data.host);
         this.$('.media-type').val(data.type);
