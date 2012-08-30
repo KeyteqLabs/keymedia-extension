@@ -252,6 +252,8 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
     saveCrop : function()
     {
+        if (!this.current)
+            return;
         /**
          * Set editor attribute values if any
          */
