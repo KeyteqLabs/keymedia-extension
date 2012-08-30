@@ -155,7 +155,7 @@ class Handler
     public function hasAttribute($name)
     {
         $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media',
-            'toscale', 'minsize', 'mediafits');
+            'toscale', 'minsize', 'mediafits', 'imagefits');
         if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
