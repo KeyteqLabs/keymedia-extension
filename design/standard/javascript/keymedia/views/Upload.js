@@ -55,7 +55,7 @@ KeyMedia.views.Upload = Backbone.View.extend({
             }
         }
 
-        this.$('.upload-progress').fadeOut();
+        //this.$('.upload-progress').fadeOut();
 
         return this;
     },
@@ -66,7 +66,10 @@ KeyMedia.views.Upload = Backbone.View.extend({
 
     added : function(up, files) {
         up.start();
-        this.$('.upload-progress').show();
+        // Show loader
+        this.$('.loader').removeClass('hide');
+        this.$('.pictures-icon, .upload-container').addClass('hide');
+        //this.$('.upload-progress').show();
     },
 
     render : function(response) {

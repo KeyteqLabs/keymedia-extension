@@ -49,6 +49,7 @@
         {if $handler.backend}
             <section class="edit-buttons"{if $media} style="display:none"{/if}>
                 <span class="kp-icon50 pictures-icon"></span>
+                <div class="kp-icon32 loading-icon loader hide"></div>
                 <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}"{if $media} style="display:none"{/if}>
                     <button type="button" class="upload-image upload upload-from-disk" id="keymedia-local-file-{$attribute.id}">{'Click to add'|i18n( 'content/edit' )}</button>
                         <div class="upload-progress hid"><div class="progress"></div></div>
