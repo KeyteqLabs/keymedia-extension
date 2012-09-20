@@ -1,0 +1,12 @@
+<form onsubmit="javascript: return false;" class="form-search">
+    <input type="text" class="q input-long" placeholder="{{translate "Search for media"}}">
+    <button type="button" class="btn search">
+        {{translate "Search for media"}}
+    </button>
+    <div class="upload-container" id="keymedia-browser-local-file-container-{{id}}">
+        <button type="button" class="btn upload" id="keymedia-browser-local-file-{{id}}">
+            {{translate "Upload new"}}
+        </button>
+    </div>
+</form>
+<div class="keymedia-thumbs"></div>

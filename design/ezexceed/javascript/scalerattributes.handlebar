@@ -1,0 +1,22 @@
+<input type="text" name="alttext" placeholder="{{tr.alttext}}"{{#if alttext}} value="{{alttext}}"{{/if}} />
+{{#if classes}}
+    <label>Class
+    <select name="cssclass">
+        <option value=""> - </option>
+        {{#each classes}}
+            <option value="{{name}}"{{#if selected}} selected{{/if}}>{{name}}</option>
+        {{/each}}
+    </select>
+    </label>
+{{/if}}
+{{#if viewmodes}}
+<label>View
+    <select name="viewmode">
+        <option value=""> - </option>
+        {{#each viewmodes}}
+        <option value="{{value}}"
+        {{#if selected}} selected{{/if}}>{{name}}</option>
+        {{/each}}
+    </select>
+</label>
+{{/if}}

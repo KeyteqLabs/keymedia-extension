@@ -538,7 +538,8 @@ class Handler
     {
         if (!$this->_media)
         {
-            if (!($backend = $this->backend()))
+            $backend = $this->backend();
+            if (!$backend)
                 return false;
 
             $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
@@ -621,13 +622,14 @@ class Handler
     {
         $media = $this->getMedia();
         if ($media && ($data = $media->data())) {
+            $remotes = isset($data->remotes) ? $data->remotes : array();
             return array(
                 'size' => $data->file->size,
                 'width' => $data->file->width,
                 'height' => $data->file->height,
                 'name' => isset($data->file->name) ? $data->file->name : null,
                 'ratio' => $data->file->ratio,
-                'remotes' => $this->toArray($data->remotes)
+                'remotes' => $this->toArray($remotes)
             );
         }
         return false;
@@ -649,7 +651,8 @@ class Handler
         }
         return null;
     }
-    protected function toArray($object) {
+    protected function toArray($object = array()) {
+        if (!is_array($object)) $object = array();
         $new = array();
         foreach ($object as $key => $val)
             $new[$key] = is_object($val) ? $this->toArray($val) : $val;

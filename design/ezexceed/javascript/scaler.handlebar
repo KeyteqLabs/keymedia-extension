@@ -1,0 +1,13 @@
+<div class="keymedia" id="keymedia-scaler">
+    <div class="customattributes"></div>
+    <div class="header">
+        <ul></ul>
+    </div>
+    <div class="body">
+        <div class="image-wrap">
+            <img src="{{media}}" />
+        </div>
+        <div id="keymedia-scaler-controls">
+        </div>
+    </div>
+</div>

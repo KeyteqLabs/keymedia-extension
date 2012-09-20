@@ -165,10 +165,14 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * eZJSCore method for browsing KeyMedia
      */
-    public static function browse(array $args = array())
+    public static function browse($args = array(), $version)
     {
         $criteria = array();
-        list($attributeId, $version) = $args;
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else
+            $attributeId = $args;
         if ($attributeId && $version)
         {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
@@ -192,18 +196,17 @@ class KeyMedia extends \ezote\lib\Controller
                     return array('error' => 'No DAM is configured');
             }
         }
-        $http = \eZHTTPTool::instance();
-        $q = $http->variable('q', '');
+        $q = self::$http->variable('q', '');
         $width = 160;
         $height = 120;
-        $offset = $http->variable('offset', 0);
-        $limit = $http->variable('limit', 25);
+        $offset = self::$http->variable('offset', 0);
+        $limit = self::$http->variable('limit', 25);
 
         $results = $backend->search($q, $criteria, compact('width', 'height', 'offset', 'limit'));
 
         $keymediaId = $backend->id;
         $data = compact('results', 'keymediaId');
-        return $data;
+        return self::response($data, array('type' => 'json'));
     }
 
     /**
@@ -264,11 +267,16 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * Get media preview
      */
-    public static function media(array $args = array())
+    public static function media($args = array(), $version)
     {
-        list($attributeId, $version) = $args;
-        if ($attributeId === 'ezoe')
-        {
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else {
+            $attributeId = $args;
+        }
+
+        if ($attributeId === 'ezoe') {
             /**
              * Use the first DAM
              */
@@ -313,16 +321,19 @@ class KeyMedia extends \ezote\lib\Controller
         {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();
-            if ($handler && $media = $handler->attribute('media'))
-            {
-                $toScale = $handler->attribute('toscale');
-                $media = $media->data();
+            if ($handler) {
+                $media = $handler->attribute('media');
+                if ($media) {
+                    $toScale = $handler->attribute('toscale');
+                    $media = $media->data();
+                }
             }
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
             $tpl->setVariable('excludeJS', true);
             $content = $tpl->fetch('design:content/datatype/edit/keymedia.tpl');
-            return compact('media', 'content', 'toScale');
+            $content = trim($content);
+            return self::response(compact('media', 'content', 'toScale'), array('type' => 'json'));
         }
     }
 

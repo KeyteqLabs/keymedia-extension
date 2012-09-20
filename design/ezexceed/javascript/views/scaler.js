@@ -281,17 +281,17 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 selection.y = 0;
                 selection.x2 = this.trueSize[0];
                 selection.y2 = this.trueSize[1];
-                if (!parseInt(scale.size[0]))
+                if (!parseInt(scale.size[0], 10))
                     scale.size[0] = this.trueSize[0];
-                if (!parseInt(scale.size[1]))
+                if (!parseInt(scale.size[1], 10))
                     scale.size[1] = this.trueSize[0];
             }
             else {
                 var tellScaled = this.cropper.tellScaled();
                 var ratio = (tellScaled.w / tellScaled.h);
-                if (!parseInt(scale.size[0]))
+                if (!parseInt(scale.size[0], 10))
                     scale.size[0] = Math.ceil(scale.size[1] * ratio);
-                else if (!parseInt(scale.size[1]))
+                else if (!parseInt(scale.size[1], 10))
                     scale.size[1] = Math.ceil(scale.size[0] / ratio);
             }
 
@@ -347,7 +347,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
 
         if (scale && scale.size)
         {
-            if (parseInt(scale.size[0]) && parseInt(scale.size[1]))
+            if (parseInt(scale.size[0], 10) && parseInt(scale.size[1], 10))
                 ratio = (scale.size[0] / scale.size[1]);
             minSize = scale.size;
         }
@@ -365,7 +365,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         /**
          * Make sure user can't remove selection if width and height has bounded dimension
          */
-        cropperOptions.allowSelect = (parseInt(minSize[0]) && parseInt(minSize[1])) ? false : true;
+        cropperOptions.allowSelect = (parseInt(minSize[0], 10) && parseInt(minSize[1], 10)) ? false : true;
 
         if (this.cropper)
         {

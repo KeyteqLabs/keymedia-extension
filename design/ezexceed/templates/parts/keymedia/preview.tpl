@@ -6,20 +6,15 @@
 {/if}
 
 {if $media}
-    <div class="image-wrap">
+    <div class="thumbnail">
+        {attribute_view_gui format=array(300,100) attribute=$attribute fetchinfo=true()}
+
         {if eq($attribute.content.id, 0)|not}
-        <div class="remove-wrap">
-            <span class="kp-icon16 remove-black"></span>
-            <input class="button remove"
-                   type="submit"
-                   name="CustomActionButton[{$attribute.id}_delete_media]"
-                   value="{'Remove current media'|i18n( 'content/edit' )}"/>
-        </div>
+        <button type="submit" class="close remove"
+                name="CustomActionButton[{$attribute.id}_delete_media]"
+                value="{'Remove current media'|i18n( 'keymedia' )}">×</button>
         {/if}
         
-        {include uri="design:parts/overlay_action_button.tpl"
-            media=$media handler=$handler}
-
-        {attribute_view_gui format=array(200,200) attribute=$attribute fetchinfo=true()}
+        {include uri="design:parts/overlay_action_button.tpl" media=$media handler=$handler}
     </div>
 {/if}
