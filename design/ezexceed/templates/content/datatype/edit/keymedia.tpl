@@ -3,11 +3,7 @@
 {/if}
 {def $handler = $attribute.content
      $media = $handler.media }
-{run-once}
-    {if is_set($excludeJS)|not}
-        {include uri="design:keymedia/js.tpl"}
-    {/if}
-{/run-once}
+
 <div class="attribute-base" data-attribute-base='{$attribute_base}' data-id='{$attribute.id}' data-handler='KeyMedia.views.KeyMedia'
     data-bootstrap='{$media.data|json}' data-version='{$attribute.version}'>
     {if and( $media, $handler.mediaFits|not )}
