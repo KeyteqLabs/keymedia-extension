@@ -187,18 +187,9 @@ class KeyMedia extends \ezote\lib\Controller
                 /**
                  * If ezxmltext attribute is specified, use the first DAM
                  */
-                $ini = \eZINI::instance('keymedia.ini');
-                if ($ini->hasVariable('KeyMedia', 'DefaultBackend')) {
-                    $id = $ini->variable('KeyMedia', 'DefaultBackend');
-                    $backend = Backend::first(compact('id'));
-                }
-                else {
-                    $backends = self::backends();
-                    if (count($backends))
-                        $backend = $backends[0];
-                    else
-                        return array('error' => 'No DAM is configured');
-                }
+                $backend = self::defaultBackend();
+                if (!$backend)
+                    return array('error' => 'No DAM is configured');
             }
         }
         $http = \eZHTTPTool::instance();
@@ -250,10 +241,8 @@ class KeyMedia extends \ezote\lib\Controller
             /**
              * If ezxmltext attribute is specified, use the first DAM
              */
-            $backends = self::backends();
-            if (count($backends))
-                $backend = $backends[0];
-            else
+            $backend = self::defaultBackend();
+            if (!$backend)
                 return array('error' => 'No DAM is configured');
 
             $filepath = $httpFile->Filename;
@@ -283,10 +272,8 @@ class KeyMedia extends \ezote\lib\Controller
             /**
              * Use the first DAM
              */
-            $backends = self::backends();
-            if (count($backends))
-            {
-                $backend = $backends[0];
+            $backend = self::defaultBackend();
+            if ($backend) {
                 $media = $backend->get($version);
                 $media = $media->data();
                 $media->keymediaId = $backend->id;
@@ -412,4 +399,19 @@ class KeyMedia extends \ezote\lib\Controller
         return $backend->store();
     }
 
+    protected function defaultBackend()
+    {
+        $ini = \eZINI::instance('keymedia.ini');
+        if ($ini->hasVariable('KeyMedia', 'DefaultBackend')) {
+            $id = $ini->variable('KeyMedia', 'DefaultBackend');
+            return Backend::first(compact('id'));
+        }
+        else {
+            $backends = self::backends();
+            if (count($backends))
+                return $backends[0];
+            else
+                return false;
+        }
+    }
 }
