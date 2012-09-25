@@ -187,11 +187,18 @@ class KeyMedia extends \ezote\lib\Controller
                 /**
                  * If ezxmltext attribute is specified, use the first DAM
                  */
-                $backends = self::backends();
-                if (count($backends))
-                    $backend = $backends[0];
-                else
-                    return array('error' => 'No DAM is configured');
+                $ini = \eZINI::instance('keymedia.ini');
+                if ($ini->hasVariable('KeyMedia', 'DefaultBackend')) {
+                    $id = $ini->variable('KeyMedia', 'DefaultBackend');
+                    $backend = Backend::first(compact('id'));
+                }
+                else {
+                    $backends = self::backends();
+                    if (count($backends))
+                        $backend = $backends[0];
+                    else
+                        return array('error' => 'No DAM is configured');
+                }
             }
         }
         $http = \eZHTTPTool::instance();
