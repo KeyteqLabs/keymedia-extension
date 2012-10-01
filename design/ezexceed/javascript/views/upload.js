@@ -24,7 +24,7 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
 
         url : function()
         {
-            return this.options.prefix + '/keymedia::upload';
+            return this.model.urlRoot + '/keymedia::upload';
         },
 
         uploaded : function(up, file, info)
@@ -74,9 +74,11 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
         },
 
         render : function(response) {
-            var button = this.$('#' + this.browseButton),
-                text = button.val() + ' (Max ' + this.maxSize + ')';
+            var button = this.$('#' + this.browseButton);
+            /*
+            var text = button.val() + ' (Max ' + this.maxSize + ')';
             button.val(text);
+            */
 
             var settings = {
                 runtimes : 'html5,flash,html4',

@@ -164,7 +164,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 model : this.model,
                 uploaded : this.changeMedia,
                 el : this.$el,
-                prefix : this.model.get('prefix'),
+                prefix : this.model.urlRoot,
                 version : this.version
             }).render();
             return this;
