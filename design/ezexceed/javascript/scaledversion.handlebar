@@ -1,7 +1,5 @@
 <a>
-    <p class="box"></p>
-    <h2>{{name}}<br />
-        <span>{{width}}x{{height}}</span>
-    </h2>
+    {{name}}<br />
+    <small>{{width}}x{{height}}</small>
 </a>
 <div class="overlay"></div>

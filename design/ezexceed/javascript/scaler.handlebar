@@ -1,13 +1,11 @@
-<div class="keymedia" id="keymedia-scaler">
-    <div class="customattributes"></div>
-    <div class="header">
-        <ul></ul>
-    </div>
-    <div class="body">
-        <div class="image-wrap">
-            <img src="{{media}}" />
-        </div>
-        <div id="keymedia-scaler-controls">
-        </div>
+<div class="customattributes"></div>
+
+<section class="keymedia-crop">
+    <ul class="nav nav-pills inverted"></ul>
+</section>
+
+<div class="keymedia-crop-container">
+    <div class="image-wrap">
+        <img src="{{media}}" />
     </div>
 </div>

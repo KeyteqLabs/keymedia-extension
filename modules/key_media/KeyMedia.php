@@ -100,9 +100,13 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * eZJSCore method for saving a new scaled version
      */
-    public static function saveVersion(array $args = array())
+    public static function saveVersion($args = array(), $version = false)
     {
-        list($attributeId, $version) = $args;
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else
+            $attributeId = $args;
         if ($attributeId && $version)
         {
             $http = \eZHTTPTool::instance();

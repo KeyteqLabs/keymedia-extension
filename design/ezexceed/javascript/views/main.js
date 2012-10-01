@@ -47,7 +47,11 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 e.preventDefault();
                 require(['keymedia/views/browser'], this.browse);
             },
-            'click button.scale' : 'scale',
+            'click button.scale' : function(e)
+            {
+                e.preventDefault();
+                require(['keymedia/views/scaler'], this.scale);
+            },
             'click .remove' : 'removeMedia'
         },
 
@@ -88,26 +92,29 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
         },
 
         // Start render of scaler sub-view
-        scale : function(e)
+        scale : function(ScaleView)
         {
-            e.preventDefault();
-            var node = $(e.currentTarget);
+            var data = this.$("button.scale").data();
             var options = {
                 model : this.model,
-                //media : this.media,
                 versions : this.versions,
-                trueSize : node.data('truesize'),
-                className : 'keymedia-scaler',
-                app : this
+                trueSize : data.truesize
             };
 
-            var headingOptions = {
+            var context = {
+                icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures-alt-2b.png',
                 heading : 'Select crops',
-                icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures-alt-2b.png'
+                render : true
             };
 
-            this.model.fetch();
-            this.editor.trigger('stack.push', KeyMedia.views.Scaler, options, {headingOptions : headingOptions});
+            this.model.fetch().success(function(response)
+            {
+                eZExceed.stack.push(
+                    ScaleView,
+                    options,
+                    context
+                );
+            });
             return this;
         },
 

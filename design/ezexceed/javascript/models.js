@@ -13,7 +13,8 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
         attributes : function()
         {
             return {
-                content : false
+                content : false,
+                media : new Media()
             };
         },
 
@@ -28,14 +29,25 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
         parse : function(data)
         {
             var entity = {};
-            if ('media' in data && data.media) entity = data.media;
+            if ('media' in data) entity.media = new Media(data.media);
             if ('content' in data) entity.content = data.content;
             if ('toScale' in data) entity.toScale = data.toScale;
-            return data;
+            return entity;
         },
 
         scale : function(media) {
             $.getJSON(this.url('scaler', [media]), this.onScale);
+        },
+
+        fetch : function(options)
+        {
+            return Backbone.sync('read', this, {}).success(this.fetched);
+        },
+
+        fetched : function(response)
+        {
+            this.set(this.parse(response));
+            this.trigger('fetched');
         },
 
         onScale : function(response) {
@@ -61,13 +73,15 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
                 data.mediaId = options.media.id;
                 data.keymediaId = options.media.get('keymediaId');
             }
+            else {
+                var media = this.get('media');
+                data.mediaId = media.id;
+                data.keymediaId = media.get('keymediaId');
+            }
 
-            var url = ['keymedia', 'saveVersion', this.get('id'), this.version()].join('::'),
-                context = this;
-            $.ez(url, data, function(response)
-                {
-                    context.trigger('version.create', response.content);
-                });
+            var url = this.url('saveVersion', this.id, this.get('version'));
+
+            return Backbone.sync('create', {url: url}, {data: data});
         }
     });
 

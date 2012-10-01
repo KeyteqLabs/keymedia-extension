@@ -5,11 +5,11 @@ this['JST']['keymedia/scaler'] = Handlebars.template(function (Handlebars,depth0
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  buffer += "<div class=\"keymedia\" id=\"keymedia-scaler\">\n    <div class=\"customattributes\"></div>\n    <div class=\"header\">\n        <ul></ul>\n    </div>\n    <div class=\"body\">\n        <div class=\"image-wrap\">\n            <img src=\"";
+  buffer += "<div class=\"customattributes\"></div>\n\n<section class=\"keymedia-crop\">\n    <ul class=\"nav nav-pills inverted\"></ul>\n</section>\n\n<div class=\"keymedia-crop-container\">\n    <div class=\"image-wrap\">\n        <img src=\"";
   foundHelper = helpers.media;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.media; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "\" />\n        </div>\n        <div id=\"keymedia-scaler-controls\">\n        </div>\n    </div>\n</div>\n";
+  buffer += escapeExpression(stack1) + "\" />\n    </div>\n</div>\n";
   return buffer;});
 
 this['JST']['keymedia/browser'] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -173,11 +173,11 @@ this['JST']['keymedia/scaledversion'] = Handlebars.template(function (Handlebars
   var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  buffer += "<a>\n    <p class=\"box\"></p>\n    <h2>";
+  buffer += "<a>\n    ";
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "<br />\n        <span>";
+  buffer += escapeExpression(stack1) + "<br />\n    <small>";
   foundHelper = helpers.width;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.width; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
@@ -185,5 +185,5 @@ this['JST']['keymedia/scaledversion'] = Handlebars.template(function (Handlebars
   foundHelper = helpers.height;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.height; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "</span>\n    </h2>\n</a>\n<div class=\"overlay\"></div>\n";
+  buffer += escapeExpression(stack1) + "</small>\n</a>\n<div class=\"overlay\"></div>\n";
   return buffer;});
