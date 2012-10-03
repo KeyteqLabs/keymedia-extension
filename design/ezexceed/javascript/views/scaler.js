@@ -1,4 +1,5 @@
-define(['shared/view', './scaled_version'], function(View, ScaledVersion)
+define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
+    function(View, ScaledVersion, jCrop)
 {
     return View.extend({
         // size of cropping media
@@ -38,7 +39,6 @@ define(['shared/view', './scaled_version'], function(View, ScaledVersion)
 
             // Model is an instance of Attribute
             this.model.on('scale', this.render, this);
-            this.model.on('version.create', this.versionCreated, this);
 
             // When I get popped from stack
             // i save my current scale
@@ -216,8 +216,7 @@ define(['shared/view', './scaled_version'], function(View, ScaledVersion)
 
             var scaleButtonVersions = this.versions;
             _(scaleButtonVersions).each(function(version, key){
-                if (version.name === name)
-                {
+                if (version.name === name) {
                     scaleButtonVersions[key].coords = coords;
                 }
             });
@@ -226,6 +225,8 @@ define(['shared/view', './scaled_version'], function(View, ScaledVersion)
 
             var menuElement = this.$('#scaled-' + data.name.toLowerCase());
             menuElement.data('scale', data);
+
+            this.model.trigger('version.create', data);
         },
 
         saveCrop : function()
@@ -325,12 +326,13 @@ define(['shared/view', './scaled_version'], function(View, ScaledVersion)
 
             // If an API exists we dont need to build Jcrop
             // but can just change crop
-            var context = this, size = this.trueSize;
             var cropperOptions = {
                 setSelect : select
             };
 
-            cropperOptions.aspectRatio = ratio;
+            if (ratio) {
+                cropperOptions.aspectRatio = ratio;
+            }
             cropperOptions.minSize = minSize;
 
             /**
@@ -343,8 +345,9 @@ define(['shared/view', './scaled_version'], function(View, ScaledVersion)
                 this.cropper.setOptions(cropperOptions);
             }
             else {
-                this.$('.image-wrap img').Jcrop({
-                    trueSize : size,
+                var context = this;
+                this.$('.image-wrap>img').Jcrop({
+                    trueSize : this.trueSize,
                     onSelect : function(){context.hasSelection = true;},
                     onRelease : function(){context.hasSelection = false;}
                 }, function(a) {

@@ -10,7 +10,7 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
             this.medias = new MediaCollection();
         },
 
-        attributes : function()
+        defaults : function()
         {
             return {
                 content : false,
@@ -41,7 +41,8 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
 
         fetch : function(options)
         {
-            return Backbone.sync('read', this, {}).success(this.fetched);
+            options = options || ({});
+            return Backbone.sync('read', this, options).success(this.fetched);
         },
 
         fetched : function(response)
@@ -79,7 +80,7 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
                 data.keymediaId = media.get('keymediaId');
             }
 
-            var url = this.url('saveVersion', this.id, this.get('version'));
+            var url = this.url('saveVersion', this.get('attributeId'), this.get('version'));
 
             return Backbone.sync('create', {url: url}, {data: data});
         }

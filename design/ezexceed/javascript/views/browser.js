@@ -46,7 +46,7 @@ define(['shared/view', './upload'], function(View, UploadView)
             this.collection.search(q);
         },
 
-        render : function(response) {
+        render : function() {
             var context = {
                 icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
                 heading : 'Select media',

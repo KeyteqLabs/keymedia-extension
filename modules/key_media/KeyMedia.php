@@ -316,10 +316,10 @@ class KeyMedia extends \ezote\lib\Controller
                 $classList = $keymediaINI->variable('EditorVersion', 'ClassList');
                 $viewModes = $keymediaINI->variable('EditorVersion', 'ViewModes');
 
-                return compact('media', 'toScale', 'classList', 'viewModes');
+                return self::response(compact('media', 'toScale', 'classList', 'viewModes'), array('type' => 'json'));
             }
             else
-                return array('error' => 'No DAM is configured');
+                return self::response(array('error' => 'No DAM is configured'), array('type' => 'json'));
         }
         else if ($attributeId && $version)
         {
@@ -414,7 +414,7 @@ class KeyMedia extends \ezote\lib\Controller
         return $backend->store();
     }
 
-    protected function defaultBackend()
+    protected static function defaultBackend()
     {
         $ini = \eZINI::instance('keymedia.ini');
         if ($ini->hasVariable('KeyMedia', 'DefaultBackend')) {
