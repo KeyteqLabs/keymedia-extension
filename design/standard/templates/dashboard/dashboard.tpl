@@ -6,7 +6,7 @@
 {foreach $backends as $backend}
     <li>
         <span>{$backend.username}</span>
-        @ <a href="http://{$backend.host}">{$backend.host}</a>
+        @ <a href={concat( '/key_media/connection/', $backend.id )|ezurl}>{$backend.host}</a>
 
         <button data-href={'/key_media/deleteConnection'|ezurl}>{'Delete'|i18n( 'keymedia' )}</button>
     </li>

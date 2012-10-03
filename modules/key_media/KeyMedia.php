@@ -35,7 +35,7 @@ class KeyMedia extends \ezote\lib\Controller
     public function dashboard()
     {
         return self::response(
-            array('backends' => $this->backends()),
+            array('backends' => self::backends()),
             array(
                 'template' => 'design:dashboard/dashboard.tpl',
                 'left_menu' => 'design:dashboard/left_menu.tpl',
@@ -47,34 +47,27 @@ class KeyMedia extends \ezote\lib\Controller
     public function connection($id = null)
     {
         // Edit existing
-        if ($id)
-        {
-            $backend = Backend::first(compact('id'));
-        }
+        if ($id) $backend = Backend::first(compact('id'));
+        if (!isset($backend)) $backend = Backend::create();
 
-        if ($this->http->method('post'))
-        {
-            if (!isset($backend)) $backend = Backend::create();
-
-            $ezhttp = $this->http->ez();
-
-            $username = $ezhttp->variable('username', false);
-            $host = $ezhttp->variable('host', false);
-            $api_key = $ezhttp->variable('api_key', false);
-            $api_version = $ezhttp->variable('api_version', false);
+        $http = \ezote\lib\HTTP::instance();
+        if ($http->method('post')) {
+            $username = self::$http->variable('username', false);
+            $host = self::$http->variable('host', false);
+            $api_key = self::$http->variable('api_key', false);
+            $api_version = self::$http->variable('api_version', false);
 
             $data = compact('id', 'username', 'host', 'api_key', 'api_version');
 
             $this->save($backend, $data);
 
-            if ($redirectTo = $ezhttp->variable('redirect_to', false))
-            {
+            if ($redirectTo = self::$http->variable('redirect_to', false)) {
                 $id = $backend->attribute('id');
                 header("Location: {$redirectTo}/{$id}");
             }
         }
 
-        $backends = $this->backends();
+        $backends = self::backends();
         return self::response(
             compact('backend', 'backends'),
             array(
@@ -393,7 +386,7 @@ class KeyMedia extends \ezote\lib\Controller
         return -1;
     }
 
-    protected function backends()
+    protected static function backends()
     {
         return Backend::find();
     }
