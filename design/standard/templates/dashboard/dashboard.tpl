@@ -15,3 +15,4 @@
 {else}
 <h2>{'No connected KeyMedia sites'|i18n( 'keymedia/dashboard' )}</h2>
 {/if}
+<a href={'/key_media/connection/'|ezurl}>{'Add'|i18n( 'keymedia' )}</a>
