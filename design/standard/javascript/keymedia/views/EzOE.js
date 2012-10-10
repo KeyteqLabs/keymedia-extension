@@ -150,8 +150,8 @@ KeyMedia.views.EzOE = Backbone.View.extend({
         var values = this.editorAttributes;
 
         values = _(values).extend({
-            mediaId : media.id,
-            keymediaId : media.get('keymediaId'),
+            media_id : media.id,
+            keymedia_id : media.get('keymediaId'),
             version : data.name,
             image_width : data.size[0],
             image_height : data.size[1],
