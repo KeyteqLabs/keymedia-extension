@@ -92,7 +92,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
                 y2 = parseInt(coords[3] / scale[1], 10);
 
             node.css({
-                'top' : y + container.outerHeight(true),
+                'top' : y + node.closest('.header').outerHeight(true),
                 left : x,
                 width : parseInt(x2 - x, 10),
                 height : parseInt(y2 - y, 10)
