@@ -177,16 +177,24 @@ class Connector extends \keymedia\models\ConnectorBase
      */
     public function uploadMedia($filename, $name, $tags = array(), $attributes = array())
     {
-        if (!file_exists($filename))
+        if (!file_exists($filename)) {
+            user_error("KeyMedia extension failed uploading $filename");
             return null;
+        }
 
         if (ini_get('max_execution_time') < $this->timeout)
             set_time_limit($this->timeout + 10);
 
         $file = '@' . $filename;
         $file .= ';type=' . $this->mime($filename);
+
         // Must send mime type along
-        $payload = compact('file', 'name', 'tags', 'attributes');
+        if (isset($attributes['attributes'])) {
+            $payload = $attributes + compact('file', 'name', 'tags');
+        }
+        else {
+            $payload = compact('file', 'name', 'tags', 'attributes');
+        }
 
         return $this->makeRequest('/media.json', $payload, 'POST');
     }
