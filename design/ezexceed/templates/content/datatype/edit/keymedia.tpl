@@ -16,7 +16,7 @@
     data-url-root='{"/"|ezurl("no")}'
     {literal}data-paths='{"keymedia" : "/extension/keymedia/design/ezexceed/javascript/"}'{/literal}
     data-bootstrap='{$media.data|json}'
-></div>
+>
 
 {if $handler.backend|not}
     <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
@@ -43,13 +43,13 @@
             <button class="btn" type="button">{'Add tag'|i18n('keymedia')}</button>
         </div>
         <div class="tags">
-        <!--
-            <span class="label">Tagname <button class="close">×</button></span>
-        -->
+        <!-- <span class="label">Tagname <button class="close">×</button></span> -->
         </div>
-    <div>
-{/if}
+    </div>
+    <div class="eze-no-image hide">
+{else}
 <div class="eze-no-image">
+{/if}
     <button type="button" class="btn from-keymedia">
         {'Browse media library'|i18n('keymedia')}
     </button>
@@ -60,4 +60,5 @@
         </button>
         <div class="upload-progress hide"><div class="progress"></div></div>
     </div>
+</div>
 </div>

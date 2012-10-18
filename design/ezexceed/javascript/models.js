@@ -80,7 +80,8 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
                 data.keymediaId = media.get('keymediaId');
             }
 
-            var url = this.url('saveVersion', this.get('attributeId'), this.get('version'));
+            var id = this.id !== "ezoe" ? this.id : this.get('attributeId');
+            var url = this.url('saveVersion', id, this.get('version'));
 
             return Backbone.sync('create', {url: url}, {data: data});
         }

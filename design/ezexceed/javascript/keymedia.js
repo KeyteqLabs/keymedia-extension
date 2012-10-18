@@ -1,4 +1,5 @@
-define(['edit/datatypes/base', 'keymedia/views/main', './templates'], function(Base, MainView)
+define(['edit/datatypes/base', 'keymedia/views/main', 'keymedia/config', './templates'],
+    function(Base, MainView)
 {
     return Base.extend({
         initialize : function(options)

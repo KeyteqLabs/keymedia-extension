@@ -83,8 +83,25 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             }
         },
 
+        updateScalerSize : function(media)
+        {
+            var width = this.$el.width();
+            var height = this.$el.height() - 100;
+            var file = media.get('file');
+            if (width > file.width) width = file.width;
+            if (height > file.height) height = file.height;
+            this.SIZE = {
+                w : width,
+                h : height
+            };
+            return this;
+        },
+
         render : function() {
             var media = this.model.get('media');
+
+            this.updateScalerSize(media);
+
             var content = this.template('keymedia/scaler', {
                 media : media.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
             });
@@ -224,7 +241,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                 this.app.versions = scaleButtonVersions;
 
             var menuElement = this.$('#scaled-' + data.name.toLowerCase());
-            menuElement.data('scale', data);
 
             this.model.trigger('version.create', data);
         },
@@ -236,12 +252,11 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             /**
             * Set editor attribute values if any
             */
-            var _this = this;
             if (this.editorAttributes) {
-                var inputEl = this.$('.customattributes :input'),
-                    el;
+                var _this = this;
+                var inputEl = this.$('.customattributes :input');
                 inputEl.each(function(){
-                    el = $(this);
+                    var el = $(this);
                     _this.editorAttributes[el.attr('name')] = el.val();
                 });
             }

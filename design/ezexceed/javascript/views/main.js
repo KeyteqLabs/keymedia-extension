@@ -74,8 +74,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
         {
             var options = {
                 model : this.model,
-                collection : this.collection,
-                onSelect : this.changeMedia
+                collection : this.collection
             };
 
             var context = {
@@ -146,7 +145,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
             var media = this.model.get('media');
             var upload = !content || !media;
             if (content) {
-                this.$el.html(content);
+                this.$('.attribute-base').html(content);
             }
 
             this.taggerView = new TaggerView({
@@ -160,7 +159,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 this.enableUpload();
             }
             else {
-                this.hide(this.$('.eze-no-image'));
+                //this.hide(this.$('.eze-no-image'));
             }
 
             return this;
@@ -179,34 +178,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
 
         versionCreated : function()
         {
-            this.editor.trigger('autosave.saved');
-            this.editor.model.trigger('autosave.saved');
-        },
-
-        success : function(response)
-        {
-            var remove = _(response).find(function(el){
-                if (_(el).has('mediaRemove') || (_(el).has('name') && el.name == 'mediaRemove'))
-                    return true;
-            });
-            var changeMedia = _(response).find(function(el)
-            {
-                if (_(el).has('changeMedia') || (_(el).has('name') && el.name == 'changeMedia'))
-                    return true;
-            });
-            if (remove)
-            {
-                this.$('.current-image').remove();
-                this.$('.meta').remove();
-                this.$('.tagger').remove();
-                this.$('.edit-buttons').show();
-                this.$('.image-container').removeClass('with-image');
-                this.$('.upload-container').show();
-            }
-            else if(changeMedia) {
-                // Reloads media from server
-                this.model.fetch();
-            }
+            this.model.trigger('autosave.saved');
         }
     });
 });

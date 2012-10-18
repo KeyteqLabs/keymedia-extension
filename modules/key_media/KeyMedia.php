@@ -100,8 +100,7 @@ class KeyMedia extends \ezote\lib\Controller
         }
         else
             $attributeId = $args;
-        if ($attributeId && $version)
-        {
+        if ($attributeId && $version) {
             $http = \eZHTTPTool::instance();
 
             $transformations = array(
@@ -113,9 +112,7 @@ class KeyMedia extends \ezote\lib\Controller
 
             // Store information on content object
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-
             $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
-
             $versionObject = \eZContentObjectVersion::fetchVersion($attribute->attribute('version'), $attribute->attribute('contentobject_id'));
 
             if ($isKeymediaAttribute)

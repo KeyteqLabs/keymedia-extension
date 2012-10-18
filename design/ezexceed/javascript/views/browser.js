@@ -103,18 +103,13 @@ define(['shared/view', './upload'], function(View, UploadView)
 
         uplodedMedia : function(data)
         {
-            var model = new KeyMedia.models.Media(data.media);
-            var options = {
+            eZExceed.stack.pop({
                 id : data.id,
                 host : data.host,
                 type : data.type,
                 ending : data.ending,
-                keymediaId : this.model.medias.keymediaId,
-                model : model
-            };
-            if (this.onSelect)
-                this.onSelect(options, true);
-            this.$('.close').click();
+                keymediaId : this.collection.keymediaId
+            });
         }
     });
 });
