@@ -3,10 +3,10 @@
     <button type="button" class="btn search">
         {{translate "Search for media"}}
     </button>
-    <div class="upload-container" id="keymedia-browser-local-file-container-{{id}}">
+    <span class="upload-container" id="keymedia-browser-local-file-container-{{id}}">
         <button type="button" class="btn upload" id="keymedia-browser-local-file-{{id}}">
             {{translate "Upload new"}}
         </button>
-    </div>
+    </span>
 </form>
 <div class="keymedia-thumbs"></div>

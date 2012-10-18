@@ -23,7 +23,7 @@ this['JST']['keymedia/browser'] = Handlebars.template(function (Handlebars,depth
   buffer += escapeExpression(stack1) + "\">\n    <button type=\"button\" class=\"btn search\">\n        ";
   foundHelper = helpers.translate;
   stack1 = foundHelper ? foundHelper.call(depth0, "Search for media", {hash:{}}) : helperMissing.call(depth0, "translate", "Search for media", {hash:{}});
-  buffer += escapeExpression(stack1) + "\n    </button>\n    <div class=\"upload-container\" id=\"keymedia-browser-local-file-container-";
+  buffer += escapeExpression(stack1) + "\n    </button>\n    <span class=\"upload-container\" id=\"keymedia-browser-local-file-container-";
   foundHelper = helpers.id;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
@@ -34,17 +34,21 @@ this['JST']['keymedia/browser'] = Handlebars.template(function (Handlebars,depth
   buffer += escapeExpression(stack1) + "\">\n            ";
   foundHelper = helpers.translate;
   stack1 = foundHelper ? foundHelper.call(depth0, "Upload new", {hash:{}}) : helperMissing.call(depth0, "translate", "Upload new", {hash:{}});
-  buffer += escapeExpression(stack1) + "\n        </button>\n    </div>\n</form>\n<div class=\"keymedia-thumbs\"></div>\n";
+  buffer += escapeExpression(stack1) + "\n        </button>\n    </span>\n</form>\n<div class=\"keymedia-thumbs\"></div>\n";
   return buffer;});
 
 this['JST']['keymedia/item'] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
-  var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression, self=this;
+  var buffer = "", stack1, foundHelper, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
 
 function program1(depth0,data) {
   
-  
-  return " shared";}
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n            <span class=\"share\">";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Shared", {hash:{}}) : helperMissing.call(depth0, "translate", "Shared", {hash:{}});
+  buffer += escapeExpression(stack1) + "</span>\n            ";
+  return buffer;}
 
   buffer += "<div class=\"item\">\n    <a class=\"pick\" data-id=\"";
   foundHelper = helpers.id;
@@ -58,7 +62,7 @@ function program1(depth0,data) {
   foundHelper = helpers.filename;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.filename; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "<br /><span class=\"details\">";
+  buffer += escapeExpression(stack1) + "<br />\n            <span class=\"details\">";
   foundHelper = helpers.width;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.width; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
@@ -66,11 +70,11 @@ function program1(depth0,data) {
   foundHelper = helpers.height;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.height; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "</span></p>\n        <span class=\"share";
+  buffer += escapeExpression(stack1) + "</span>\n            ";
   stack1 = depth0.shared;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\"></span>\n    </a>\n</div>\n";
+  buffer += "\n        </p>\n    </a>\n</div>\n";
   return buffer;});
 
 this['JST']['keymedia/scalerattributes'] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -186,4 +190,15 @@ this['JST']['keymedia/scaledversion'] = Handlebars.template(function (Handlebars
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.height; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + "</small>\n</a>\n<div class=\"overlay\"></div>\n";
+  return buffer;});
+
+this['JST']['keymedia/show-more'] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, foundHelper, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+
+
+  buffer += "<button class=\"btn btn-large btn-block load-more\" type=\"button\">\n    ";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Show more", {hash:{}}) : helperMissing.call(depth0, "translate", "Show more", {hash:{}});
+  buffer += escapeExpression(stack1) + "\n</button>\n";
   return buffer;});

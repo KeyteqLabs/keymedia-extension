@@ -10,15 +10,14 @@ define(['shared/view', './upload'], function(View, UploadView)
             _.bindAll(this);
 
             _.extend(this, _.pick(options, ['onSelect']));
-            this.collection.bind('reset', this.renderItems);
-            this.collection.bind('add', this.renderItems);
+            this.collection.on('reset add', this.renderItems);
         },
 
         events : {
             'keyup .q' : 'search',
             'submit .form-search' : 'search',
             'click .item a' : 'select',
-            'click .more-hits' : 'page'
+            'click .load-more' : 'page'
         },
 
         select : function(e) {
@@ -65,9 +64,8 @@ define(['shared/view', './upload'], function(View, UploadView)
 
         renderItems : function(clear)
         {
-            var html = '';
-            this.collection.each(function(item) {
-                html += this.template('keymedia/item', item.attributes);
+            var html = this.collection.map(function(item) {
+                return this.template('keymedia/item', item.attributes);
             }, this);
             
             if (clear)
@@ -76,9 +74,9 @@ define(['shared/view', './upload'], function(View, UploadView)
                 this.$body.append(html);
 
             if (this.collection.total > this.collection.length)
-                this.$body.append('<a class="more-hits button">Show more</a>');
+                this.$body.append(this.template('keymedia/show-more'));
             else
-                this.$('.more-hits').hide();
+                this.$('.load-more').hide();
 
             return this;
         },

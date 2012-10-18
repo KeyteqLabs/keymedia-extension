@@ -231,6 +231,7 @@ class Connector extends \keymedia\models\ConnectorBase
             'height' => (int) isset($file->height) ? $file->height : 0,
             'thumb' => $thumb,
             'filename' => $media->name,
+            'shared' => $media->shared,
             'scalesTo' => $media->scalesTo,
             'host' => $media->host
         );

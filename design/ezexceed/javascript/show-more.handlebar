@@ -1,0 +1,3 @@
+<button class="btn btn-large btn-block load-more" type="button">
+    {{translate "Show more"}}
+</button>
