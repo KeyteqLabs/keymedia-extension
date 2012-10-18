@@ -108,7 +108,7 @@ class Backend extends \eZPersistentObject
             $format = $options['format'];
             unset($options['format']);
             $results = $con->search($criteria, $options);
-            return $this->_format($results, $format);
+            return $results ? $this->_format($results, $format) : false;
         }
 
         return false;
@@ -250,13 +250,15 @@ class Backend extends \eZPersistentObject
         if ($con = $this->connection())
         {
             $data += array('attributes' => array());
-            $result = $con->uploadMedia($filepath, $filename, $tags, $data['attributes']);
-            if ($result && isset($result->media))
-            {
+            $result = $con->uploadMedia($filepath, $filename, $tags, $data);
+            if ($result && isset($result->media)) {
                 $media = new Media($result->media);
                 $host = isset($result->host) ? $result->host : $this->host;
                 $media->host($host);
                 return $media;
+            }
+            else {
+                throw new \Exception("Failed uploading media: $result");
             }
         }
 
