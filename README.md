@@ -5,6 +5,9 @@
 ### Dependencies
 _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
+* Exceed 1.1 installations should use `master` branch
+* Exceed 2 installations should use `exceed2` branch
+
 ### Checkout from github
 
 	git clone git@github.com:KeyteqLabs/keymedia-extension.git /my/ez/extension/keymedia
@@ -32,6 +35,7 @@ Plugins[]=keymedia
 Buttons[]=keymedia
 
 The keymedia button could be placed anywhere in the editor. See the eZOe doc on how to arrange buttons
+See `settings/keymedia.ini` for how to set up what versions the users should be able to produce.
 
 ## Usage
 
