@@ -102,6 +102,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
 
             var context = {
                 icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures-alt-2b.png',
+                className : 'dark',
                 heading : 'Select crops',
                 render : true
             };

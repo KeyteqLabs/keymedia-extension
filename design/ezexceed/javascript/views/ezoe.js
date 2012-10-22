@@ -104,6 +104,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
             var context = {
                 heading : 'Select crop',
                 icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures-alt-2b.png',
+                className : 'dark',
                 render : true
             };
 
