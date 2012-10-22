@@ -210,7 +210,8 @@ class Handler
      * in the handler at the moment.
      *
      * @param string|array $id Remote id from KeyMedia or all data to save
-     * @param string $host Host that will serve the media later on
+     * @param string $host Deprecated: Just send $id argument
+     * @param string $ending Deprecated: Just send $id argument
      * @return bool
      */
     public function setMedia($id, $host = false, $ending = 'jpg')
@@ -220,9 +221,30 @@ class Handler
             $id = $values['id'];
         }
         else {
-            $values = compact('id', 'host', 'ending');
+            $values = compact('id');
         }
         if (!$this->hasMedia($id)) {
+            $backend = $this->backend();
+            if ($backend) {
+                $media = $backend->get($id);
+                if ($media) {
+                    $mediaData = $media->data();
+                    $values += array(
+                        'tags' => $mediaData->tags,
+                        'scalesTo' => $mediaData->scalesTo,
+                        'ending' => $mediaData->scalesTo->ending,
+                        'host' => $mediaData->host,
+                        'name' => $mediaData->name,
+                        'file' => array(
+                            'width' => $mediaData->file->width,
+                            'height' => $mediaData->file->height,
+                            'ratio' => $mediaData->file->ratio,
+                            'size' => $mediaData->file->size,
+                            'type' => $mediaData->file->type,
+                        )
+                    );
+                }
+            }
             $this->values($values);
         }
         return true;

@@ -82,15 +82,18 @@ class KeyMedia extends eZDataType
     {
         // Get value of connected media id
         $attributeId = $attribute->attribute('id');
-        $id = $http->variable($base . '_media_id_' . $attributeId);
-        $host = $http->variable($base . '_host_' . $attributeId);
-        $type = $http->variable($base . '_type_' . $attributeId);
-        $ending = $http->variable($base . '_ending_' . $attributeId);
+        $data = array(
+            'id' =>  $http->variable($base . '_media_id_' . $attributeId)
+        );
+
+        $extras = $http->variable($base . '_data_' . $attributeId);
+        if ($extras) {
+            $data += json_decode($extras, true);
+        }
+
         $handler = new Handler($attribute);
 
-        if (!$id)
-            return $handler->remove();
-        return $handler->setMedia(compact('id', 'host', 'type', 'ending'));
+        return $data['id'] ? $handler->setMedia($data) : $handler->remove();
     }
 
     /**
