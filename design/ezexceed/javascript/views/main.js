@@ -144,7 +144,6 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
         {
             var content = this.model.get('content');
             var media = this.model.get('media');
-            var upload = !content || !media;
             if (content) {
                 this.$('.attribute-base').html(content);
             }
@@ -154,7 +153,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 model : this.model
             }).render();
 
-            if (upload) {
+            if (!content || !media || !media.id) {
                 this.enableUpload();
             }
             else {
