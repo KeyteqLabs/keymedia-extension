@@ -178,6 +178,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
         versionCreated : function(versions)
         {
             this.model.trigger('autosave.saved');
+            this.trigger('save', 'triggerVersionUpdate', {'triggerVersionUpdate' : 1});
             this.$("button.scale").data('versions', versions);
         }
     });
