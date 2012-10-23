@@ -3,7 +3,7 @@
         <button class="btn btn-inverse scale edit-image"
             data-truesize='{$media.size|json}'
             data-versions='{$handler.toscale|json}'>
-            {'Edit image'|i18n('keymedia')}
+            {'Scale variants'|i18n('keymedia')}
         </button>
     {/if}
 {/if}
