@@ -3,8 +3,8 @@ var loadKeyMedia =  function(textarea, ed)
     require.config({
         shim : {
             jcrop : {
-                deps : ['jquery'],
-                exports : 'jQuery.Jcrop'
+                deps : ['jquery-safe'],
+                exports : 'jQuery.fn.Jcrop'
             }
         },
         paths : {

@@ -1,1 +1,1 @@
-{ezcss_require( array('jquery.jcrop.css', 'keymedia.css') )}
+{ezcss_load( array('jquery.jcrop.css', 'keymedia.css') )}

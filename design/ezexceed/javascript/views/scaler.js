@@ -1,5 +1,5 @@
 define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
-    function(View, ScaledVersion, jCrop)
+    function(View, ScaledVersion, $, jCrop)
 {
     return View.extend({
         // size of cropping media

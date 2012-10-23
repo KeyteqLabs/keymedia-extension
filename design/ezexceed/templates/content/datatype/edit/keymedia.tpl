@@ -7,7 +7,7 @@
 
 {run-once}
     {if is_set($excludeJS)|not}
-        {include uri="design:keymedia/js.tpl"}
+        {include uri="design:keymedia/jscss.tpl"}
     {/if}
 {/run-once}
 
