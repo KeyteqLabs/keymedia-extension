@@ -16,10 +16,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
         trueSize : [],
 
-        $img : null,
-
-        versionViews : null,
-
         singleVersion : false,
 
         selectedVersion : null,
@@ -33,8 +29,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         {
             options = (options || {});
             _.bindAll(this);
-            this.versionViews = [];
-
             _.extend(this, _.pick(options, ['versions', 'trueSize']));
 
             // Model is an instance of Attribute
@@ -47,7 +41,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
         events : {
             'click .nav li' : 'changeScale',
-            'mouseenter .nav li' : 'overlay'
+            'mouseenter .nav li.cropped' : 'overlay'
         },
 
         overlay : function(e) {
@@ -65,7 +59,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             if (this.cropper && 'coords' in data && data.coords.length === 4) {
 
                 var scale = this.cropper.getScaleFactor();
-                var container = node.parent();
                 var coords = data.coords;
 
                 var x = parseInt(coords[0] / scale[0], 10),
@@ -75,7 +68,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
                 node.css({
                     'position' : 'absolute',
-                    'top' : y + container.outerHeight(true),
+                    'top' : y + node.parent().outerHeight(true),
                     left : x,
                     width : parseInt(x2 - x, 10),
                     height : parseInt(y2 - y, 10)
@@ -108,8 +101,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             this.$el.append(content);
 
             var outerBounds = this.outerBounds(this.versions, 4, 40);
-            var _view;
-            var _container = this.$('ul.nav');
 
             var classes = media.get('classList');
             var viewModes = media.get('viewModes');
@@ -149,33 +140,31 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                     })
                 );
             }
-            this.versionViews = _(this.versions).map(function(version) {
-                _view = new ScaledVersion({
+
+            var versionElements  = _(this.versions).map(function(version) {
+                var view = new ScaledVersion({
                     model : version,
                     outerBounds : outerBounds,
                     className : ('url' in version ? 'cropped' : 'uncropped')
-                }).render();
-                _container.append(_view.el);
-                return _view;
+                });
+                return view.render().el;
             });
-
-            this.$img = this.$('img');
-            var selectedEl;
+            this.$('ul.nav').html(versionElements);
 
             if (this.selectedVersion) {
                 var scale;
                 var _this = this;
-                selectedEl = this.$('ul.nav li').filter(function(){
-                    scale = $(this).data('scale');
-                    if (scale && _(scale).has('name') && scale.name == _this.selectedVersion)
+                var selectedEl = _.filter(this.$('ul.nav li'), function(el)
+                {
+                    scale = this.$(el).data('scale');
+                    if (scale && _(scale).has('name') && scale.name == this.selectedVersion)
                         return true;
                     return false;
-                });
+                }, this);
 
                 selectedEl.find('a').click();
             }
-
-            if (!selectedEl) {
+            else {
                 // Enable the first scaling by simulating a click
                 this.$('ul.nav li:first-child a').click();
             }
@@ -218,6 +207,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             var coords = [selection.x, selection.y, selection.x2, selection.y2];
             var size = scale.size || ([selection.w, selection.h]);
 
+            this.trigger('save');
             this.model.addVanityUrl(scale.name, coords, size).success(this.versionCreated);
         },
 
@@ -231,18 +221,17 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             var name = data.name;
             var coords = data.coords;
 
-            var scaleButtonVersions = this.versions;
-            _(scaleButtonVersions).each(function(version, key){
+            _.each(this.versions, function(version, key){
                 if (version.name === name) {
-                    scaleButtonVersions[key].coords = coords;
+                    this.versions[key].coords = coords;
                 }
-            });
-            if (this.app)
-                this.app.versions = scaleButtonVersions;
+            }, this);
 
-            var menuElement = this.$('#scaled-' + data.name.toLowerCase());
+            var menuElement = this.$('#eze-keymedia-scale-version-' + data.name.toLowerCase());
+            menuElement.data('versions', this.versions);
 
-            this.model.trigger('version.create', data);
+            this.model.trigger('version.create', this.versions, data);
+            this.trigger('saved');
         },
 
         saveCrop : function()

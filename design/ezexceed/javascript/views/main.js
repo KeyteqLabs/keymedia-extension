@@ -96,7 +96,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
             var data = this.$("button.scale").data();
             var options = {
                 model : this.model,
-                versions : this.versions,
+                versions : data.versions,
                 trueSize : data.truesize
             };
 
@@ -154,8 +154,6 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 model : this.model
             }).render();
 
-            this.versions = this.$('button.scale').data('versions');
-
             if (upload) {
                 this.enableUpload();
             }
@@ -177,9 +175,10 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
             return this;
         },
 
-        versionCreated : function()
+        versionCreated : function(versions)
         {
             this.model.trigger('autosave.saved');
+            this.$("button.scale").data('versions', versions);
         }
     });
 });

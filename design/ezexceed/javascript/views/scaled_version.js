@@ -21,9 +21,11 @@ define(['shared/view'], function(View)
 
             var data = _.extend(this.model);
 
-            data.width = (_(data).has('size') ? data.size[0] : 0);
-            data.height = (_(data).has('size') ? data.size[1] : 0);
-            this.$el.html(this.template('keymedia/scaledversion', data)).data('scale', this.model);
+            data.width = _(data).has('size') ? data.size[0] : 0;
+            data.height = _(data).has('size') ? data.size[1] : 0;
+            this.$el.html(this.template('keymedia/scaledversion', data))
+                .attr("id", "eze-keymedia-scale-version-" + data.name.toLowerCase())
+                .data('scale', this.model);
 
             this.$('.box').css({
                 width : size[0],
