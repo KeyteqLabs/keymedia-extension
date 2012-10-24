@@ -115,7 +115,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
             );
         },
 
-        updateEditor : function(data)
+        updateEditor : function(versions, data)
         {
             var media = this.model.get('media');
             var values = this.editorAttributes;
