@@ -305,10 +305,7 @@ class Handler
             $version = $attributeValues['versions'][$format];
         }
 
-        $result = array();
-        if (isset($attributeValues['type'])) {
-            $result['type'] = $attributeValues['type'];
-        }
+        $result = $attributeValues;
 
         if ($result['type'] === 'video') $fetchInfo = true;
 
