@@ -274,9 +274,4 @@ class Connector extends \keymedia\models\ConnectorBase
 
         return $url;
     }
-
-    protected function sign($username, $secret, $payload)
-    {
-        return hash_hmac('sha256', $payload, $secret);
-    }
 }
