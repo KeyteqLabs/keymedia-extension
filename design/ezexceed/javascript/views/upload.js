@@ -75,11 +75,7 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
 
         render : function(response) {
             var button = this.$('#' + this.browseButton);
-            /*
-            var text = button.val() + ' (Max ' + this.maxSize + ')';
-            button.val(text);
-            */
-
+            var id = this.model.id !== "ezoe" ? this.model.id : this.model.get('attributeId');
             var settings = {
                 runtimes : 'html5,flash,html4',
                 container : this.browseContainer,
@@ -88,7 +84,7 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
                 max_file_size : this.maxSize,
                 url : this.url(),
                 multipart_params : {
-                    'AttributeID' : this.model.id,
+                    'AttributeID' : id,
                     'ContentObjectVersion' : this.options.version,
                     'http_accept' : 'json' //Because of some strange failing when html4 is used
                 },

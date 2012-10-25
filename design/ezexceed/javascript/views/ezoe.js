@@ -31,7 +31,9 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
             }).on('version.create', this.updateEditor);
 
             var urlRoot = '/ezjscore/call';
-            if (data.urlRoot !== '/') urlRoot = data.urlRoot + urlRoot;
+            if (data.urlRoot && data.urlRoot !== '/') urlRoot = data.urlRoot + urlRoot;
+
+            this.model.urlRoot = urlRoot;
 
             this.collection = new Models.collection();
             this.collection.urlRoot = urlRoot;

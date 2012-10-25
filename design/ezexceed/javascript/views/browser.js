@@ -88,13 +88,11 @@ define(['shared/view', './upload'], function(View, UploadView)
 
         enableUpload : function()
         {
-            var version = this.model.get('version');
             this.upload = new UploadView({
                 model : this.model,
                 uploaded : this.uplodedMedia,
                 el : this.$el,
-                prefix : this.model.get('prefix'),
-                version : version,
+                version : this.model.get('version'),
                 browseContainer : 'keymedia-browser-local-file-container-' + this.model.id,
                 browseButton : 'keymedia-browser-local-file-' + this.model.id
             }).render();

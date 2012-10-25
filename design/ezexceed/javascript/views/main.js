@@ -74,6 +74,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
         {
             var options = {
                 model : this.model,
+                version : this.version,
                 collection : this.collection
             };
 
@@ -168,7 +169,6 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 model : this.model,
                 uploaded : this.changeMedia,
                 el : this.$el,
-                prefix : this.model.urlRoot,
                 version : this.version
             }).render();
             return this;

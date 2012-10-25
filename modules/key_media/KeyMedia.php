@@ -210,12 +210,23 @@ class KeyMedia extends \ezote\lib\Controller
     {
         $http = eZHTTPTool::instance();
         $httpFile = eZHTTPFile::fetch('file');
+        $ok = false;
 
         $attributeId = $http->postVariable('AttributeID');
+        $ok = is_numeric($attributeId) ?: 'Non-numeric attributeId: Send keymedia-attributeid or ezoe-attributeid';
+
         $version = $http->postVariable('ContentObjectVersion');
+        $ok = is_numeric($version) ?: 'Non-numeric version';
+
+        if (!$ok) {
+            return array(
+                'ok' => false,
+                'error' => $ok
+            );
+        }
 
         $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-        $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
+        $isKeymediaAttribute = $attribute->attribute('data_type_string') === 'keymedia';
 
         if ($isKeymediaAttribute)
         {
