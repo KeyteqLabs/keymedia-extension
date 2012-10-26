@@ -307,7 +307,7 @@ class Handler
 
         $result = $attributeValues;
 
-        if ($result['type'] === 'video') $fetchInfo = true;
+        if (isset($result['type']) && $result['type'] === 'video') $fetchInfo = true;
 
         if ($fetchInfo && ($media = $this->getMedia())) {
             if (!isset($result['type'])) {
