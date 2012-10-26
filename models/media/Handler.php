@@ -298,11 +298,13 @@ class Handler
             // a named format "main" with "500x500" as its settings
             $versions = isset($attributeValues['versions']) ? $attributeValues['versions'] : false;
             if (!$versions || !isset($versions[$format])) {
-                if ($this->generateNamedVersion($format))
+                if ($this->generateNamedVersion($format)) {
                     $attributeValues = $this->values();
+                    $versions = isset($attributeValues['versions']) ? $attributeValues['versions'] : false;
+                }
             }
 
-            $version = $attributeValues['versions'][$format];
+            $version = $versions && isset($versions[$format]) ? $versions[$format] : false;
         }
 
         $result = $attributeValues;
