@@ -28,9 +28,10 @@ define(['edit/datatypes/base', 'keymedia/views/main', 'keymedia/config', './temp
             this.model.attr(id, this.version, data);
         },
 
-        saved : function()
+        saved : function(model, response)
         {
-            this.view.trigger('saved');
+            if (response && _(response).has('attributes') && _(response.attributes).has(this.attributeId))
+                this.view.trigger('saved');
         },
 
         parseEdited : function()
