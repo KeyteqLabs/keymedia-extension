@@ -68,13 +68,16 @@ class TemplateKeymediaOperator
     function modify($tpl, $operatorName, $operatorParameters, $rootNamespace, $currentNamespace, &$operatorValue, $namedParameters, $placement)
     {
         $attr = $namedParameters['attribute'];
+        if (!$attr) {
+            $operatorValue = null;
+            return;
+        }
         $format = $namedParameters['format'];
         $quality = $namedParameters['quality'];
         $fetchInfo = $namedParameters['fetchInfo'];
         $format = $format ?: array(300, 200);
 
-        switch ($operatorName)
-        {
+        switch ($operatorName) {
             case 'keymedia':
                 $handler = $attr->content();
                 $operatorValue = $handler->media($format, $quality, $fetchInfo);
@@ -82,5 +85,3 @@ class TemplateKeymediaOperator
         }
     }
 }
-
-?>
