@@ -288,6 +288,12 @@ class KeyMedia extends \ezote\lib\Controller
             $backend = self::defaultBackend();
             if ($backend) {
                 $media = $backend->get($version);
+                if (!$media) {
+                    return self::response(
+                        array('error' => "No media by id $version was found"),
+                        array('type'=>'json')
+                    );
+                }
                 $media = $media->data();
                 $media->keymediaId = $backend->id;
 
