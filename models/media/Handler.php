@@ -392,6 +392,11 @@ class Handler
         $name = $version->versionName($language) ? : $version->name($language);
         $mainNode = $contentObject->attribute('main_node');
 
+        if (!$mainNode || !is_object($mainNode)) {
+            user_error("Content object ({$values['id']}) missing main node");
+            return false;
+        }
+
         /**
          * Find main siteaccess and main domain
          */
