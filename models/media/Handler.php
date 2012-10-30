@@ -518,7 +518,9 @@ class Handler
             $class = $this->attr->contentClassAttribute();
 
             // Array of versions in db
-            $values = $this->values() + array('versions' => array());
+            $values = $this->values();
+            $values = $values ?: array();
+            $values = $values + array('versions' => array());
             $versions = $values['versions'];
 
             // 1 line = 1 scaling
