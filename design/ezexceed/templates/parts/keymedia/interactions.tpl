@@ -16,9 +16,9 @@
     <div class="new-wrap"{if $media} style="display:none"{/if}>
         <span class="kp-icon50 pictures-icon"></span>
 
-        <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
+        <span class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
             <button type="button" class="upload" id="keymedia-local-file-{$attribute.id}">{'Upload new media'|i18n( 'content/edit' )}</button>
-        </div>
+        </span>
     </div>
 
 

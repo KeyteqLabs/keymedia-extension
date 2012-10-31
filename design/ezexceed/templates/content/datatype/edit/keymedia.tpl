@@ -53,12 +53,12 @@
     <button type="button" class="btn from-keymedia">
         {'Browse media library'|i18n('keymedia')}
     </button>
-    <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
+    <span class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
         <button type="button" class="btn upload-from-disk"
             id="keymedia-local-file-{$attribute.id}">
             {'Upload new image'|i18n('keymedia')}
         </button>
         <div class="upload-progress hide"><div class="progress"></div></div>
-    </div>
+    </span>
 </div>
 </div>
