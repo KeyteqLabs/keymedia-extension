@@ -9,11 +9,23 @@
     {def $quality = false()}
 {/if}
 
-{def $media = keymedia($attribute,$format, $quality, $fetchinfo)}
+{if is_set($silent)|not}
+    {def $silent = true()}
+{/if}
 
-{if eq($attribute.content.id, 0)|not}
+{def
+    $handler = $attribute.content
+    $media = keymedia($attribute,$format, $quality, $fetchinfo)
+}
+
+{if eq($handler.id, 0)|not}
     {if $media.url|is_set()}
-        {def $template = 'design:content/datatype/view/'|concat($media.type)|concat('.tpl')}
+        {def $template = 'design:content/datatype/view/'|concat($handler.type)|concat('.tpl')}
+        {if $silent|not}{debug-log msg='Loading type specific template:' var=$handler.type}{/if}
         {include uri=$template media=$media}
+    {else}
+        {if $silent|not}{debug-log msg='Media.url not set'}{/if}
     {/if}
+{else}
+    {if $silent|not}{debug-log msg='No media id connected to attribute'}{/if}
 {/if}

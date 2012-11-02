@@ -18,20 +18,24 @@
         {/run-once}
     {/if}
 
-    {* These should not be included here in the long run as they are specific
-        for the keyteq brightcove account
-    *}
-    {if not( is_set( $playerId ) )}
-        {def $playerId = 940254825001}
+    {* Set defaults if these values are not passed *}
+    {if is_set($playerId)|not}
+        {def $playerId = ezini('Brightcove', 'PlayerId', 'keymedia.ini')}
     {/if}
-    {if not( is_set( $playerKey ) )}
-        {def $playerKey = "AQ~~,AAAAj351Auk~,KVZgH27WO2Jwl4REbCDRHmeGwlyZs_Fv"}
+    {if is_set($playerKey)|not}
+        {def $playerKey = ezini('Brightcove', 'PlayerKey', 'keymedia.ini')}
+    {/if}
+    {if is_set($width)|not}
+        {def $width = $media.file.width}
+    {/if}
+    {if is_set($height)|not}
+        {def $height = $media.file.height}
     {/if}
 
     <object id="brightcove_experience_{$attribute.id}" class="BrightcoveExperience">
         <param name="bgcolor" value="#FFFFFF" />
-        <param name="width" value="{$media.original.width}" />
-        <param name="height" value="{$media.original.height}" />
+        <param name="width" value="{$width}" />
+        <param name="height" value="{$height}" />
         <param name="playerID" value="{$playerId}" />
         <param name="playerKey" value="{$playerKey}" />
         <param name="isVid" value="true" />
