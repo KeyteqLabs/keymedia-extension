@@ -204,14 +204,13 @@ class Backend extends \eZPersistentObject
     public function get($id)
     {
         $con = $this->connection();
-        if ($con) {
-            $data = $con->media($id);
-            if ($data) {
-                if (!isset($data->host)) $data->host = $this->host;
-                return new Media($data);
-            }
-        }
-        return null;
+        if (!$con) return null;
+
+        $data = $con->media($id);
+        if (!$data) return null;
+
+        if (!isset($data->host)) $data->host = $this->host;
+        return new Media($data);
     }
 
     /**

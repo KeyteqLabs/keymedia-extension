@@ -155,10 +155,18 @@ class Handler
     public function hasAttribute($name)
     {
         $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media',
-            'toscale', 'minsize', 'mediafits', 'imagefits');
+            'type', 'toscale', 'minsize', 'mediafits', 'imagefits');
         if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
+    }
+
+    public function attributes()
+    {
+        return array(
+            'selected', 'toScale', 'minSize', 'mediaFits', 'media',
+            'thumb', 'type', 'filesize', 'mime_type'
+        );
     }
 
     /**
@@ -228,21 +236,7 @@ class Handler
             if ($backend) {
                 $media = $backend->get($id);
                 if ($media) {
-                    $mediaData = $media->data();
-                    $values += array(
-                        'tags' => $mediaData->tags,
-                        'scalesTo' => $mediaData->scalesTo,
-                        'ending' => $mediaData->scalesTo->ending,
-                        'host' => $mediaData->host,
-                        'name' => $mediaData->name,
-                        'file' => array(
-                            'width' => $mediaData->file->width,
-                            'height' => $mediaData->file->height,
-                            'ratio' => $mediaData->file->ratio,
-                            'size' => $mediaData->file->size,
-                            'type' => $mediaData->file->type,
-                        )
-                    );
+                    $values += $this->formatMedia($media->data());
                 }
             }
             $this->values($values);
@@ -562,21 +556,26 @@ class Handler
      *
      * @return \keymedia\models\Media
      */
-    protected function getMedia()
+    protected function getMedia(array $options = array())
     {
+        $options += array('fetch' => true);
         if (!$this->_media)
         {
             $backend = $this->backend();
-            if (!$backend)
+            if (!$backend) {
                 return false;
+            }
 
             $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
+            if (!$data) {
+                return false;
+            }
             $data = json_decode($data);
 
-            if (is_object($data) && isset($data->id) && $data->id)
-                $this->_media = $backend->get($data->id);
-            else
-                $this->_media = false;
+            $this->_media = false;
+            if (is_object($data) && isset($data->id) && $data->id) {
+                $this->_media = $options['fetch'] ? $backend->get($data->id) : new Media($data);
+            }
         }
         return $this->_media;
     }
@@ -648,17 +647,9 @@ class Handler
      */
     protected function fetchMediaInfo()
     {
-        $media = $this->getMedia();
+        $media = $this->getMedia(array('fetch' => true));
         if ($media && ($data = $media->data())) {
-            $remotes = isset($data->remotes) ? $data->remotes : array();
-            return array(
-                'size' => $data->file->size,
-                'width' => $data->file->width,
-                'height' => $data->file->height,
-                'name' => isset($data->file->name) ? $data->file->name : null,
-                'ratio' => $data->file->ratio,
-                'remotes' => $this->toArray($remotes)
-            );
+            return $this->formatMedia($data);
         }
         return false;
     }
@@ -685,5 +676,31 @@ class Handler
         foreach ($object as $key => $val)
             $new[$key] = is_object($val) ? $this->toArray($val) : $val;
         return $new;
+    }
+
+    /**
+     * Format a media response to something we can cache / serve
+     *
+     * @param object $media
+     * @return array
+     */
+    protected function formatMedia($media)
+    {
+        $values = array(
+            'tags' => $media->tags,
+            'scalesTo' => $media->scalesTo,
+            'ending' => $media->scalesTo->ending,
+            'host' => $media->host,
+            'name' => $media->name,
+            'remotes' => $media->remotes,
+            'file' => array(
+                'width' => $media->file->width,
+                'height' => $media->file->height,
+                'ratio' => $media->file->ratio,
+                'size' => $media->file->size,
+                'type' => $media->file->type,
+            )
+        );
+        return $values;
     }
 }

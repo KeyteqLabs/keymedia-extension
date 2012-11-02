@@ -59,7 +59,19 @@ class Media
     public function attribute($key)
     {
         if ($key === 'data') return $this->data();
+        if ($key === 'file') return (array) $this->file;
+        if ($key === 'remotes') return (array) $this->remotes;
         return $this->$key;
+    }
+
+    /**
+     * Return valid attribute keys
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return array('tags', 'scalesTo', 'ending', 'host', 'name', 'file', 'remotes');
     }
 
     /**

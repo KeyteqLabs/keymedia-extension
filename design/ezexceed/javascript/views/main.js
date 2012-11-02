@@ -1,4 +1,4 @@
-define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View, Models, TaggerView, UploadView)
+define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'], function(View, Models, TaggerView, UploadView)
 {
     return View.extend({
         media : null,
@@ -143,6 +143,12 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
             var media = this.model.get('media');
             if (content) {
                 this.$('.attribute-base').html(content);
+            }
+
+            var file = media.get('file');
+            if (file && 'type' in file && file.type.match(/video/)) {
+                if (typeof brightcove !== 'undefined')
+                    brightcove.createExperiences();
             }
 
             this.taggerView = new TaggerView({

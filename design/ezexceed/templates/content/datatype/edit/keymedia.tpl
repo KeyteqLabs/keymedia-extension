@@ -1,5 +1,6 @@
-{def $handler = $attribute.content
-     $media = $handler.media
+{def
+    $handler = $attribute.content
+    $media = $handler.media
 }
 {if is_set($attribute_base)|not}
     {def $attribute_base = "ContentObjectAttribute"}
@@ -14,15 +15,18 @@
 <div class="attribute-base"
     data-handler='keymedia/keymedia'
     data-url-root='{"/"|ezurl("no")}'
-    {literal}data-paths='{"keymedia" : "/extension/keymedia/design/ezexceed/javascript/"}'{/literal}
+    {literal}data-paths='{
+        "keymedia" : "/extension/keymedia/design/ezexceed/javascript/",
+        "brightcove" : "//admin.brightcove.com/js/BrightcoveExperiences"
+    }'{/literal}
     data-bootstrap='{$media.data|json}'
 >
 
 {if $handler.backend|not}
-    <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
+    <p class="error">{'No KeyMedia connection for content class'|i18n('keymedia')}</p>
 {else}
     {if and( $media, $handler.mediaFits|not )}
-        <p class="error">{'The uploaded image might be too small for this format'|i18n( 'content/edit' )}</p>
+        <p class="error">{'The uploaded image might be too small for this format'|i18n('keymedia')}</p>
     {/if}
 {/if}
 

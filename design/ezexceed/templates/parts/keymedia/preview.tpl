@@ -7,7 +7,12 @@
 
 {if $media}
     <div class="thumbnail">
-        {attribute_view_gui format=array(300,100) attribute=$attribute fetchinfo=true()}
+        {attribute_view_gui
+            format=array(300,100)
+            attribute=$attribute
+            fetchinfo=true()
+            nojs=true()
+        }
 
         {if eq($attribute.content.id, 0)|not}
         <button type="submit" class="close remove"
