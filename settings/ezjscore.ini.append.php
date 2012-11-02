@@ -4,6 +4,7 @@ FunctionList[]=keymedia
 FunctionList[]=keymedia_browse
 FunctionList[]=keymedia_media
 FunctionList[]=keymedia_saveVersion
+FunctionList[]=keymedia_tag
 
 [ezjscServer_keymedia_browse]
 Class=keymedia\modules\key_media\KeyMedia
@@ -16,6 +17,10 @@ Functions[]=keymedia_media
 [ezjscServer_keymedia_saveVersion]
 Class=keymedia\modules\key_media\KeyMedia
 Functions[]=keymedia_saveVersion
+
+[ezjscServer_keymedia_tag]
+Class=keymedia\modules\key_media\KeyMedia
+Functions[]=keymedia_tag
 
 
 [ezjscServer_keymedia]

@@ -351,21 +351,30 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * eZJSCore method for adding tags to a remote media
      */
-    public static function tag(array $args = array())
+    public static function tag($args = array(), $version = false)
     {
-        list($attributeId, $version) = $args;
-        if ($attributeId && $version)
-        {
-            $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-            $handler = $attribute->content();
-            $backend = $handler->attribute('backend');
-            $http = \eZHTTPTool::instance();
-            $tags = (array) $http->variable('tags');
-            $id = $http->variable('id');
-            $media = $backend->tag(compact('id'), $tags);
-            return $media->data();
-        }
-        return false;
+        $http = \eZHTTPTool::instance();
+
+        $id = $http->variable('id');
+        $tags = (array) $http->variable('tags');
+
+        if (is_array($args))
+            list($attributeId, $version) = $args;
+        else
+            $attributeId = $args;
+
+        if (!$attributeId || !is_numeric($attributeId))
+            return array('Missing attribute id');
+        if (!$version || !is_numeric($version))
+            return array('Missing version');
+        if (!$id)
+            return array('Missing media id');
+
+        $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+        $handler = $attribute->content();
+        $backend = $handler->attribute('backend');
+        $media = $backend->tag(compact('id'), $tags);
+        return $media->data();
     }
 
     /***

@@ -38,12 +38,12 @@
             media=$media
             handler=$handler}
 
-        <div class="input-append add-tag">
-            <input id="appendedInputButton" type="text" placeholder="{'Write tag'|i18n('keymedia')}">
-            <button class="btn" type="button">{'Add tag'|i18n('keymedia')}</button>
-        </div>
-        <div class="tags">
-        <!-- <span class="label">Tagname <button class="close">×</button></span> -->
+        <div class="keymedia-tags">
+            <div class="input-append add-tag">
+                <input type="text" class="tag" placeholder="{'Write tag'|i18n('keymedia')}" data-autosave="off">
+                <button class="btn tag" disabled type="button">{'Add tag'|i18n('keymedia')}</button>
+            </div>
+            <div class="tags"></div>
         </div>
     </div>
     <div class="eze-no-image hide">

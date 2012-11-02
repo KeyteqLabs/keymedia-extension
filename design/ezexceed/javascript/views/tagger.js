@@ -2,67 +2,78 @@ define(['shared/view'], function(View)
 {
     return View.extend({
 
-        // underscore templates, is compile in initialize
-        templates : {
-            tag : '<li><%-tag%><span class="remove"><a data-tag="<%-tag%>">x</a></span></li>'
-        },
-
         initialize : function(options)
         {
-            _.bindAll(this, 'render', 'tag', 'update');
-            _(this.templates).each(function(template, name) {
-                if (_.isString(template))
-                    this.templates[name] = _.template(template);
-            }, this);
-            this.model.bind('change', this.update);
+            _.bindAll(this);
+            this.collection = this.model.get('tags');
+            this.collection.on('add remove', this.save, this);
             return this;
         },
 
-        // Listen to model changes and update tag list when model changes
-        update : function(model) {
-            var tags = this.model.get('tags'), html = '';
-            _(tags).each(function(tag) {
-                html += this.templates.tag({tag: tag});
-            }, this);
-            this.$('ul').html(html);
+        events : {
+            'change input:text' : 'inputChange',
+            'keyup input:text' : 'inputChange',
+            'click button.tag' : 'add',
+            'click .tags button.close' : 'remove'
         },
 
-        events : {
-            'change .tagedit' : 'inputChange',
-            'keyup .tagedit' : 'inputChange',
-            'click .tagit' : 'tag',
-            'submit .tagedit' : 'tag',
-            'click .remove a' : 'remove'
+        keys : {
+            'enter input:text' : 'add'
+        },
+
+        // Save any ad
+        save : function()
+        {
+            this.trigger('save');
+            this.model.save().success(this.saved);
+        },
+
+        saved : function()
+        {
+            this.trigger('saved');
+            this.renderTags();
         },
 
         remove : function(e) {
-            var clicked = $(e.currentTarget), tag = clicked.data('tag');
-            this.model.removeTag(tag).saveAttr();
+            e.preventDefault();
+            e.stopPropagation();
+            var target = this.$(e.currentTarget);
+            var tag = target.data('tag');
+            this.collection.remove(this.collection.get(tag));
+        },
+
+        add : function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var tag = this.$input.val();
+            this.collection.add({
+                id : tag,
+                tag : tag
+            });
+            this.$input.val('').focus();
         },
 
         inputChange : function(e) {
-            var val = this.input.val();
-            if (val)
-                this.button.removeClass('disabled').attr('disabled', null);
-            else
-                this.button.addClass('disabled').attr('disabled', true);
+            var val = this.$input.val();
+            this.$button.attr('disabled', val.length === 0);
             return this;
         },
 
         render : function(media) {
-            this.list = this.$('ul');
-            this.input = this.$('.tagedit');
-            this.button = this.$('button');
-            this.update(this.model);
-            this.inputChange();
+            this.$list = this.$('.tags');
+            this.$input = this.$('input:text');
+            this.$button = this.$('button.tag');
+            this.renderTags();
             return this;
         },
 
-        tag : function(e) {
-            e.preventDefault();
-            var tag = this.input.val();
-            this.model.addTag(tag).saveAttr();
-            this.input.val('');
+        // Render tags
+        renderTags : function() {
+            var html = this.collection.map(function(tag)
+            {
+                return this.template('keymedia/tag', tag.toJSON());
+            }, this);
+            this.$('.tags').html(html);
         }
     });
 });

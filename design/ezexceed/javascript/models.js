@@ -1,5 +1,13 @@
 define(['backbone', 'jquery-safe'], function(Backbone, $)
 {
+    var url = function() {
+        var args = ['keymedia', 'media', this.id, this.get('version')];
+        if (arguments.length > 0) {
+            args = ['keymedia'].concat(_.toArray(arguments));
+        }
+        return args.join('/');
+    };
+
     var Attribute = Backbone.Model.extend({
         urlRoot : null,
         medias : null,
@@ -18,25 +26,17 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
             };
         },
 
-        url : function() {
-            var args = ['keymedia', 'media', this.id, this.get('version')];
-            if (arguments.length > 0) {
-                args = ['keymedia'].concat(_.toArray(arguments));
-            }
-            return args.join('/');
-        },
+        url : url,
 
         parse : function(data)
         {
-            var entity = {};
-            if ('media' in data) entity.media = new Media(data.media);
-            if ('content' in data) entity.content = data.content;
-            if ('toScale' in data) entity.toScale = data.toScale;
-            return entity;
-        },
-
-        scale : function(media) {
-            $.getJSON(this.url('scaler', [media]), this.onScale);
+            if ('media' in data) {
+                data.media = new Media(data.media, {parse: true});
+                data.media.set('attr', this);
+            }
+            if ('content' in data) data.content = data.content;
+            if ('toScale' in data) data.toScale = data.toScale;
+            return data;
         },
 
         fetch : function(options)
@@ -91,19 +91,25 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
     var Media = Backbone.Model.extend({
         urlRoot : '',
 
-        defaults : function() {
-            return {
-                id : '',
-                host : '',
-                type : ''
-            };
-        },
-
         initialize : function(options)
         {
             options = (options || {});
             _.bindAll(this);
-            _.extend(this, _.pick(options, ['urlRoot']));
+            if ('urlRoot' in options) {
+                this.urlRoot = options.urlRoot;
+                delete options.urlRoot;
+            }
+        },
+
+        parse : function(data)
+        {
+            data.tags = new Backbone.Collection(_.map(data.tags, function(tag) {
+                return {
+                    id : tag,
+                    tag : tag
+                };
+            }));
+            return data;
         },
 
         domain : function()
@@ -111,45 +117,24 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
             return 'http://' + this.get('host');
         },
 
-        url : function(method)
+        url : false,
+
+        save : function()
         {
-            return '/' + ['keymedia', 'media', this.id].join('/');
-        },
+            var attr = this.get('attr');
+            var url = attr.url('tag', attr.id, attr.get('version'), 'tag');
 
-        saveAttr : function()
-        {
-            // Attribute instance
-            var url = this.attr.url('tag', [this.attr.id, this.attr.get('version')]);
-            var context = this, data = this.attributes;
+            var data = {
+                id : this.id,
+                tags : this.get('tags').pluck('tag')
+            };
 
-            $.ajax({
-                url : url,
-                data : data,
-                dataType : 'json',
-                type : 'POST',
-                success : function(response) {
-                    context.set(response.content);
-                }
-            });
-        },
-
-        addTag : function(tag) {
-            var tags = this.get('tags');
-            tags.push(tag);
-            this.set({tags : _.uniq(tags)}, {silent:true});
-            return this;
-        },
-
-        removeTag : function(rmTag) {
-            var tags = _(this.get('tags')).filter(function(tag) {
-                return tag !== rmTag;
-            });
-            this.set({tags : tags}, {silent:true});
-            return this;
+            return Backbone.sync('create', {url: url}, {data: data});
         },
 
         // Generate thumb url for a given size
-        thumb : function(width, height, filetype) {
+        thumb : function(width, height, filetype)
+        {
             filetype = (filetype || 'jpg');
             return this.domain() + '/' + width + 'x' + height + '/' + this.id + '.' + filetype;
         }

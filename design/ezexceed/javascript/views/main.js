@@ -21,10 +21,11 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
                 id : data.id,
                 version : this.version,
                 media : data.bootstrap
-            });
+            }, {parse : true});
             this.model.urlRoot = urlRoot;
-            this.model.on('change', this.render);
-            this.model.on('version.create', this.versionCreated);
+            this.model
+                .on('change', this.render)
+                .on('version.create', this.versionCreated);
 
             this.collection = new Models.collection();
             this.collection.urlRoot = urlRoot;
@@ -32,11 +33,6 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
             this.collection.version = this.version;
 
             this.on('saved', this.update, this);
-
-            /*
-            this.media = new Models.media(data.bootstrap);
-            this.media.on('reset change', this.render);
-            */
 
             return this;
         },
@@ -150,8 +146,8 @@ define(['shared/view', 'keymedia/models', './tagger', './upload'], function(View
             }
 
             this.taggerView = new TaggerView({
-                el : this.$('.tagger'),
-                model : this.model
+                el : this.$('.keymedia-tags'),
+                model : media
             }).render();
 
             if (!content || !media || !media.id) {
