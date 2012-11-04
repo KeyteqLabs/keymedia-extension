@@ -20,8 +20,13 @@
 
 {if eq($handler.id, 0)|not}
     {if $media.url|is_set()}
+        {if $media.type|is_set()}
+        {def $template = 'design:content/datatype/view/'|concat($media.type)|concat('.tpl')}
+        {if $silent|not}{debug-log msg='Loading type specific template:' var=$media.type}{/if}
+        {else}
         {def $template = 'design:content/datatype/view/'|concat($handler.type)|concat('.tpl')}
         {if $silent|not}{debug-log msg='Loading type specific template:' var=$handler.type}{/if}
+        {/if}
         {include uri=$template media=$media}
     {else}
         {if $silent|not}{debug-log msg='Media.url not set'}{/if}
