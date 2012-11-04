@@ -203,7 +203,8 @@ class Handler
                 $media = $this->getMedia();
                 return $media ? $media->file->size : 0;
             case 'type':
-                return $this->getMedia()->type();
+                $media = $this->getMedia();
+                return $media ? $media->type() : '';
             case 'mime_type':
                 $media = $this->getMedia();
                 return $media ? $media->file->type : '';
