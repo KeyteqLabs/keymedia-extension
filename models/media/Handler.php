@@ -653,8 +653,10 @@ class Handler
      */
     protected function formatMedia($media)
     {
-        foreach ($media->remotes as &$remote) {
-            $remote = (array) $remote;
+        if ($media->remotes) {
+            foreach ($media->remotes as &$remote) {
+                $remote = (array) $remote;
+            }
         }
         $values = array(
             'id' => $media->id,
