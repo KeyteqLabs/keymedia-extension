@@ -36,8 +36,7 @@ class Media
      */
     public function __get($key)
     {
-        switch ($key)
-        {
+        switch ($key) {
             case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
             case 'ending': return $this->ending();
