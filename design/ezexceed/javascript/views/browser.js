@@ -20,6 +20,10 @@ define(['shared/view', './upload'], function(View, UploadView)
             'click .load-more' : 'page'
         },
 
+        keys : {
+            'return .q' : 'search'
+        },
+
         select : function(e) {
             e.preventDefault();
             var id = this.$(e.currentTarget).data('id');
@@ -35,6 +39,8 @@ define(['shared/view', './upload'], function(View, UploadView)
             });
         },
 
+        q : '',
+
         search : function(e)
         {
             e.preventDefault();
@@ -42,7 +48,14 @@ define(['shared/view', './upload'], function(View, UploadView)
             if (this.input) {
                 q = this.input.val();
             }
-            this.collection.search(q);
+            if (q !== this.q) {
+                this.q = q;
+                var collection = this.collection;
+                var xhr = _.debounce(function()
+                {
+                    collection.search(q);
+                }, 100)();
+            }
         },
 
         render : function() {

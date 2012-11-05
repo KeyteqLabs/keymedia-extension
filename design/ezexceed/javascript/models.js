@@ -156,6 +156,8 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
 
         keymediaId : null,
 
+        xhr : null,
+
         initialize : function(options)
         {
             _.bindAll(this);
@@ -175,7 +177,17 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
                 data.q = q;
             }
             data.limit = this.limit;
-            return this.fetch({data : data});
+            if (this.xhr) {
+                this.xhr.abort();
+            }
+            this.xhr = this.fetch({data : data}).success(this.fetched);
+            return this.xhr;
+        },
+
+        fetched : function()
+        {
+            this.trigger('fetched');
+            this.xhr = null;
         },
 
         parse : function(data)
