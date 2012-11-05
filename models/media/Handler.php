@@ -655,10 +655,9 @@ class Handler
      */
     protected function formatMedia($media)
     {
-        if ($media->remotes) {
-            foreach ($media->remotes as &$remote) {
-                $remote = (array) $remote;
-            }
+        $remotes = isset($media->remotes) ? $media->remotes : array();
+        foreach ($remotes as &$remote) {
+            $remote = (array) $remote;
         }
         $values = array(
             'id' => $media->id,
@@ -668,7 +667,7 @@ class Handler
             'host' => $media->host,
             'name' => $media->name,
             'status' => $media->status,
-            'remotes' => (array) $media->remotes,
+            'remotes' => (array) $remotes,
             'file' => array(
                 'width' => $media->file->width,
                 'height' => $media->file->height,
