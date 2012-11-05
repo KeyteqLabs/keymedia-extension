@@ -154,8 +154,8 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media',
-            'type', 'toscale', 'minsize', 'mediafits', 'imagefits');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media', 'id',
+            'type', 'toscale', 'minsize', 'mediafits', 'imagefits', 'status');
         if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
@@ -165,7 +165,7 @@ class Handler
     {
         return array(
             'id', 'selected', 'toScale', 'minSize', 'mediaFits', 'media',
-            'thumb', 'type', 'filesize', 'mime_type'
+            'thumb', 'type', 'filesize', 'mime_type', 'status'
         );
     }
 
