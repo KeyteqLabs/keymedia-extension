@@ -312,7 +312,7 @@ class Handler
         if (is_array($format)) {
             $result = array(
                 'url' => $this->thumb($format[0], $format[1], $quality)
-            ) + $result;
+            ) + (array) $result;
             return $result;
         }
         else {
