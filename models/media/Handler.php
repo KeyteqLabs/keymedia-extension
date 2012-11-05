@@ -164,7 +164,7 @@ class Handler
     public function attributes()
     {
         return array(
-            'selected', 'toScale', 'minSize', 'mediaFits', 'media',
+            'id', 'selected', 'toScale', 'minSize', 'mediaFits', 'media',
             'thumb', 'type', 'filesize', 'mime_type'
         );
     }
@@ -323,7 +323,9 @@ class Handler
                 $ratio = $width / $height;
             $result = compact('width', 'height', 'ratio', 'coords') + $result;
 
-            if (isset($result['type']) && $result['type'] === 'image') {
+            $file = explode('/', $result['file']['type']);
+            $type = array_shift($file);
+            if ($type === 'image') {
                 // Image specific handling
                 switch($attributeValues['ending']) {
                     case 'png':

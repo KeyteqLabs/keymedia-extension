@@ -70,7 +70,7 @@ class Media
      */
     public function attributes()
     {
-        return array('tags', 'scalesTo', 'ending', 'host', 'name', 'file', 'remotes');
+        return array('id', 'url', 'tags', 'scalesTo', 'ending', 'host', 'name', 'file', 'remotes');
     }
 
     /**
