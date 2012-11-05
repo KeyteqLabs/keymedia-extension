@@ -323,7 +323,7 @@ class Handler
                 $ratio = $width / $height;
             $result = compact('width', 'height', 'ratio', 'coords') + $result;
 
-            if ($result['type'] === 'image') {
+            if (isset($result['type']) && $result['type'] === 'image') {
                 // Image specific handling
                 switch($attributeValues['ending']) {
                     case 'png':
