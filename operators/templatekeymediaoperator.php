@@ -74,13 +74,12 @@ class TemplateKeymediaOperator
         }
         $format = $namedParameters['format'];
         $quality = $namedParameters['quality'];
-        $fetchInfo = $namedParameters['fetchInfo'];
         $format = $format ?: array(300, 200);
 
         switch ($operatorName) {
             case 'keymedia':
                 $handler = $attr->content();
-                $operatorValue = $handler->media($format, $quality, $fetchInfo);
+                $operatorValue = $handler->media($format, $quality);
                 break;
         }
     }

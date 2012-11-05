@@ -232,17 +232,17 @@ class Handler
         else {
             $values = compact('id');
         }
-        if (!$this->hasMedia($id)) {
-            $backend = $this->backend();
-            if ($backend) {
-                $media = $backend->get($id);
-                if ($media) {
-                    $values += $this->formatMedia($media->data());
-                }
+
+        $backend = $this->backend();
+        if ($backend) {
+            $media = $backend->get($id);
+            if ($media) {
+                $values = $this->formatMedia($media->data()) + $values;
+                $this->values($values);
+                return $values;
             }
-            $this->values($values);
         }
-        return true;
+        return false;
     }
 
     /**
@@ -262,7 +262,7 @@ class Handler
     /**
      * @throws Exception
      * @param string|array|null $format
-     * @param boolean $fetchInfo Wether to fetch info from mediabase
+     * @param boolean $fetchInfo DEPRECATED
      * @return array
      */
     public function media($format = array(300, 200), $quality = null, $fetchInfo = false)
@@ -285,7 +285,6 @@ class Handler
                 return isset($v['url']);
             });
             $version = array_shift($urls);
-
         }
         elseif (is_string($format)) {
             // String as format means a named format from this attributes
@@ -304,28 +303,19 @@ class Handler
 
         $result = $attributeValues;
 
-        if (isset($result['type']) && $result['type'] === 'video') $fetchInfo = true;
-
-        if ($fetchInfo && ($media = $this->getMedia())) {
-            if (!isset($result['type'])) {
-                $typeArr = explode('/', $media->file->type);
-                $result['type'] = array_shift($typeArr);
-            }
-            $result['mime-type'] = $media->file->type;
-            $result['original'] = $this->fetchMediaInfo();
+        // If status is not ready, fetch new info
+        $status = isset($result['status']) ? $result['status'] : false;
+        if ($status !== 'ready') {
+            $result = $this->setMedia(array('id' => $result['id']));
         }
-
-        // For backwards compatibility default the type as its not always
-        // set in the local attributes values
-        $result += array('type' => 'image');
 
         if (is_array($format)) {
-            return array(
+            $result = array(
                 'url' => $this->thumb($format[0], $format[1], $quality)
             ) + $result;
+            return $result;
         }
-        else
-        {
+        else {
             // Build simple reply array
             list($width, $height) = $version['size'];
             $coords = $version['coords'];
@@ -335,8 +325,7 @@ class Handler
 
             if ($result['type'] === 'image') {
                 // Image specific handling
-                switch($attributeValues['ending'])
-                {
+                switch($attributeValues['ending']) {
                     case 'png':
                     case 'jpg':
                     case 'gif':
@@ -435,16 +424,13 @@ class Handler
      */
     protected function values($save = false)
     {
-        if ($save)
-        {
+        if ($save) {
             $this->attr->setAttribute('data_text', json_encode($save));
             $this->attributeValues = $save;
-            return $this->attr->storeData();
+            $this->attr->storeData();
         }
-        else
-        {
-            if (!$this->attributeValues)
-            {
+        else {
+            if (!$this->attributeValues) {
                 $data = $this->attr->attribute('data_text');
                 if (is_string($data) && strlen($data) > 0)
                     $data = json_decode($data, true);
@@ -452,8 +438,8 @@ class Handler
                     $data = array();
                 $this->attributeValues = $data;
             }
-            return $this->attributeValues;
         }
+        return $this->attributeValues;
     }
 
     /**
@@ -560,8 +546,7 @@ class Handler
     protected function getMedia(array $options = array())
     {
         $options += array('fetch' => true);
-        if (!$this->_media)
-        {
+        if (!$this->_media) {
             $backend = $this->backend();
             if (!$backend) {
                 return false;
@@ -575,7 +560,12 @@ class Handler
 
             $this->_media = false;
             if (is_object($data) && isset($data->id) && $data->id) {
-                $this->_media = $options['fetch'] ? $backend->get($data->id) : new Media($data);
+                if ($options['fetch']) {
+                    $this->_media = $backend->get($data->id);
+                }
+                else {
+                    $this->_media = new Media($data);
+                }
             }
         }
         return $this->_media;
@@ -624,35 +614,18 @@ class Handler
      */
     protected function addQualityToUrl($url, $quality)
     {
-        if (!$quality)
+        if (!$quality) {
             return $url;
+        }
 
         $quality = 'q' . $quality;
         $pathArr = explode('/', $url);
         $index = $pathArr[0] ? 1 : 2;
 
-        /**
-         * Add quality param at index
-         */
+        // Add quality param at index
         array_splice($pathArr, $index, 0, $quality);
 
         return join('/', $pathArr);
-    }
-
-    /**
-     * Helper to load a specialized set of media information
-     * from the KeyMedia backend
-     * Will do a http request so this is expensive
-     *
-     * @return array
-     */
-    protected function fetchMediaInfo()
-    {
-        $media = $this->getMedia(array('fetch' => true));
-        if ($media && ($data = $media->data())) {
-            return $this->formatMedia($data);
-        }
-        return false;
     }
 
     protected function generateNamedVersion($format)
@@ -671,13 +644,6 @@ class Handler
         }
         return null;
     }
-    protected function toArray($object = array()) {
-        if (!is_array($object)) $object = array();
-        $new = array();
-        foreach ($object as $key => $val)
-            $new[$key] = is_object($val) ? $this->toArray($val) : $val;
-        return $new;
-    }
 
     /**
      * Format a media response to something we can cache / serve
@@ -687,13 +653,18 @@ class Handler
      */
     protected function formatMedia($media)
     {
+        foreach ($media->remotes as &$remote) {
+            $remote = (array) $remote;
+        }
         $values = array(
+            'id' => $media->id,
             'tags' => $media->tags,
             'scalesTo' => $media->scalesTo,
             'ending' => $media->scalesTo->ending,
             'host' => $media->host,
             'name' => $media->name,
-            'remotes' => $media->remotes,
+            'status' => $media->status,
+            'remotes' => (array) $media->remotes,
             'file' => array(
                 'width' => $media->file->width,
                 'height' => $media->file->height,
