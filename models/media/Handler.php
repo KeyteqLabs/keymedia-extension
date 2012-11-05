@@ -547,7 +547,7 @@ class Handler
      */
     protected function getMedia(array $options = array())
     {
-        $options += array('fetch' => true);
+        $options += array('fetch' => false);
         if (!$this->_media) {
             $backend = $this->backend();
             if (!$backend) {
