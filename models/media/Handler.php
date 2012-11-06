@@ -334,7 +334,7 @@ class Handler
             $coords = $version['coords'];
             if ($width && $height)
                 $ratio = $width / $height;
-            $result = compact('width', 'height', 'ratio', 'coords') + $result;
+            $result = compact('width', 'height', 'ratio', 'coords') + (array) $result;
 
             $file = explode('/', $result['file']['type']);
             $type = array_shift($file);
