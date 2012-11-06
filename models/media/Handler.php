@@ -210,7 +210,7 @@ class Handler
                 return $media ? $media->file->type : '';
             default:
                 $values = $this->values();
-                return $values[$name];
+                return isset($values[$name]) ? $values[$name] : null;
         }
     }
 
