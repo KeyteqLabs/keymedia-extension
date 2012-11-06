@@ -237,6 +237,7 @@ class Handler
         if ($backend) {
             $media = $backend->get($id);
             if ($media) {
+                $values = $this->values();
                 $values = $this->formatMedia($media->data()) + $values;
                 $this->values($values);
                 return $values;
