@@ -208,6 +208,14 @@ class Handler
             case 'mime_type':
                 $media = $this->getMedia();
                 return $media ? $media->file->type : '';
+            case 'status':
+                $values = $this->values();
+                $status = isset($values['status']) ? $values['status'] : null;
+                if ($status !== 'ready') {
+                    $result = $this->setMedia(array('id' => $values['id']));
+                    $status = $result['status'];
+                }
+                return $status;
             default:
                 $values = $this->values();
                 return isset($values[$name]) ? $values[$name] : null;
