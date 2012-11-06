@@ -327,17 +327,19 @@ class Handler
             $file = explode('/', $result['file']['type']);
             $type = array_shift($file);
             if ($type === 'image') {
+                $media = $this->getMedia();
                 // Image specific handling
-                switch($attributeValues['ending']) {
+                $ending = !empty($media) ? $media->ending() : $result['ending'];
+                switch($ending) {
                     case 'png':
                     case 'jpg':
                     case 'gif':
-                        $ext = '.' . $attributeValues['ending'];
+                        $ext = '.' . $ending;
                         break;
                     default :
                         $ext = '.jpg';
                 }
-                $host = !empty($media) ? $media->host() : $attributeValues['host'];
+                $host = !empty($media) ? $media->host() : $result['host'];
                 $url = $this->addQualityToUrl($version['url'], $quality);
                 $result['url'] = "//" . $host . $url . $ext;
             }
