@@ -241,6 +241,10 @@ class Handler
             $values = compact('id');
         }
 
+        if (!$id) {
+            return $this->values();
+        }
+
         $backend = $this->backend();
         if ($backend) {
             $media = $backend->get($id);
