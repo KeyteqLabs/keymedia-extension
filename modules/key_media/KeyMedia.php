@@ -167,17 +167,17 @@ class KeyMedia extends \ezote\lib\Controller
         }
         else
             $attributeId = $args;
-        if ($attributeId && $version)
-        {
+        if ($attributeId && $version) {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
 
-            if ($isKeymediaAttribute)
-            {
+            if ($isKeymediaAttribute) {
                 $handler = $attribute->content();
                 $box = $handler->attribute('minSize');
-                $criteria['minWidth'] = $box->width();
-                $criteria['minHeight'] = $box->height();
+                if ($box) {
+                    $criteria['minWidth'] = $box->width();
+                    $criteria['minHeight'] = $box->height();
+                }
                 $backend = $handler->attribute('backend');
             }
             else

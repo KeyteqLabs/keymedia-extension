@@ -540,17 +540,21 @@ class Handler
 
     /**
      * Get min size an media must be to be used for this attribute instance
+     * At least one scale version must be useable in order to accept
+     * the image
      *
      * @return array $width, $height
      */
     protected function minSize()
     {
-        $width = $height = 0;
-        foreach ($this->toScale() as $version)
-        {
+        $width = $height = 99999;
+        $versions = $this->toScale();
+        if (!$versions) return false;
+
+        foreach ($versions as $version) {
             list($w, $h) = $version['size'];
-            if ($w > $width) $width = $w;
-            if ($h > $height) $height = $h;
+            if ($w < $width) $width = $w;
+            if ($h < $height) $height = $h;
         }
         return new Box($width, $height);
     }
