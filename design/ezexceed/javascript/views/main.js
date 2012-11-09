@@ -114,10 +114,8 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
             return this;
         },
 
-        changeMedia : function(data, pop)
+        changeMedia : function(data)
         {
-            if (!data.refresh) return;
-
             this.$('.media-id').val(data.id);
             this.$('.media-host').val(data.host);
             this.$('.media-type').val(data.type);
@@ -151,19 +149,22 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
                     brightcove.createExperiences();
             }
 
-            this.taggerView = new TaggerView({
-                el : this.$('.keymedia-tags'),
-                model : media
-            }).render();
-
-            if (!content || !media || !media.id) {
-                this.enableUpload();
-            }
+            this.renderUpload()
+                .renderTags();
 
             return this;
         },
 
-        enableUpload : function() {
+        renderTags : function()
+        {
+            this.taggerView = new TaggerView({
+                el : this.$('.keymedia-tags'),
+                model : this.model.get('media')
+            }).render();
+            return this;
+        },
+
+        renderUpload : function() {
             this.upload = new UploadView({
                 model : this.model,
                 uploaded : this.changeMedia,
