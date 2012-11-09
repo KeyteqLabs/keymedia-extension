@@ -282,9 +282,12 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             if (e) e.preventDefault();
 
             if (this.current !== null) {
-                this.current.removeClass('active');
                 if (!this.singleVersion)
                     this.saveCrop();
+                if (e && this.current.get(0) == this.$(e.currentTarget).get(0))
+                    return;
+
+                this.current.removeClass('active');
             }
 
             // If method is triggered without click we
@@ -293,6 +296,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             this.current = this.$(e.currentTarget);
             this.current.addClass('active');
+
             var scale = this.current.data('scale');
 
             if (typeof scale === 'undefined')
