@@ -50,10 +50,8 @@
             <div class="tags"></div>
         </div>
     </div>
-    <div class="eze-no-image hide">
-{else}
-<div class="eze-no-image">
 {/if}
+<div class="eze-no-image">
     <button type="button" class="btn from-keymedia">
         {'Browse media library'|i18n('keymedia')}
     </button>

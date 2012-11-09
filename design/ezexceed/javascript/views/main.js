@@ -62,8 +62,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
             });
 
             this.trigger('save', this.model.id, data);
-            this.show(this.$('.eze-no-image'));
-            this.hide(this.$('.eze-image'));
+            this.remove(this.$('.eze-image'));
         },
 
         browse : function(BrowseView)
@@ -117,7 +116,8 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
 
         changeMedia : function(data, pop)
         {
-            var refresh = data.refresh;
+            if (!data.refresh) return;
+
             this.$('.media-id').val(data.id);
             this.$('.media-host').val(data.host);
             this.$('.media-type').val(data.type);
@@ -158,9 +158,6 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
 
             if (!content || !media || !media.id) {
                 this.enableUpload();
-            }
-            else {
-                //this.hide(this.$('.eze-no-image'));
             }
 
             return this;
