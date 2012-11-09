@@ -34,8 +34,12 @@
 
     <object id="brightcove_experience_{$attribute.id}" class="BrightcoveExperience">
         <param name="bgcolor" value="#FFFFFF" />
+        {if gt( $width, 0 )}
         <param name="width" value="{$width}" />
+        {/if}
+        {if gt( $height, 0 )}
         <param name="height" value="{$height}" />
+        {/if}
         <param name="playerID" value="{$playerId}" />
         <param name="playerKey" value="{$playerKey}" />
         <param name="isVid" value="true" />
