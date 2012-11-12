@@ -675,6 +675,7 @@ class Handler
 
             $attributeValues = $this->values();
             $versions = $attributeValues['versions'];
+            return true;
         }
         return null;
     }
