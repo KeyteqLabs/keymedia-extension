@@ -54,12 +54,15 @@ class Handler
      */
     public function uploadFile($file, array $tags = array(), $title = '')
     {
-        if ($file instanceof \eZHTTPFile)
+        if ($file instanceof \eZHTTPFile) {
             $filepath = $file->Filename;
-        elseif (is_string($file))
+            $filename = self::parseFilename($file->OriginalFilename);
+        }
+        elseif (is_string($file)) {
             $filepath = $file;
+            $filename = $this->mediaName($this->attr, $this->version());
+        }
 
-        $filename = $this->mediaName($this->attr, $this->version());
         $media = $this->backend()->upload($filepath, $filename, $tags, compact('title'));
         $this->setMedia(array(
             'id' => $media->id,
@@ -706,5 +709,22 @@ class Handler
             )
         );
         return $values;
+    }
+
+    /**
+     * Replace hyphens from file name to make it more readable
+     * and searchable
+     * 
+     * @param string $name
+     * @return string
+     */
+    protected static function parseFilename($name)
+    {
+        $name = str_replace(
+            array('_'),
+            array(' '),
+            $name
+        );
+        return $name;
     }
 }
