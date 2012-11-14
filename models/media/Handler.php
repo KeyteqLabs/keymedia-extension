@@ -192,9 +192,11 @@ class Handler
                 return $this->minSize();
             case 'imageFits': //This is needed for legacy. Is in use on haraldsplass site in template
             case 'mediaFits':
-                $media = $this->getMedia();
                 $box = $this->minSize();
-                if ($box && $media)
+                if (!$box) return true;
+
+                $media = $this->getMedia();
+                if ($media)
                     return $box->fits($media->box());
                 return false;
             case 'media':
