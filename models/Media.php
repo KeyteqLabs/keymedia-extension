@@ -144,7 +144,11 @@ class Media
      */
     public function box()
     {
-        return new Box($this->file->width, $this->file->height);
+        $file = $this->file;
+        if (!is_object($file)) {
+            user_error("Media::box() file is not an object; " . gettype($file));
+        }
+        return new Box($file->width, $file->height);
     }
 
     /**
