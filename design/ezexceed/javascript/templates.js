@@ -95,7 +95,7 @@ function program1(depth0,data) {
 
 this['JST']['keymedia/scalerattributes'] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+  var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
@@ -109,12 +109,15 @@ function program1(depth0,data) {
 
 function program3(depth0,data) {
   
-  var buffer = "", stack1;
-  buffer += "\n    <label>Class\n    <select name=\"cssclass\">\n        <option value=\"\"> - </option>\n        ";
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n    <label for=\"cssclass\">";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Class", {hash:{}}) : helperMissing.call(depth0, "translate", "Class", {hash:{}});
+  buffer += escapeExpression(stack1) + "</label>\n    <select name=\"cssclass\" id=\"cssclass\">\n        <option value=\"\"> - </option>\n        ";
   stack1 = depth0.classes;
   stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(4, program4, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n    </select>\n    </label>\n";
+  buffer += "\n    </select>\n    ";
   return buffer;}
 function program4(depth0,data) {
   
@@ -140,12 +143,15 @@ function program5(depth0,data) {
 
 function program7(depth0,data) {
   
-  var buffer = "", stack1;
-  buffer += "\n<label>View\n    <select name=\"viewmode\">\n        <option value=\"\"> - </option>\n        ";
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n    <label for=\"viewmode\">";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "View", {hash:{}}) : helperMissing.call(depth0, "translate", "View", {hash:{}});
+  buffer += escapeExpression(stack1) + "</label>\n    <select name=\"viewmode\" id=\"viewmode\">\n        <option value=\"\"> - </option>\n        ";
   stack1 = depth0.viewmodes;
   stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(8, program8, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n    </select>\n</label>\n";
+  buffer += "\n    </select>\n    ";
   return buffer;}
 function program8(depth0,data) {
   
@@ -169,23 +175,22 @@ function program9(depth0,data) {
   
   return " selected";}
 
-  buffer += "<input type=\"text\" name=\"alttext\" placeholder=\"";
-  stack1 = depth0.tr;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.alttext;
-  stack1 = typeof stack1 === functionType ? stack1() : stack1;
-  buffer += escapeExpression(stack1) + "\"";
+  buffer += "<div class=\"well control-group\">\n    <input type=\"text\" name=\"alttext\"\n        placeholder=\"";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Alternate text", {hash:{}}) : helperMissing.call(depth0, "translate", "Alternate text", {hash:{}});
+  buffer += escapeExpression(stack1) + "\"\n        ";
   stack1 = depth0.alttext;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " />\n";
+  buffer += ">\n\n    ";
   stack1 = depth0.classes;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(3, program3, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n";
+  buffer += "\n\n    ";
   stack1 = depth0.viewmodes;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(7, program7, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n";
+  buffer += "\n</div>\n";
   return buffer;});
 
 this['JST']['keymedia/scaledversion'] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {

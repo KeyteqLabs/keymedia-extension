@@ -102,8 +102,8 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             var outerBounds = this.outerBounds(this.versions, 4, 40);
 
-            var classes = media.get('classList');
-            var viewModes = media.get('viewModes');
+            var classes = this.model.get('classList');
+            var viewModes = this.model.get('viewModes');
 
             if (classes || viewModes) {
                 var selectedClass = false;
