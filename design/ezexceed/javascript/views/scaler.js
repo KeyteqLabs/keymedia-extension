@@ -29,7 +29,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         {
             options = (options || {});
             _.bindAll(this);
-            _.extend(this, _.pick(options, ['versions', 'trueSize']));
+            _.extend(this, _.pick(options, ['versions', 'trueSize', 'singleVersion']));
 
             // Model is an instance of Attribute
             this.model.on('scale', this.render, this);
@@ -108,7 +108,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             if (classes || viewModes) {
                 var selectedClass = false;
                 var selectedView = false;
-                var classesObj = false;
                 var viewsObj = false;
                 var alttext = '';
                 var tmpArr = [];
@@ -120,21 +119,31 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                 }
 
                 if (classes) {
-                    classesObj = _(classes).map(function(value) {
+                    classes = _(classes).map(function(value)
+                    {
                         tmpArr = value.split('|');
-                        return {value : tmpArr[0], name : _(tmpArr).last(), selected : (tmpArr[0] == selectedClass)};
+                        return {
+                            value : tmpArr[0],
+                            name : _(tmpArr).last(),
+                            selected : (tmpArr[0] == selectedClass)
+                        };
                     });
                 }
                 if (viewModes) {
                     viewsObj = _(viewModes).map(function(value)
                     {
                         tmpArr = value.split('|');
-                        return {value : tmpArr[0], name : _(tmpArr).last(), selected : (tmpArr[0] == selectedView)};
+                        return {
+                            value : tmpArr[0],
+                            name : _(tmpArr).last(),
+                            selected : (tmpArr[0] == selectedView)
+                        };
                     });
                 }
+
                 this.$('.customattributes').html(
                     this.template('keymedia/scalerattributes', {
-                        classes : classesObj,
+                        classes : classes,
                         viewmodes : viewsObj,
                         alttext : alttext
                     })
@@ -175,7 +184,10 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         // Calculate outer bounds for preview boxes
         outerBounds : function(versions, gt, lt)
         {
-            var i, w, h, min = {w:0,h:0}, max = {w:0,h:0};
+            var min = {w:0,h:0};
+            var max = {w:0,h:0};
+            var i, w, h;
+
             for (i = 0; i < versions.length; i++) {
                 if (_(versions[i]).has('size') && _(versions[i].size).isArray()) {
                     w = parseInt(versions[i].size[0], 10);

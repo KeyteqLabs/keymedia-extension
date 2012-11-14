@@ -28,7 +28,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                 id : 'ezoe',
                 attributeId : data.id,
                 version : data.version
-            }).on('version.create', this.updateEditor);
+            }).on('version.create', this.updateEditor, this);
 
             var urlRoot = '/ezjscore/call';
             if (data.urlRoot && data.urlRoot !== '/') urlRoot = data.urlRoot + urlRoot;
