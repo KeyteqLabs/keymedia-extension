@@ -17,7 +17,7 @@
         {if eq($attribute.content.id, 0)|not}
         <button type="submit" class="close remove"
                 name="CustomActionButton[{$attribute.id}_delete_media]"
-                value="{'Remove current media'|i18n( 'keymedia' )}">×</button>
+                value="{'Remove current media'|i18n('keymedia')}">×</button>
         {/if}
         
         {include uri="design:parts/overlay_action_button.tpl" media=$media handler=$handler}

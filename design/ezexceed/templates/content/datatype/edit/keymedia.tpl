@@ -26,7 +26,7 @@
     <p class="error">{'No KeyMedia connection for content class'|i18n('keymedia')}</p>
 {else}
     {if and( $media, $handler.mediaFits|not )}
-        <p class="error">{'The uploaded image might be too small for this format'|i18n('keymedia')}</p>
+        <p class="error">{'The uploaded media might be too small for this format'|i18n('keymedia')}</p>
     {/if}
 {/if}
 
@@ -58,7 +58,7 @@
     <span class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
         <button type="button" class="btn upload-from-disk"
             id="keymedia-local-file-{$attribute.id}">
-            {'Upload new image'|i18n('keymedia')}
+            {'Upload new media'|i18n('keymedia')}
         </button>
         <div class="upload-progress hide"><div class="progress"></div></div>
     </span>
