@@ -29,7 +29,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         {
             options = (options || {});
             _.bindAll(this);
-            _.extend(this, _.pick(options, ['versions', 'trueSize', 'singleVersion']));
+            _.extend(this, _.pick(options, ['versions', 'trueSize', 'singleVersion', 'editorAttributes']));
 
             // Model is an instance of Attribute
             this.model.on('scale', this.render, this);

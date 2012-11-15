@@ -6,7 +6,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
         tinymceEditor : null,
         bookmark : null,
         selectedContent : null,
-        editorAttributes : {},
+        editorAttributes : null,
 
         initialize : function(options)
         {
@@ -21,6 +21,8 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                 this.bookmark = this.tinymceEditor.selection.getBookmark();
                 this.selectedContent = $(this.tinymceEditor.selection.getContent());
             }
+
+            this.editorAttributes = {};
 
             // TODO: The attributeEl is eZExceed spesific so this won't work in vanilla version
             var data = this.attributeEl.data();
@@ -130,13 +132,14 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                 image_height : data.size[1],
                 image_url : '//' + media.get('host') + data.url + '.' + media.get('scalesTo').ending
             });
-            if (data.coords)
-            {
+
+            if (data.coords) {
                 values.x1 = data.coords[0];
                 values.y1 = data.coords[1];
                 values.x2 = data.coords[2];
                 values.y2 = data.coords[3];
             }
+
             var customAttributes = _(values).map(function(value, key){
                 return key + '|' + value;
             });
