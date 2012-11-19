@@ -448,6 +448,23 @@ class Handler
         return $backend->reportUsage($values['id'], $reference);
     }
 
+    public function tag(array $tags)
+    {
+        $values = $this->values();
+        if (empty($values['id']))
+            return false;
+        $backend = $this->backend();
+        $media = $backend->tag(array('id' => $values['id']), $tags);
+        // Ensure a versions index exists in the data
+        $values += array('tags' => array());
+
+        $values['tags'] = $media->attribute('tags');
+
+        // Save values
+        $this->values($values);
+        return $media;
+    }
+
     /**
      * Save or get values for this content object attribute
      *

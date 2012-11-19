@@ -372,8 +372,7 @@ class KeyMedia extends \ezote\lib\Controller
 
         $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
         $handler = $attribute->content();
-        $backend = $handler->attribute('backend');
-        $media = $backend->tag(compact('id'), $tags);
+        $media = $handler->tag($tags);
         return $media ? $media->data() : false;
     }
 
