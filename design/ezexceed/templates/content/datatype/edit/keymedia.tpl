@@ -15,10 +15,12 @@
 <div class="attribute-base"
     data-handler='keymedia/keymedia'
     data-url-root='{"/"|ezurl("no")}'
-    {literal}data-paths='{
+    {literal}
+    data-paths='{
         "keymedia" : "/extension/keymedia/design/ezexceed/javascript/",
         "brightcove" : "//admin.brightcove.com/js/BrightcoveExperiences"
-    }'{/literal}
+    }'
+    {/literal}
     data-bootstrap='{$media.data|json}'
 >
 
