@@ -62,7 +62,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
             });
 
             this.trigger('save', this.model.id, data);
-            this.remove(this.$('.eze-image'));
+            this.hide(this.$('.eze-image'));
         },
 
         browse : function(BrowseView)
