@@ -25,11 +25,16 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         editorAttributes : false,
         className : 'keymedia-scaler',
 
+        versionSaved : null,
+        poppedFromStack : null,
+
         initialize : function(options)
         {
             options = (options || {});
             _.bindAll(this);
             _.extend(this, _.pick(options, ['versions', 'trueSize', 'singleVersion', 'editorAttributes']));
+            this.versionSaved = null;
+            this.poppedFromStack = null;
 
             // Model is an instance of Attribute
             this.model.on('scale', this.render, this);
@@ -37,6 +42,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             // When I get popped from stack
             // i save my current scale
             this.on('destruct', this.saveCrop, this);
+            this.on('stack.popped', this.stackPopped, this);
         },
 
         events : {
@@ -241,9 +247,8 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             var menuElement = this.$('#eze-keymedia-scale-version-' + data.name.toLowerCase());
             menuElement.data('versions', this.versions);
-
-            this.model.trigger('version.create', this.versions, data);
-            this.trigger('saved');
+            this.versionSaved = data;
+            this.finishScaler();
         },
 
         saveCrop : function()
@@ -376,6 +381,31 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                     // Set true size of media
                     this.setOptions(cropperOptions);
                 });
+            }
+        },
+
+        stackPopped : function()
+        {
+            this.poppedFromStack = true;
+            this.finishScaler();
+        },
+
+        /**
+         * Checks if both stack animation is finished and version saved to server before
+         * adding to tinyMCE
+         */
+        finishScaler : function()
+        {
+            if (this.versionSaved && this.poppedFromStack) {
+                var _this = this;
+                /**
+                 * Must be wrapped in an timeout function to prevent FireFox from
+                 * replacing all content instead of addding image to selected content
+                 */
+                _.delay(function(){
+                    _this.model.trigger('version.create', _this.versions, _this.versionSaved);
+                    _this.trigger('saved');
+                }, 0);
             }
         },
 

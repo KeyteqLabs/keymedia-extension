@@ -1,4 +1,4 @@
-var loadKeyMedia =  function(textarea, ed)
+var loadKeyMedia =  function(textarea, ed, bookmark)
 {
     require.config({
         shim : {
@@ -16,7 +16,8 @@ var loadKeyMedia =  function(textarea, ed)
     {
         var view = new View({
             textEl : textarea,
-            tinymceEditor : ed
+            tinymceEditor : ed,
+            bookmark : bookmark
         });
     });
 }
@@ -27,7 +28,8 @@ tinymce.create('tinymce.plugins.KeymediaPlugin', {
         // Register commands
         ed.addCommand('mceKeymedia', function()
         {
-            loadKeyMedia(ed.getElement(), ed);
+            var bookmark = ed.selection.getBookmark();
+            loadKeyMedia(ed.getElement(), ed, bookmark);
         });
 
         // Register buttons

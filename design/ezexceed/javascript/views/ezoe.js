@@ -18,7 +18,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
             }
             if (_(options).has('tinymceEditor')) {
                 this.tinymceEditor = options.tinymceEditor;
-                this.bookmark = this.tinymceEditor.selection.getBookmark();
+                this.bookmark = options.bookmark;
                 this.selectedContent = $(this.tinymceEditor.selection.getContent());
             }
 
@@ -55,7 +55,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                 var options = {
                     id : attributes.mediaId,
                     keymediaId : attributes.keymediaId,
-                    model : new Models.model()
+                    model : new Models.media()
                 };
                 this.media = options;
                 this.showScaler();
@@ -82,9 +82,11 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
 
         loadScaler : function(data)
         {
-            this.model.fetch({
-                url : this.model.url('media', 'ezoe', data.id)
-            }).success(this.showScaler);
+            if (data.hasOwnProperty('host')) {
+                this.model.fetch({
+                    url : this.model.url('media', 'ezoe', data.id)
+                }).success(this.showScaler);
+            }
         },
 
         changeMedia : function(params)
