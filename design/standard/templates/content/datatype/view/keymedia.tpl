@@ -1,5 +1,5 @@
 {if not( is_set( $format ) )}
-    {def $format = array(300,200)}
+    {def $format = array(300, 200)}
 {/if}
 
 {if is_set($quality)|not}
@@ -12,7 +12,7 @@
 
 {def
     $handler = $attribute.content
-    $media = keymedia($attribute,$format, $quality)
+    $media = keymedia($attribute, $format, $quality)
     $type = false()
 }
 
@@ -26,7 +26,7 @@
 
         {if $silent|not}{debug-log msg='Loading type specific template:' var=$type}{/if}
 
-        {def $template = 'design:content/datatype/view/'|concat($type)|concat('.tpl')}
+        {def $template = concat('design:content/datatype/view/', $type, '.tpl')}
         {include uri=$template media=$media handler=$handler}
     {else}
         {if $silent|not}{debug-log msg='Media.url not set'}{/if}
