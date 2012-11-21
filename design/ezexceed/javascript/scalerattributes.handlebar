@@ -8,7 +8,7 @@
     <select name="cssclass" id="cssclass">
         <option value=""> - </option>
         {{#each classes}}
-            <option value="{{name}}"{{#if selected}} selected{{/if}}>{{name}}</option>
+            <option value="{{value}}"{{#if selected}} selected{{/if}}>{{name}}</option>
         {{/each}}
     </select>
     {{/if}}
