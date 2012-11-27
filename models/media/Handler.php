@@ -217,19 +217,12 @@ class Handler
                 $values = $this->values();
                 $status = isset($values['status']) ? $values['status'] : null;
                 if ($status !== 'ready') {
-                    if (isset($values['id']))
-	            {
-		    	$result = $this->setMedia(array('id' => $values['id']));
-                    	if (isset($result['status']))
-			{
-				$status = $result['status'];
-                	}
-		    }
-		    else
-		    {
-			// todo: introduce status for empty id?
-		    }
-		}
+                    if (isset($values['id'])) {
+                        $result = $this->setMedia(array('id' => $values['id']));
+                        if (isset($result['status']))
+                            $status = $result['status'];
+                    }
+                }
                 return $status;
             default:
                 $values = $this->values();
