@@ -1,7 +1,7 @@
 {if not(is_set($viewmode))}
     {def $viewmode = 'keymedia-standard'}
 {elseif and(
-    is_set($viewmode),
+    is_string($viewmode),
     $viewmode|compare('')
 )}
     {set $viewmode = 'keymedia-standard'}
