@@ -117,7 +117,7 @@ class Media
      */
     public function size()
     {
-        return array($this->file->width, $this->file->height);
+        return isset($this->file) ? array($this->file->width, $this->file->height) : false;
     }
 
     /**
