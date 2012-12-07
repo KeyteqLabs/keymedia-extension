@@ -1,12 +1,12 @@
 require.config({
+    map : {
+        jcrop : {
+            'jquery' : 'jquery-safe'
+        }
+    },
     shim : {
         jcrop : {
-            deps : ['jquery-safe'],
-            exports : 'jQuery.fn.Jcrop',
-            init : function(jQuery)
-            {
-                jQuery.fn.Jcrop = this.jQuery.fn.Jcrop;
-            }
+            exports : 'jQuery.fn.Jcrop'
         },
         brigthcove : {
             exports : 'brightcove'
