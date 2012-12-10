@@ -34,8 +34,49 @@ Plugins[]=keymedia
 [EditorLayout]
 Buttons[]=keymedia
 
-The keymedia button could be placed anywhere in the editor. See the eZOe doc on how to arrange buttons
-See `settings/keymedia.ini` for how to set up what versions the users should be able to produce.
+The keymedia button could be placed anywhere in the editor. See the eZOe doc on how to arrange buttons.
+
+Setting up versions the user should be able to produce, is done in the keymedia.ini file. Make a keymedia.ini.append.php in the siteacces or the override folder.
+This is the possible settings with examples:
+
+[Brightcove]
+PlayerId=98234987523
+PlayerKey=OM932489MGXCV009CXVOM3
+
+# Defines what backend to use for tinymce integration
+DefaultBackend=1
+
+[EditorVersion]
+# Defines a list of versions that are available in ezoe editor to crop. Must at least have one version
+VersionList[]
+VersionList[]=small
+VersionList[]=medium
+VersionList[]=large
+
+# Defines a list of css classes that are available for user in editor
+# Separate actual css class and readable name with "|"
+ClassList[]
+ClassList[]=left|Left adjusted
+ClassList[]=right|Right adjusted
+ClassList[]=center
+
+# Defines a list of view modes that are available for user in editor.
+# The mode name is the same as template file-name. E.g. design/standard/templates/content/datatype/view/ezxmltags/keymedia-embed.tpl
+# Separate actual css class and readable name with "|"
+ViewModes[]
+ViewModes[]=keymedia-embed|Embeded view
+
+# Size definition of each version.
+# 0 means that it's unbound. Only one dimension can have an unbound size (means 0x0 is not allowed)
+
+[small]
+Size=160x120
+
+[medium]
+Size=300x100
+
+[large]
+Size=500x0
 
 ## Usage
 
