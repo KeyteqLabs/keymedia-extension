@@ -248,7 +248,12 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             var menuElement = this.$('#eze-keymedia-scale-version-' + data.name.toLowerCase());
             menuElement.data('versions', this.versions);
             this.versionSaved = data;
-            this.model.trigger('version.create', this.versions, this.versionSaved);
+            if (this.singleVersion)
+                this.finishScaler();
+            else {
+                this.model.trigger('version.create', this.versions, this.versionSaved);
+                this.trigger('saved');
+            }
         },
 
         saveCrop : function()
