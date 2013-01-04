@@ -1,6 +1,6 @@
 <img src="{$media.url}"
-    {if $class}class="{$class}"{/if}
-    {if $width}width="{$width}"{/if}
-    {if $height}height="{$height}"{/if}
-    {if $title}title="{$title}"{/if}
-    {if $alt}alt="{$alt}"{/if} />
+    {if is_set($class)}class="{$class}"{/if}
+    {if is_set($width)}width="{$width}"{/if}
+    {if is_set($height)}height="{$height}"{/if}
+    {if is_set($title)}title="{$title}"{/if}
+    {if is_set($alt)}alt="{$alt}"{/if} />
