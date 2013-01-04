@@ -6,12 +6,6 @@
     {def $attribute_base = "ContentObjectAttribute"}
 {/if}
 
-{run-once}
-    {if is_set($excludeJS)|not}
-        {include uri="design:keymedia/jscss.tpl"}
-    {/if}
-{/run-once}
-
 <div class="attribute-base"
     data-handler='keymedia/keymedia'
     data-url-root='{"/"|ezurl("no")}'

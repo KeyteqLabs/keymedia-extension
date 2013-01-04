@@ -236,7 +236,6 @@ class KeyMedia extends \ezote\lib\Controller
 
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
-            $tpl->setVariable('excludeJS', true);
             return array(
                 'media' => $media->data(),
                 'toScale' == $handler->attribute('toscale'),
@@ -341,7 +340,6 @@ class KeyMedia extends \ezote\lib\Controller
             }
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
-            $tpl->setVariable('excludeJS', true);
             $content = $tpl->fetch('design:content/datatype/edit/keymedia.tpl');
             $content = trim($content);
             return self::response(compact('media', 'content', 'toScale'), array('type' => 'json'));
