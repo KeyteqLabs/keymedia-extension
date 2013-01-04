@@ -161,7 +161,6 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
         initialize : function(options)
         {
             _.bindAll(this);
-            return this;
         },
 
         url : function()
@@ -211,9 +210,14 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
                     q : this.q
                 };
 
-                return this.fetch({data: data, add: true});
+                return Backbone.sync('read', {url: this.url()}, {data: data}).done(this.paged);
             }
             return false;
+        },
+
+        paged: function(data)
+        {
+            this.add(this.parse(data));
         }
     });
 
