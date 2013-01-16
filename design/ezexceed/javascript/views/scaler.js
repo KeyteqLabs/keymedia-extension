@@ -159,6 +159,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             var versionElements  = _(this.versions).map(function(version) {
                 var view = new ScaledVersion({
                     model : version,
+                    media : media,
                     outerBounds : outerBounds,
                     className : ('url' in version ? 'cropped' : 'uncropped')
                 });
@@ -324,6 +325,25 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             if (typeof scale === 'undefined')
                 return this;
 
+            var media = this.model.get('media');
+            var mediaFile = media.get('file');
+            /**
+             * If image is to small for the version, show an overlay with error message
+             */
+            if (scale.size[0] > mediaFile.width || scale.size[0] > mediaFile.height) {
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                    this.$('.image-wrap>img').css('visibility', 'visible');
+                }
+                this.showAlert();
+                return this;
+            }
+            /**
+             * Hide the alert
+             */
+            this.showAlert(true);
+
             var w = this.SIZE.w;
             var h = this.SIZE.h;
             var x, y, x2, y2;
@@ -387,6 +407,18 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                     this.setOptions(cropperOptions);
                 });
             }
+        },
+
+        showAlert : function(hide)
+        {
+            if (hide) {
+                this.$('.alert').remove();
+                return;
+            }
+            if (this.$('.alert').length)
+                return;
+
+            this.$('.keymedia-crop-container').append(this.template('keymedia/alert'));
         },
 
         stackPopped : function()

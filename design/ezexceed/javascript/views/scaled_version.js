@@ -6,12 +6,13 @@ define(['shared/view'], function(View)
 
         outerBounds : null,
         tagName : 'li',
+        media : null,
 
         initialize : function(options)
         {
             options = (options || {});
             _.bindAll(this);
-            _.extend(this, _.pick(options, ['outerBounds']));
+            _.extend(this, _.pick(options, ['outerBounds', 'media']));
         },
 
         render : function()
@@ -23,6 +24,12 @@ define(['shared/view'], function(View)
 
             data.width = _(data).has('size') ? data.size[0] : 0;
             data.height = _(data).has('size') ? data.size[1] : 0;
+
+            /**
+             * Check if media is large enough to fit the scaling
+             */
+            var file = this.media.get('file');
+            data.toSmall = !(file.width >= data.width && file.height >= data.height);
             this.$el.html(this.template('keymedia/scaledversion', data))
                 .attr("id", "eze-keymedia-scale-version-" + data.name.toLowerCase())
                 .data('scale', this.model);

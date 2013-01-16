@@ -1,5 +1,12 @@
 this["JST"] = this["JST"] || {};
 
+this["JST"]["keymedia/alert"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  
+
+
+  return "<section class=\"alert\"><p>The image is too small for this crop</p></section>\n";});
+
 this["JST"]["keymedia/browser"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", stack1, foundHelper, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
@@ -67,10 +74,31 @@ function program1(depth0,data) {
 
 this["JST"]["keymedia/scaledversion"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
-  var buffer = "", stack1, foundHelper, functionType="function", escapeExpression=this.escapeExpression;
+  var buffer = "", stack1, foundHelper, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this, functionType="function";
 
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n    <img class=\"white\" src=\"/extension/ezexceed/design/ezexceed/images/kp/24x24/white/Alert.png\"\n        alt=\"";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Image is to small for this version", {hash:{}}) : helperMissing.call(depth0, "translate", "Image is to small for this version", {hash:{}});
+  buffer += escapeExpression(stack1) + "\"\n        title=\"";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Image is to small for this version", {hash:{}}) : helperMissing.call(depth0, "translate", "Image is to small for this version", {hash:{}});
+  buffer += escapeExpression(stack1) + "\" />\n    <img class=\"black\" src=\"/extension/ezexceed/design/ezexceed/images/kp/24x24/Alert.png\"\n        alt=\"";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Image is to small for this version", {hash:{}}) : helperMissing.call(depth0, "translate", "Image is to small for this version", {hash:{}});
+  buffer += escapeExpression(stack1) + "\"\n        title=\"";
+  foundHelper = helpers.translate;
+  stack1 = foundHelper ? foundHelper.call(depth0, "Image is to small for this version", {hash:{}}) : helperMissing.call(depth0, "translate", "Image is to small for this version", {hash:{}});
+  buffer += escapeExpression(stack1) + "\" />\n    ";
+  return buffer;}
 
   buffer += "<a>\n    ";
+  stack1 = depth0.toSmall;
+  stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data)});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n    ";
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
