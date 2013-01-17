@@ -169,7 +169,6 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             if (this.selectedVersion) {
                 var scale;
-                var _this = this;
                 var selectedEl = _.filter(this.$('ul.nav li'), function(el)
                 {
                     scale = this.$(el).data('scale');
@@ -412,13 +411,16 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         showAlert : function(hide)
         {
             if (hide) {
-                this.$('.alert').remove();
+                this.$('.image-wrap p').remove();
                 return;
             }
-            if (this.$('.alert').length)
+            if (this.$('.image-wrap p').length)
                 return;
 
-            this.$('.keymedia-crop-container').append(this.template('keymedia/alert'));
+            var wrapper = this.$('.image-wrap');
+            var img = wrapper.find('img');
+            wrapper.css({width : img.outerWidth(), height : img.outerHeight()});
+            wrapper.append(this.template('keymedia/alert'));
         },
 
         stackPopped : function()

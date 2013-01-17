@@ -5,7 +5,7 @@ this["JST"]["keymedia/alert"] = Handlebars.template(function (Handlebars,depth0,
   
 
 
-  return "<section class=\"alert\"><p>The image is too small for this crop</p></section>\n";});
+  return "<p>The image is too small for this crop</p>\n";});
 
 this["JST"]["keymedia/browser"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
