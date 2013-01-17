@@ -139,11 +139,22 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
         {
             var content = this.model.get('content');
             var media = this.model.get('media');
-            if (content) {
-                this.$('.attribute-base').html(content);
-            }
-
             var file = media.get('file');
+            if (content)
+                this.$('.attribute-base').html(content);
+
+            var toScale = this.model.get('toScale'),
+                imgWidth = file.width,
+                imgHeight = file.height;
+
+            var imageFitsAll = !!_(toScale).some(function(version) {
+                if (version[0] > imgWidth || version[1] > imgHeight)
+                    return true;
+                return false;
+            });
+            if (!imageFitsAll)
+                this.show(this.$('button.scale img'));
+
             if (file && 'type' in file && file.type.match(/video/)) {
                 if (typeof brightcove !== 'undefined')
                     brightcove.createExperiences();
