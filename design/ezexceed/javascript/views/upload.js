@@ -70,6 +70,7 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
 
         added : function(up, files) {
             up.start();
+            this.trigger('uploading');
             this.$('.upload-progress').show();
         },
 

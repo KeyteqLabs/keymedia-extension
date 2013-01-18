@@ -130,6 +130,17 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
             this.trigger('save', this.model.id, data);
         },
 
+        loader : function()
+        {
+            var data = {
+                size : 32,
+                className : 'icon-32',
+                statusText : 'Uploading…'
+            };
+            this.$('.eze-image .thumbnail').html(this.template('shared/loader', data));
+            this.$('.upload-from-disk').attr("disabled", "disabled");
+        },
+
         update : function()
         {
             this.model.fetch();
@@ -182,6 +193,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
                 el : this.$el,
                 version : this.version
             }).render();
+            this.listenTo(this.upload, 'uploading', this.loader);
             return this;
         },
 
