@@ -419,8 +419,35 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             var wrapper = this.$('.image-wrap');
             var img = wrapper.find('img');
-            wrapper.css({width : img.outerWidth(), height : img.outerHeight()});
+            var size = this.imageViewedSize();
+            wrapper.css({width : size.w + 2, height : size.h + 2});
             wrapper.append(this.template('keymedia/alert'));
+        },
+
+        /**
+         * Calculates the rendered image sizes
+         *
+         * @return {Object}
+         */
+        imageViewedSize : function()
+        {
+            var media = this.model.get('media');
+            var file = media.get('file');
+            var data = {
+                w : this.SIZE.w,
+                h : this.SIZE.h
+            };
+            if (this.SIZE.w > file.width)
+                data.w = file.width;
+
+            if (this.SIZE.h > file.height)
+                data.h = file.height;
+
+            if (file.ratio > 1)
+                data.h = Math.round(data.w / file.ratio);
+            else
+                data.w = Math.round(data.h * file.ratio);
+            return data;
         },
 
         stackPopped : function()
