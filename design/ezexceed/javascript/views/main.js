@@ -154,21 +154,23 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
             if (content)
                 this.$('.attribute-base').html(content);
 
-            var toScale = this.model.get('toScale'),
-                imgWidth = file.width,
-                imgHeight = file.height;
+            if (file) {
+                var toScale = this.model.get('toScale'),
+                    imgWidth = file.width,
+                    imgHeight = file.height;
 
-            var imageFitsAll = !!_(toScale).some(function(version) {
-                if (version[0] > imgWidth || version[1] > imgHeight)
-                    return true;
-                return false;
-            });
-            if (!imageFitsAll)
-                this.show(this.$('button.scale img'));
+                var imageFitsAll = !!_(toScale).some(function(version) {
+                    if (version[0] > imgWidth || version[1] > imgHeight)
+                        return true;
+                    return false;
+                });
+                if (!imageFitsAll)
+                    this.show(this.$('button.scale img'));
 
-            if (file && 'type' in file && file.type.match(/video/)) {
-                if (typeof brightcove !== 'undefined')
-                    brightcove.createExperiences();
+                if (file && 'type' in file && file.type.match(/video/)) {
+                    if (typeof brightcove !== 'undefined')
+                        brightcove.createExperiences();
+                }
             }
 
             this.renderUpload()
