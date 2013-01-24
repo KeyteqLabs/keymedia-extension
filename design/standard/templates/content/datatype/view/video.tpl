@@ -40,6 +40,7 @@
         {if gt( $height, 0 )}
         <param name="height" value="{$height}" />
         {/if}
+        <param name="htmlFallback" value="true" />
         <param name="playerID" value="{$playerId}" />
         <param name="playerKey" value="{$playerKey}" />
         <param name="isVid" value="true" />
