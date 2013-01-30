@@ -89,7 +89,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
         // Start render of scaler sub-view
         scale : function(ScaleView)
         {
-            var data = this.$("button.scale").data();
+            var data = this.$scale.data();
             var options = {
                 model : this.model,
                 versions : data.versions,
@@ -151,21 +151,29 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
             var content = this.model.get('content');
             var media = this.model.get('media');
             var file = media.get('file');
-            if (content)
+            if (content) {
                 this.$('.attribute-base').html(content);
+            }
 
             if (file) {
-                var toScale = this.model.get('toScale'),
-                    imgWidth = file.width,
-                    imgHeight = file.height;
+                this.$scale = this.$("button.scale");
 
-                var imageFitsAll = !!_(toScale).some(function(version) {
-                    if (version[0] > imgWidth || version[1] > imgHeight)
-                        return true;
-                    return false;
+                var toScale = this.$scale.data('versions');
+
+                var imgWidth = file.width;
+                var imgHeight = file.height;
+
+                var imageFitsAll = !_(toScale).some(function(version) {
+                    var width = parseInt(version.size[0], 10);
+                    var height = parseInt(version.size[1], 10);
+                    return width > imgWidth || height > imgHeight;
                 });
+
+                var img = this.$('img.info');
                 if (!imageFitsAll)
-                    this.show(this.$('button.scale img'));
+                    this.show(img);
+                else
+                    this.hide(img);
 
                 if (file && 'type' in file && file.type.match(/video/)) {
                     if (typeof brightcove !== 'undefined')
@@ -203,7 +211,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
         {
             this.model.trigger('autosave.saved');
             this.trigger('save', 'triggerVersionUpdate', {'triggerVersionUpdate' : 1});
-            this.$("button.scale").data('versions', versions);
+            this.$scale.data('versions', versions);
         }
     });
 });
