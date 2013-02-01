@@ -724,6 +724,7 @@ class Handler
                 'ratio' => $media->file->ratio,
                 'size' => $media->file->size,
                 'type' => $media->file->type,
+                'url' => $media->file->url
             )
         );
         return $values;
