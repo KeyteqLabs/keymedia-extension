@@ -169,7 +169,7 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
                     return width > imgWidth || height > imgHeight;
                 });
 
-                var img = this.$('img.info');
+                var img = this.$('.edit-image img');
                 if (!imageFitsAll)
                     this.show(img);
                 else
