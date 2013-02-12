@@ -49,6 +49,7 @@ define(['shared/view', './upload'], function(View, UploadView)
                 q = this.input.val();
             }
             if (q !== this.q) {
+                this.$loader.removeClass('hide');
                 this.q = q;
                 var collection = this.collection;
                 var xhr = _.debounce(function()
@@ -65,10 +66,11 @@ define(['shared/view', './upload'], function(View, UploadView)
                 id : this.model.id,
                 attribute : this.model.attributes
             };
-            var html = this.template('keymedia/browser', context);
+            this.$el.append(this.template('keymedia/browser', context));
 
-            this.$el.append(html);
+            this.$loader = this.$('img.loader');
             this.$body = this.$('.keymedia-thumbs');
+
             this.renderItems(true);
             this.input = this.$('.q');
             this.enableUpload();
@@ -77,6 +79,7 @@ define(['shared/view', './upload'], function(View, UploadView)
 
         renderItems : function(clear)
         {
+            this.$loader.addClass('hide');
             var html = this.collection.map(function(item) {
                 return this.template('keymedia/item', item.attributes);
             }, this);

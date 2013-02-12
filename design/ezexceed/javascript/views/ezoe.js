@@ -52,20 +52,19 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                     attributes[tmpArr[0]] = tmpArr[1];
                 });
                 this.editorAttributes = attributes;
-                var options = {
+                this.media = {
                     id : attributes.mediaId,
                     keymediaId : attributes.keymediaId,
                     model : new Models.media()
                 };
-                this.media = options;
                 this.showScaler();
             }
             else {
-                var options = {
+                var browserOptions = {
                     model : this.model,
                     collection : this.collection
                 };
-                var context = {
+                var browserContext = {
                     icon : '/extension/ezexceed/design/ezexceed/images/kp/32x32/Pictures.png',
                     heading : 'Select media',
                     render : true,
@@ -73,8 +72,8 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                 };
                 eZExceed.stack.push(
                     BrowserView,
-                    options,
-                    context
+                    browserOptions,
+                    browserContext
                 ).on('destruct', this.loadScaler);
                 this.collection.search('');
             }
@@ -145,13 +144,11 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
             var customAttributes = _(values).map(function(value, key){
                 return key + '|' + value;
             });
-            var customAttributesString = customAttributes.join('attribute_separation');
 
-            var imgAttribute = {
+            this.updateTinyMCE({
                 src : values.image_url,
-                customattributes : customAttributesString
-            }
-            this.updateTinyMCE(imgAttribute);
+                customattributes : customAttributes.join('attribute_separation')
+            });
         },
 
         updateTinyMCE : function(attributes)
@@ -171,9 +168,9 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
 
             _(args).extend(attributes);
 
-            if (args.class.length)
-                args.class += ' ';
-            args.class = args.class.concat('ezoeItemCustomTag keymedia');
+            if (args['class'].length)
+                args['class'] += ' ';
+            args['class'] = args['class'].concat('ezoeItemCustomTag keymedia');
 
             // Fixes crash in Safari
             if (tinymce.isWebKit)
