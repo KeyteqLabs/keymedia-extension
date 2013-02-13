@@ -79,7 +79,7 @@ define(['shared/view', './upload'], function(View, UploadView)
 
         renderItems : function(clear)
         {
-            this.$loader.addClass('hide');
+            this.$('.loader').addClass('hide');
             var html = this.collection.map(function(item) {
                 return this.template('keymedia/item', item.attributes);
             }, this);
@@ -99,6 +99,7 @@ define(['shared/view', './upload'], function(View, UploadView)
 
         page : function()
         {
+            this.$('.load-more img').removeClass('hide');
             this.collection.page(this.$('.q').val());
         },
 

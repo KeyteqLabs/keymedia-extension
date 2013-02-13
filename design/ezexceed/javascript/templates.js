@@ -250,5 +250,5 @@ this['JST']['keymedia/show-more'] = Handlebars.template(function (Handlebars,dep
   buffer += "<button class=\"btn btn-large btn-block load-more\" type=\"button\">\n    ";
   foundHelper = helpers.translate;
   stack1 = foundHelper ? foundHelper.call(depth0, "Show more", {hash:{}}) : helperMissing.call(depth0, "translate", "Show more", {hash:{}});
-  buffer += escapeExpression(stack1) + "\n</button>\n";
+  buffer += escapeExpression(stack1) + "\n    <img class=\"icon-16 hide loader\" src=\"/extension/ezexceed/design/ezexceed/images/loader.gif\" />\n</button>\n";
   return buffer;});
