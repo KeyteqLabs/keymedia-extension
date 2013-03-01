@@ -382,6 +382,9 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             if (ratio) {
                 cropperOptions.aspectRatio = ratio;
             }
+            else {
+                cropperOptions.aspectRatio = 0;
+            }
             cropperOptions.minSize = minSize;
 
             /**
