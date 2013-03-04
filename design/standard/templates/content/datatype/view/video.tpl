@@ -14,7 +14,7 @@
 {if $videoId}
     {if $nojs|not}
         {run-once}
-        <script type="text/javascript" src="//admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+        <script type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
         {/run-once}
     {/if}
 
