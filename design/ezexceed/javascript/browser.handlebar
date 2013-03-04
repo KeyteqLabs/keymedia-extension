@@ -3,7 +3,7 @@
     <img style="margin: -1px 8px 0 -27px;" class="icon-16 hide loader" src="/extension/ezexceed/design/ezexceed/images/loader.gif" />
     <span class="upload-container" id="keymedia-browser-local-file-container-{{id}}">
         <button type="button" class="btn upload" id="keymedia-browser-local-file-{{id}}">
-            {{translate "Upload new"}}
+            {{translate "Upload new media"}}
         </button>
     </span>
 </form>

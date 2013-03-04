@@ -32,7 +32,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
         {
             options = (options || {});
             _.bindAll(this);
-            _.extend(this, _.pick(options, ['versions', 'trueSize', 'singleVersion', 'editorAttributes']));
+            _.extend(this, _.pick(options, ['versions', 'trueSize', 'singleVersion', 'editorAttributes', 'selectedVersion']));
             this.versionSaved = null;
             this.poppedFromStack = null;
 
@@ -177,7 +177,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                     return false;
                 }, this);
 
-                selectedEl.find('a').click();
+                this.$(selectedEl).find('a').click();
             }
             else {
                 // Enable the first scaling by simulating a click

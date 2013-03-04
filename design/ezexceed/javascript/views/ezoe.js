@@ -6,7 +6,7 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
         tinymceEditor : null,
         bookmark : null,
         selectedContent : null,
-        editorAttributes : null,
+        editorAttributes : {},
 
         initialize : function(options)
         {
@@ -57,7 +57,9 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
                     keymediaId : attributes.keymediaId,
                     model : new Models.media()
                 };
-                this.showScaler();
+                this.model.fetch({
+                    url : this.model.url('media', 'ezoe', attributes.mediaId)
+                }).success(this.showScaler);
             }
             else {
                 var browserOptions = {
@@ -97,13 +99,36 @@ define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
         showScaler : function()
         {
             var media = this.model.get('media');
+
+            /**
+             * Set coords
+             */
+            if (this.editorAttributes) {
+                var attributes = this.editorAttributes;
+                var coords = [];
+                coords.push(attributes.x1);
+                coords.push(attributes.y1);
+                coords.push(attributes.x2);
+                coords.push(attributes.y2);
+
+                var toScale = this.model.get('toScale');
+                _(toScale).each(function(version)
+                {
+                    if (version.name == attributes.version) {
+                        version.coords = coords;
+                    }
+                });
+                this.model.set({toScale : toScale});
+            }
+
             var options = {
                 model : this.model,
                 versions : this.model.get('toScale'),
                 trueSize : [media.get('file').width, media.get('file').height],
                 className : 'keymedia-scaler',
                 singleVersion : true,
-                editorAttributes : this.editorAttributes
+                editorAttributes : this.editorAttributes,
+                selectedVersion : (_(this.editorAttributes).has('version')) ? this.editorAttributes.version : null
             };
 
             var context = {
