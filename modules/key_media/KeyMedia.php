@@ -98,8 +98,10 @@ class KeyMedia extends \ezote\lib\Controller
         if (is_array($args)) {
             list($attributeId, $version) = $args;
         }
-        else
+        else {
             $attributeId = $args;
+        }
+
         if ($attributeId && $version) {
             $http = \eZHTTPTool::instance();
 
@@ -112,20 +114,27 @@ class KeyMedia extends \ezote\lib\Controller
 
             // Store information on content object
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+
+            if (!$attribute) {
+                return array(
+                    'ok' => false,
+                    'error' => 'No such attribute / version combination exists'
+                );
+            }
+
             $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
             $versionObject = \eZContentObjectVersion::fetchVersion($attribute->attribute('version'), $attribute->attribute('contentobject_id'));
 
-            if ($isKeymediaAttribute)
-            {
+            if ($isKeymediaAttribute) {
                 /**
                  * Update version modified
                  */
                 /** @var $versionObject \eZContentObjectVersion */
-                if ($versionObject)
-                {
+                if ($versionObject) {
                     $versionObject->setAttribute('modified', time());
-                    if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT)
+                    if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT) {
                         $versionObject->setAttribute('status', \eZContentObjectVersion::STATUS_DRAFT);
+                    }
                     $versionObject->store();
                 }
 
@@ -145,8 +154,9 @@ class KeyMedia extends \ezote\lib\Controller
                 $backend = Backend::first(array('id' => $keymediaId));
                 $resp = $backend->addVersion($mediaId, $filename, $transformations);
 
-                if (isset($resp->error))
+                if (isset($resp->error)) {
                     $data = array('ok' => false, 'error' => $resp->error);
+                }
                 else {
                     $url = $resp->url;
                     $data = compact('name', 'url') + $transformations;
