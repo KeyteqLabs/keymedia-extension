@@ -12,7 +12,7 @@
     {literal}
     data-paths='{
         "keymedia" : "/extension/keymedia/design/ezexceed/javascript/",
-        "brightcove" : "http://admin.brightcove.com/js/BrightcoveExperiences"
+        "brightcove" : "/extension/keymedia/design/standard/javascript/libs/BrightcoveExperiences"
     }'
     {/literal}
     data-bootstrap='{$media.data|json}'

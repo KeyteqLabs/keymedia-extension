@@ -14,7 +14,7 @@ require.config({
     },
     paths : {
         'keymedia' : '/extension/keymedia/design/ezexceed/javascript',
-        'brightcove' : 'http://admin.brightcove.com/js/BrightcoveExperiences',
+        'brightcove' : '/extension/keymedia/design/standard/javascript/libs/BrightcoveExperiences',
         'jcrop' : '/extension/keymedia/design/standard/javascript/libs/jquery.jcrop.min'
     }
 });
