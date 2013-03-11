@@ -28,17 +28,20 @@ Head over to _Admin Dashboard_ -> _KeyMedia_ and add your KeyMedia API connectio
 
 In your ezoe.ini in settings/override you must add the following:
 
+```ini
 [EditorSettings]
 Plugins[]=keymedia
 
 [EditorLayout]
 Buttons[]=keymedia
+```
 
 The keymedia button could be placed anywhere in the editor. See the eZOe doc on how to arrange buttons.
 
 Setting up versions the user should be able to produce, is done in the keymedia.ini file. Make a keymedia.ini.append.php in the siteacces or the override folder.
 This is the possible settings with examples:
 
+```ini
 [Brightcove]
 PlayerId=98234987523
 PlayerKey=OM932489MGXCV009CXVOM3
@@ -77,6 +80,7 @@ Size=300x100
 
 [large]
 Size=500x0
+```
 
 ## Usage
 
