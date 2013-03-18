@@ -42,7 +42,8 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
         fetch : function(options)
         {
             options = options || ({});
-            return Backbone.sync('read', this, options).success(this.fetched);
+            options.success = this.fetched;
+            return Backbone.sync('read', this, options);
         },
 
         fetched : function(response)
@@ -176,10 +177,10 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
                 data.q = q;
             }
             data.limit = this.limit;
-            if (this.xhr) {
+            if (this.xhr && typeof this.xhr.abort === 'function') {
                 this.xhr.abort();
             }
-            this.xhr = this.fetch({data : data}).success(this.fetched);
+            this.xhr = this.fetch({data : data});
             return this.xhr;
         },
 
