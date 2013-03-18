@@ -1,4 +1,0 @@
-<button class="btn btn-large btn-block load-more" type="button">
-    {{translate "Show more"}}
-    <img class="icon-16 hide loader" src="/extension/ezexceed/design/ezexceed/images/loader.gif" />
-</button>

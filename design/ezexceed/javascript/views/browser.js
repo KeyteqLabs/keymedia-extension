@@ -80,9 +80,15 @@ define(['shared/view', './upload'], function(View, UploadView)
         renderItems : function(clear)
         {
             this.$('.loader').addClass('hide');
-            var html = this.collection.map(function(item) {
-                return this.template('keymedia/item', item.attributes);
-            }, this);
+            var html = '';
+            if (this.collection.length) {
+                html = this.collection.map(function(item) {
+                    return this.template('keymedia/item', item.attributes);
+                }, this);
+            }
+            else {
+                html = this.template('keymedia/nohits');
+            }
             
             if (clear)
                 this.$body.html(html);
@@ -90,7 +96,7 @@ define(['shared/view', './upload'], function(View, UploadView)
                 this.$body.append(html);
 
             if (this.collection.total > this.collection.length)
-                this.$body.append(this.template('keymedia/show-more'));
+                this.$('.load-more').show();
             else
                 this.$('.load-more').hide();
 
