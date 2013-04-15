@@ -1,4 +1,4 @@
-define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/plupload.html5', 'plupload/plupload.flash', 'plupload/plupload.html4'],
+define(['shared/view', 'jquery-safe', 'plupload/plupload'],
     function(View, $, plupload)
 {
     return View.extend({
@@ -13,8 +13,9 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
         initialize : function(options)
         {
             _.bindAll(this);
-            if (_(options).has('uploadContainer'))
-                this.browseButton = options.uploadContainer;
+            if (_(options).has('uploadContainer')) {
+                this.uploadContainer = options.uploadContainer;
+            }
             this.browseButton = _(options).has('browseButton') ? options.browseButton : 'keymedia-local-file-' + this.model.id;
             this.browseContainer = _(options).has('browseContainer') ? options.browseContainer : 'keymedia-local-file-container-' + this.model.id;
             this.options = options;
@@ -22,14 +23,11 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
             return this;
         },
 
-        url : function()
-        {
-            return this.model.urlRoot + '/keymedia::upload';
-        },
-
         uploaded : function(up, file, info)
         {
-            if (!('response' in info)) return true;
+            if (!info || !info.response) {
+                return true;
+            }
 
             var data;
             try {
@@ -44,11 +42,9 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
                 return true;
             }
 
-            if ('content' in data && 'media' in data.content)
-            {
+            if (data && data.content && data.content.media) {
                 var media = data.content.media;
-                if (this.uploadCallback)
-                {
+                if (this.uploadCallback) {
                     this.uploadCallback({
                         id : media.id,
                         host : media.host,
@@ -83,7 +79,7 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
                 flash_swf_url : '/extension/keymedia/design/standard/javascript/libs/plupload/plupload.flash.swf',
                 browse_button : this.browseButton,
                 max_file_size : this.maxSize,
-                url : this.url(),
+                url : this.model.urlRoot + '/keymedia::upload',
                 multipart_params : {
                     'AttributeID' : id,
                     'ContentObjectVersion' : this.options.version,
@@ -92,11 +88,8 @@ define(['shared/view', 'jquery-safe', 'plupload/plupload.full', 'plupload/pluplo
                 headers : this.headers
             };
 
-            if ($('#ezxform_token_js').length)
-            {
-                /**
-                * Ugly hack to go with ezformtoken
-                */
+            if ($('#ezxform_token_js').length) {
+                // Ugly hack to go with ezformtoken
                 settings.multipart_params.ezxform_token = $('#ezxform_token_js').attr('title');
             }
             this.uploader = new plupload.Uploader(settings);

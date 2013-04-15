@@ -34,7 +34,21 @@ define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'],
 
             this.on('saved', this.update, this);
 
-            return this;
+            this.loadCSS();
+        },
+
+        loadCSS : function()
+        {
+            var headEl = document.getElementsByTagName('head')[0];
+            var files = ['jquery.jcrop', 'keymedia'];
+            _.each(files, function(name)
+            {
+                var css = document.createElement('link');
+                css.href = '/extension/keymedia/design/ezexceed/stylesheets/' + name + '.css';
+                css.type = 'text/css';
+                css.rel = 'stylesheet';
+                headEl.appendChild(css);
+            });
         },
 
         events : {
