@@ -180,7 +180,7 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
             if (this.xhr && typeof this.xhr.abort === 'function') {
                 this.xhr.abort();
             }
-            this.xhr = this.fetch({data : data});
+            this.xhr = this.fetch({data : data, reset: true});
             return this.xhr;
         },
 
