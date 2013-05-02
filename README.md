@@ -9,6 +9,10 @@ _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
 	git clone git@github.com:KeyteqLabs/keymedia-extension.git /my/ez/extension/keymedia
 
+### Navigate to the extension.
+
+	cd /my/ez/extension/keymedia
+
 ### Install sql
 
 	mysql -u username -p -h host databasename < sql/mysql/install.sql
