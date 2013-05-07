@@ -324,12 +324,11 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             if (typeof scale === 'undefined')
                 return this;
 
-            var media = this.model.get('media');
-            var mediaFile = media.get('file');
-            /**
-             * If image is to small for the version, show an overlay with error message
-             */
-            if (scale.size[0] > mediaFile.width || scale.size[0] > mediaFile.height) {
+            // If image is to small for the version, show an overlay with error message
+            var mediaFile = this.model.get('media').get('file');
+            var width = parseInt(mediaFile.width, 10);
+            var height = parseInt(mediaFile.height, 10);
+            if (scale.size[0] > width || scale.size[1] > height) {
                 if (this.cropper) {
                     this.cropper.destroy();
                     this.cropper = null;
