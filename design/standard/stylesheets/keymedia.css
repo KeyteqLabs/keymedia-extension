@@ -83,7 +83,7 @@
 }
 
 #keymedia-modal .backdrop {
-    z-index: 1;
+    z-index: 100000;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -96,7 +96,7 @@
 #keymedia-modal .content {
     top: 50px;
     bottom: 25px;
-    z-index: 2;
+    z-index: 200000;
     position: absolute;
     border-radius: 4px;
     width: 920px;

@@ -19,7 +19,7 @@ module.exports = function(grunt) {
             }
         },
 
-        handlebar: {
+        handlebars: {
             exceed: {
                 options: {
                     processName: processName,

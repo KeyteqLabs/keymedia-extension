@@ -9,8 +9,8 @@
 {/foreach}
 {ezscript_require( array(
     'ezjsc::jquery',
-    'libs/underscore-min.js',
-    'libs/backbone-min.js',
+    'libs/lodash.js',
+    'libs/backbone.js',
 ))}
 {ezscript( array(
     'libs/handlebars.js',

@@ -1,10 +1,13 @@
 KeyMedia.views.Browser = Backbone.View.extend({
     tpl : null,
+    $input: null,
     initialize : function(options)
     {
         _.bindAll(this);
 
-        this.collection.on('reset', this.renderItems);
+        this.listenTo(this.collection, {
+            reset: this.renderItems
+        });
         this.onSelect = options.onSelect;
 
         this.tpl = {
@@ -36,7 +39,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
     search : function(e)
     {
         e.preventDefault();
-        this.collection.search(this.input.val());
+        this.collection.search(this.$input.val());
     },
 
     render : function() {
@@ -46,23 +49,26 @@ KeyMedia.views.Browser = Backbone.View.extend({
             })
         );
         this.renderItems();
-        this.input = this.$('[type=text]');
+        this.$input = this.$('[type=text]');
         return this;
     },
 
     renderItems : function()
     {
-        var body = this.$('.body'), view;
-        this.collection.each(function(item) {
-            view = $(this.tpl.item(item.attributes));
+        var template = this.tpl.item;
+        var views = this.collection.map(function(item) {
+            var view = $(template(item.attributes));
             view.data({
                 id : item.id,
                 host : item.get('host'),
                 type : item.get('type'),
                 ending : item.get('scalesTo').ending
             });
-            body.append(view);
-        }, this);
+            return view[0];
+        });
+        if (views.length > 0) {
+            this.$('.body').append(views);
+        }
 
         return this;
     }

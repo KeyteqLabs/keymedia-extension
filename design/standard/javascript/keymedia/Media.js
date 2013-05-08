@@ -81,8 +81,7 @@ KeyMedia.models.MediaCollection = Backbone.Collection.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'search', 'onSearch', 'page', 'onPage');
-        return this;
+        _.bindAll(this);
     },
 
     url : function()
@@ -101,11 +100,10 @@ KeyMedia.models.MediaCollection = Backbone.Collection.extend({
 
     onSearch : function(resp)
     {
-        if (resp && 'content' in resp && 'results' in resp.content)
-        {
-            this.keymediaId = resp.content.keymediaId;
-            this.total = resp.content.results.total;
-            this.reset(resp.content.results.hits);
+        if (resp && resp.results) {
+            this.keymediaId = resp.keymediaId;
+            this.total = resp.results.total;
+            this.reset(resp.results.hits);
             this.trigger('search', resp);
         }
     },
