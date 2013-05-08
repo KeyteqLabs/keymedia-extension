@@ -14,9 +14,8 @@
 ))}
 {ezscript( array(
     'libs/handlebars.js',
+    'libs/plupload/moxie.js',
     'libs/plupload/plupload.js',
-    'libs/plupload/plupload.html4.js',
-    'libs/plupload/plupload.html5.js',
     'libs/jquery.jcrop.min.js',
 
     'keymedia/ns.js',

@@ -94,7 +94,7 @@
 }
 
 #keymedia-modal .content {
-    top: 25px;
+    top: 50px;
     bottom: 25px;
     z-index: 2;
     position: absolute;

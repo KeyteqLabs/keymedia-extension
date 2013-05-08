@@ -2,9 +2,9 @@ KeyMedia.views.Browser = Backbone.View.extend({
     tpl : null,
     initialize : function(options)
     {
-        _.bindAll(this, 'render', 'select', 'renderItems');
+        _.bindAll(this);
 
-        this.collection.bind('reset', this.renderItems);
+        this.collection.on('reset', this.renderItems);
         this.onSelect = options.onSelect;
 
         this.tpl = {

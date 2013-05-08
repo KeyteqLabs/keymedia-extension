@@ -133,5 +133,5 @@ KeyMedia.models.MediaCollection = Backbone.Collection.extend({
             this.add(resp.content.results.hits);
             this.trigger('page', resp);
         }
-    },
+    }
 });
