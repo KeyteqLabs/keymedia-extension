@@ -1,4 +1,4 @@
-define(['shared/view'], function(View)
+define(['keymedia/view'], function(View)
 {
     return View.extend({
         bindKeysScoped : true,
@@ -72,7 +72,7 @@ define(['shared/view'], function(View)
         renderTags : function() {
             var html = this.collection.map(function(tag)
             {
-                return this.template('keymedia/tag', tag.toJSON());
+                return this.template('tag', tag.toJSON());
             }, this);
             this.$('.tags').html(html);
         }

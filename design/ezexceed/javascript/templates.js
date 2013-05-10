@@ -1,6 +1,6 @@
-this["JST"] = this["JST"] || {};
+this["_keymediaTemplates"] = this["_keymediaTemplates"] || {};
 
-this["JST"]["keymedia/alert"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["alert"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -13,7 +13,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   return buffer;
   });
 
-this["JST"]["keymedia/browser"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["browser"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
@@ -40,7 +40,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   return buffer;
   });
 
-this["JST"]["keymedia/item"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["item"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
@@ -80,7 +80,7 @@ function program1(depth0,data) {
   return buffer;
   });
 
-this["JST"]["keymedia/nohits"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["nohits"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -93,7 +93,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   return buffer;
   });
 
-this["JST"]["keymedia/scaledversion"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["scaledversion"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this, functionType="function";
@@ -136,7 +136,7 @@ function program1(depth0,data) {
   return buffer;
   });
 
-this["JST"]["keymedia/scaler"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["scaler"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
@@ -150,7 +150,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   return buffer;
   });
 
-this["JST"]["keymedia/scalerattributes"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["scalerattributes"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, options, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
@@ -247,7 +247,7 @@ function program8(depth0,data) {
   return buffer;
   });
 
-this["JST"]["keymedia/tag"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["_keymediaTemplates"]["tag"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;

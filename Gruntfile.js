@@ -1,7 +1,7 @@
 var processName = function(filename)
 {
     // Removes the path prefix + file ending (.handlebar)
-    return 'keymedia/' + filename.split('/').pop().slice(0, -10);
+    return filename.split('/').pop().slice(0, -10);
 };
 
 module.exports = function(grunt) {
@@ -23,7 +23,8 @@ module.exports = function(grunt) {
             exceed: {
                 options: {
                     processName: processName,
-                    wrapped: true
+                    wrapped: true,
+                    namespace: '_keymediaTemplates'
                 },
                 files: {
                     'design/ezexceed/javascript/templates.js': 'design/ezexceed/**/*.handlebar'

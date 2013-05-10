@@ -1,4 +1,4 @@
-define(['shared/view', 'jquery-safe', '../models', './browser', './scaler'],
+define(['keymedia/view', 'jquery-safe', '../models', './browser', './scaler'],
     function(View, $, Models, BrowserView, ScalerView)
 {
     return View.extend({

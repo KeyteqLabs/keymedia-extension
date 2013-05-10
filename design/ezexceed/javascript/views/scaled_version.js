@@ -1,4 +1,4 @@
-define(['shared/view'], function(View)
+define(['keymedia/view'], function(View)
 {
     return View.extend({
         MAX_SIZE : 26,
@@ -30,7 +30,7 @@ define(['shared/view'], function(View)
              */
             var file = this.media.get('file');
             data.toSmall = !(file.width >= data.width && file.height >= data.height);
-            this.$el.html(this.template('keymedia/scaledversion', data))
+            this.$el.html(this.template('scaledversion', data))
                 .attr("id", "eze-keymedia-scale-version-" + data.name.toLowerCase())
                 .data('scale', this.model);
 

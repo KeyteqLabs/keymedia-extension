@@ -1,4 +1,4 @@
-define(['shared/view', 'jquery-safe', 'plupload/plupload'],
+define(['keymedia/view', 'jquery-safe', 'plupload/plupload'],
     function(View, $, plupload)
 {
     return View.extend({

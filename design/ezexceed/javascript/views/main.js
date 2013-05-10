@@ -1,4 +1,4 @@
-define(['shared/view', 'keymedia/models', './tagger', './upload', 'brightcove'], function(View, Models, TaggerView, UploadView)
+define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'], function(View, Models, TaggerView, UploadView)
 {
     return View.extend({
         media : null,

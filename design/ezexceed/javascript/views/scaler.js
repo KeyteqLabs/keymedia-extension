@@ -1,4 +1,4 @@
-define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
+define(['keymedia/view', './scaled_version', 'jquery-safe', 'jcrop'],
     function(View, ScaledVersion, $)
 {
     return View.extend({
@@ -101,7 +101,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             this.updateScalerSize(media);
 
-            var content = this.template('keymedia/scaler', {
+            var content = this.template('scaler', {
                 media : media.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
             });
             this.$el.append(content);
@@ -148,7 +148,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
                 }
 
                 this.$('.customattributes').html(
-                    this.template('keymedia/scalerattributes', {
+                    this.template('scalerattributes', {
                         classes : classes,
                         viewmodes : viewsObj,
                         alttext : alttext
@@ -423,7 +423,7 @@ define(['shared/view', './scaled_version', 'jquery-safe', 'jcrop'],
             var img = wrapper.find('img');
             var size = this.imageViewedSize();
             wrapper.css({width : size.w + 2, height : size.h + 2});
-            wrapper.append(this.template('keymedia/alert'));
+            wrapper.append(this.template('alert'));
         },
 
         /**
