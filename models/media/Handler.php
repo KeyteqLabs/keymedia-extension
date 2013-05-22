@@ -54,12 +54,15 @@ class Handler
      */
     public function uploadFile($file, array $tags = array(), $title = '')
     {
-        if ($file instanceof \eZHTTPFile)
+        if ($file instanceof \eZHTTPFile) {
             $filepath = $file->Filename;
-        elseif (is_string($file))
+            $filename = self::parseFilename($file->OriginalFilename);
+        }
+        elseif (is_string($file)) {
             $filepath = $file;
+            $filename = $this->mediaName($this->attr, $this->version());
+        }
 
-        $filename = $this->mediaName($this->attr, $this->version());
         $media = $this->backend()->upload($filepath, $filename, $tags, compact('title'));
         $this->setMedia(array(
             'id' => $media->id,
@@ -154,11 +157,19 @@ class Handler
      */
     public function hasAttribute($name)
     {
-        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media',
-            'toscale', 'minsize', 'mediafits', 'imagefits');
+        $ok = array('backend', 'thumb', 'filesize', 'mime_type', 'media', 'id',
+            'type', 'toscale', 'minsize', 'mediafits', 'imagefits', 'status');
         if (in_array(strtolower($name), $ok)) return true;
         $values = $this->values();
         return isset($values[$name]);
+    }
+
+    public function attributes()
+    {
+        return array(
+            'id', 'selected', 'toScale', 'minSize', 'mediaFits', 'media',
+            'thumb', 'type', 'filesize', 'mime_type', 'status'
+        );
     }
 
     /**
@@ -181,9 +192,11 @@ class Handler
                 return $this->minSize();
             case 'imageFits': //This is needed for legacy. Is in use on haraldsplass site in template
             case 'mediaFits':
-                $media = $this->getMedia();
                 $box = $this->minSize();
-                if ($box && $media)
+                if (!$box) return true;
+
+                $media = $this->getMedia();
+                if ($media)
                     return $box->fits($media->box());
                 return false;
             case 'media':
@@ -195,13 +208,25 @@ class Handler
                 $media = $this->getMedia();
                 return $media ? $media->file->size : 0;
             case 'type':
-                return $this->getMedia()->type();
+                $media = $this->getMedia();
+                return $media ? $media->type() : '';
             case 'mime_type':
                 $media = $this->getMedia();
                 return $media ? $media->file->type : '';
+            case 'status':
+                $values = $this->values();
+                $status = isset($values['status']) ? $values['status'] : null;
+                if ($status !== 'ready') {
+                    if (isset($values['id'])) {
+                        $result = $this->setMedia(array('id' => $values['id']));
+                        if (isset($result['status']))
+                            $status = $result['status'];
+                    }
+                }
+                return $status;
             default:
                 $values = $this->values();
-                return $values[$name];
+                return isset($values[$name]) ? $values[$name] : null;
         }
     }
 
@@ -210,7 +235,8 @@ class Handler
      * in the handler at the moment.
      *
      * @param string|array $id Remote id from KeyMedia or all data to save
-     * @param string $host Host that will serve the media later on
+     * @param string $host Deprecated: Just send $id argument
+     * @param string $ending Deprecated: Just send $id argument
      * @return bool
      */
     public function setMedia($id, $host = false, $ending = 'jpg')
@@ -220,12 +246,29 @@ class Handler
             $id = $values['id'];
         }
         else {
-            $values = compact('id', 'host', 'ending');
+            $values = compact('id');
         }
-        if (!$this->hasMedia($id)) {
-            $this->values($values);
+
+        if (!$id) {
+            return $this->values();
         }
-        return true;
+
+        $backend = $this->backend();
+        if ($backend) {
+            $media = $backend->get($id);
+            if ($media) {
+                $values = $this->formatMedia($media->data());
+                $old = $this->values();
+
+                // If id is same, keep all crop data
+                if ($old && $values['id'] === $old['id'])
+                    $values = $values + $old;
+
+                $this->values($values);
+                return $values;
+            }
+        }
+        return false;
     }
 
     /**
@@ -245,7 +288,7 @@ class Handler
     /**
      * @throws Exception
      * @param string|array|null $format
-     * @param boolean $fetchInfo Wether to fetch info from mediabase
+     * @param boolean $fetchInfo DEPRECATED
      * @return array
      */
     public function media($format = array(300, 200), $quality = null, $fetchInfo = false)
@@ -268,7 +311,6 @@ class Handler
                 return isset($v['url']);
             });
             $version = array_shift($urls);
-
         }
         elseif (is_string($format)) {
             // String as format means a named format from this attributes
@@ -276,60 +318,53 @@ class Handler
             // a named format "main" with "500x500" as its settings
             $versions = isset($attributeValues['versions']) ? $attributeValues['versions'] : false;
             if (!$versions || !isset($versions[$format])) {
-                if ($this->generateNamedVersion($format))
+                if ($this->generateNamedVersion($format)) {
                     $attributeValues = $this->values();
+                    $versions = isset($attributeValues['versions']) ? $attributeValues['versions'] : false;
+                }
             }
 
-            $version = $attributeValues['versions'][$format];
+            $version = $versions && isset($versions[$format]) ? $versions[$format] : false;
         }
 
-        $result = array();
-        if (isset($attributeValues['type'])) {
-            $result['type'] = $attributeValues['type'];
+        $result = $attributeValues;
+
+        // If status is not ready, fetch new info
+        $status = isset($result['status']) ? $result['status'] : false;
+        if ($status !== 'ready') {
+            $result = $this->setMedia(array('id' => $result['id']));
         }
-
-        if ($result['type'] === 'video') $fetchInfo = true;
-
-        if ($fetchInfo && ($media = $this->getMedia())) {
-            if (!isset($result['type'])) {
-                $typeArr = explode('/', $media->file->type);
-                $result['type'] = array_shift($typeArr);
-            }
-            $result['mime-type'] = $media->file->type;
-            $result['original'] = $this->fetchMediaInfo();
-        }
-
-        // For backwards compatibility default the type as its not always
-        // set in the local attributes values
-        $result += array('type' => 'image');
 
         if (is_array($format)) {
-            return array(
+            $result = array(
                 'url' => $this->thumb($format[0], $format[1], $quality)
-            ) + $result;
+            ) + (array) $result;
+            return $result;
         }
-        else
-        {
+        else {
             // Build simple reply array
             list($width, $height) = $version['size'];
             $coords = $version['coords'];
             if ($width && $height)
                 $ratio = $width / $height;
-            $result = compact('width', 'height', 'ratio', 'coords') + $result;
+            $result = compact('width', 'height', 'ratio', 'coords') + (array) $result;
 
-            if ($result['type'] === 'image') {
+            $file = explode('/', $result['file']['type']);
+            $type = array_shift($file);
+            if ($type === 'image') {
+                $media = $this->getMedia();
                 // Image specific handling
-                switch($attributeValues['ending'])
-                {
+                $ending = !empty($media) ? $media->ending() : $result['ending'];
+                switch($ending) {
                     case 'png':
                     case 'jpg':
                     case 'gif':
-                        $ext = '.' . $attributeValues['ending'];
+                        $ext = '.' . $ending;
                         break;
                     default :
                         $ext = '.jpg';
                 }
-                $host = !empty($media) ? $media->host() : $attributeValues['host'];
+                $host = !empty($media) ? $media->host() : $result['host'];
                 $url = $this->addQualityToUrl($version['url'], $quality);
                 $result['url'] = "//" . $host . $url . $ext;
             }
@@ -371,6 +406,11 @@ class Handler
         $name = $version->versionName($language) ? : $version->name($language);
         $mainNode = $contentObject->attribute('main_node');
 
+        if (!$mainNode || !is_object($mainNode)) {
+            user_error("Content object ({$values['id']}) missing main node");
+            return false;
+        }
+
         /**
          * Find main siteaccess and main domain
          */
@@ -406,6 +446,23 @@ class Handler
         return $backend->reportUsage($values['id'], $reference);
     }
 
+    public function tag(array $tags)
+    {
+        $values = $this->values();
+        if (empty($values['id']))
+            return false;
+        $backend = $this->backend();
+        $media = $backend->tag(array('id' => $values['id']), $tags);
+        // Ensure a versions index exists in the data
+        $values += array('tags' => array());
+
+        $values['tags'] = $media->attribute('tags');
+
+        // Save values
+        $this->values($values);
+        return $media;
+    }
+
     /**
      * Save or get values for this content object attribute
      *
@@ -414,16 +471,13 @@ class Handler
      */
     protected function values($save = false)
     {
-        if ($save)
-        {
+        if ($save) {
             $this->attr->setAttribute('data_text', json_encode($save));
             $this->attributeValues = $save;
-            return $this->attr->storeData();
+            $this->attr->storeData();
         }
-        else
-        {
-            if (!$this->attributeValues)
-            {
+        else {
+            if (!$this->attributeValues) {
                 $data = $this->attr->attribute('data_text');
                 if (is_string($data) && strlen($data) > 0)
                     $data = json_decode($data, true);
@@ -431,8 +485,8 @@ class Handler
                     $data = array();
                 $this->attributeValues = $data;
             }
-            return $this->attributeValues;
         }
+        return $this->attributeValues;
     }
 
     /**
@@ -492,7 +546,9 @@ class Handler
             $class = $this->attr->contentClassAttribute();
 
             // Array of versions in db
-            $values = $this->values() + array('versions' => array());
+            $values = $this->values();
+            $values = $values ?: array();
+            $values = $values + array('versions' => array());
             $versions = $values['versions'];
 
             // 1 line = 1 scaling
@@ -514,17 +570,21 @@ class Handler
 
     /**
      * Get min size an media must be to be used for this attribute instance
+     * At least one scale version must be useable in order to accept
+     * the image
      *
      * @return array $width, $height
      */
     protected function minSize()
     {
-        $width = $height = 0;
-        foreach ($this->toScale() as $version)
-        {
+        $width = $height = 99999;
+        $versions = $this->toScale();
+        if (!$versions) return false;
+
+        foreach ($versions as $version) {
             list($w, $h) = $version['size'];
-            if ($w > $width) $width = $w;
-            if ($h > $height) $height = $h;
+            if ($w < $width) $width = $w;
+            if ($h < $height) $height = $h;
         }
         return new Box($width, $height);
     }
@@ -534,20 +594,30 @@ class Handler
      *
      * @return \keymedia\models\Media
      */
-    protected function getMedia()
+    protected function getMedia(array $options = array())
     {
-        if (!$this->_media)
-        {
-            if (!($backend = $this->backend()))
+        $options += array('fetch' => false);
+        if (!$this->_media) {
+            $backend = $this->backend();
+            if (!$backend) {
                 return false;
+            }
 
             $data = $this->attr->attribute(\KeyMedia::FIELD_VALUE);
+            if (!$data) {
+                return false;
+            }
             $data = json_decode($data);
 
-            if (is_object($data) && isset($data->id) && $data->id)
-                $this->_media = $backend->get($data->id);
-            else
-                $this->_media = false;
+            $this->_media = false;
+            if (is_object($data) && isset($data->id) && $data->id) {
+                if ($options['fetch']) {
+                    $this->_media = $backend->get($data->id);
+                }
+                else {
+                    $this->_media = new Media($data);
+                }
+            }
         }
         return $this->_media;
     }
@@ -595,42 +665,18 @@ class Handler
      */
     protected function addQualityToUrl($url, $quality)
     {
-        if (!$quality)
+        if (!$quality) {
             return $url;
+        }
 
         $quality = 'q' . $quality;
         $pathArr = explode('/', $url);
         $index = $pathArr[0] ? 1 : 2;
 
-        /**
-         * Add quality param at index
-         */
+        // Add quality param at index
         array_splice($pathArr, $index, 0, $quality);
 
         return join('/', $pathArr);
-    }
-
-    /**
-     * Helper to load a specialized set of media information
-     * from the KeyMedia backend
-     * Will do a http request so this is expensive
-     *
-     * @return array
-     */
-    protected function fetchMediaInfo()
-    {
-        $media = $this->getMedia();
-        if ($media && ($data = $media->data())) {
-            return array(
-                'size' => $data->file->size,
-                'width' => $data->file->width,
-                'height' => $data->file->height,
-                'name' => isset($data->file->name) ? $data->file->name : null,
-                'ratio' => $data->file->ratio,
-                'remotes' => $this->toArray($data->remotes)
-            );
-        }
-        return false;
     }
 
     protected function generateNamedVersion($format)
@@ -650,10 +696,54 @@ class Handler
         }
         return null;
     }
-    protected function toArray($object) {
-        $new = array();
-        foreach ($object as $key => $val)
-            $new[$key] = is_object($val) ? $this->toArray($val) : $val;
-        return $new;
+
+    /**
+     * Format a media response to something we can cache / serve
+     *
+     * @param object $media
+     * @return array
+     */
+    protected function formatMedia($media)
+    {
+        $remotes = isset($media->remotes) ? $media->remotes : array();
+        foreach ($remotes as &$remote) {
+            $remote = (array) $remote;
+        }
+        $values = array(
+            'id' => $media->id,
+            'tags' => $media->tags,
+            'scalesTo' => $media->scalesTo,
+            'ending' => $media->scalesTo->ending,
+            'host' => $media->host,
+            'name' => $media->name,
+            'status' => $media->status,
+            'remotes' => (array) $remotes,
+            'file' => array(
+                'width' => $media->file->width,
+                'height' => $media->file->height,
+                'ratio' => $media->file->ratio,
+                'size' => $media->file->size,
+                'type' => $media->file->type,
+                'url' => $media->file->url
+            )
+        );
+        return $values;
+    }
+
+    /**
+     * Replace hyphens from file name to make it more readable
+     * and searchable
+     * 
+     * @param string $name
+     * @return string
+     */
+    protected static function parseFilename($name)
+    {
+        $name = str_replace(
+            array('_'),
+            array(' '),
+            $name
+        );
+        return $name;
     }
 }

@@ -4,17 +4,18 @@
 }
 
 {run-once}
-{ezcss( array('jquery.jcrop.css', 'keymedia.css') )}
+{foreach ezcssfiles(array('jquery.jcrop.css', 'keymedia.css')) as $file}
+<link rel="stylesheet" type="text/css" href="{$file}?v2.0.0" />
+{/foreach}
 {ezscript_require( array(
     'ezjsc::jquery',
-    'libs/underscore-min.js',
-    'libs/backbone-min.js',
+    'libs/lodash.js',
+    'libs/backbone.js',
 ))}
 {ezscript( array(
     'libs/handlebars.js',
+    'libs/plupload/moxie.js',
     'libs/plupload/plupload.js',
-    'libs/plupload/plupload.html4.js',
-    'libs/plupload/plupload.html5.js',
     'libs/jquery.jcrop.min.js',
 
     'keymedia/ns.js',

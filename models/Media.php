@@ -24,10 +24,8 @@ class Media
      */
     public function __construct($data = array())
     {
-        if ($data)
-            $this->_data = (object) $data;
-        else
-            $this->_data = (object) array();
+        $data = $data ?: array();
+        $this->_data = (object) $data;
     }
 
     /**
@@ -38,8 +36,7 @@ class Media
      */
     public function __get($key)
     {
-        switch ($key)
-        {
+        switch ($key) {
             case 'id': $key = $this->idAttribute(); break;
             case 'size': return $this->size();
             case 'ending': return $this->ending();
@@ -61,7 +58,19 @@ class Media
     public function attribute($key)
     {
         if ($key === 'data') return $this->data();
+        if ($key === 'file') return (array) $this->file;
+        if ($key === 'remotes') return (array) $this->remotes;
         return $this->$key;
+    }
+
+    /**
+     * Return valid attribute keys
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return array('id', 'url', 'tags', 'scalesTo', 'ending', 'host', 'name', 'file', 'remotes', 'status');
     }
 
     /**
@@ -108,7 +117,7 @@ class Media
      */
     public function size()
     {
-        return array($this->file->width, $this->file->height);
+        return isset($this->file) ? array($this->file->width, $this->file->height) : false;
     }
 
     /**
@@ -135,7 +144,11 @@ class Media
      */
     public function box()
     {
-        return new Box($this->file->width, $this->file->height);
+        $file = $this->file;
+        if (!is_object($file)) {
+            user_error("Media::box() file is not an object; " . gettype($file));
+        }
+        return new Box($file->width, $file->height);
     }
 
     /**
@@ -171,7 +184,6 @@ class Media
      */
     public static function fitToBox($width, $height, $boxWidth, $boxHeight)
     {
-
         $formatW = $width;
         $formatH = $height;
 
@@ -190,29 +202,24 @@ class Media
 
         // Identical ratio - no change needed
         if ($formatRatio == $outerRatio) {
-
             $width = $outerW;
             $height = $outerH;
-
-
         }
         else if ($formatRatio == 1) {
-            if ($outerRatio > 1)
-            {
+            if ($outerRatio > 1) {
                 $width = $outerH;
                 $height = $outerH;
                 $x = floor(($outerW - $width) / 2);
                 $y = 0;
             }
-            elseif ($outerRatio < 1)
-            {
+            elseif ($outerRatio < 1) {
                 $width = $outerW;
                 $height = $outerW;
                 $x = 0;
                 $y = floor(($outerH - $height) / 2);
             }
         }
-        else if ($formatRatio < 1) {
+        elseif ($formatRatio < 1) {
             if ($outerRatio == 1) {
                 $height = $outerH;
                 $width = (int)($height * $formatRatio);
@@ -220,8 +227,7 @@ class Media
                 $y = 0;
 
             }
-            else
-            {
+            else {
                 // UNSURE !!!
                 if ($outerRatio > $formatRatio) {
                     $width = (int)($outerH * $formatRatio);
@@ -229,8 +235,7 @@ class Media
                     $x = floor(($outerW - $width) / 2);
                     $y = floor(($outerH - $height) / 2);
                 }
-                elseif ($outerRatio < $formatRatio)
-                {
+                elseif ($outerRatio < $formatRatio) {
                     $height = (int)($outerW / $formatRatio);
                     $width = (int)($height * $formatRatio);
 
@@ -239,7 +244,7 @@ class Media
                 }
             }
         }
-        else if ($formatRatio > 1) {
+        elseif ($formatRatio > 1) {
             if ($outerRatio == 1) {
                 $width = $outerW;
                 $height = (int)($width / $formatRatio);
@@ -271,7 +276,6 @@ class Media
                 $x,$y,$x + $width,$y + $height,
             )
         );
-
     }
 
     /**
@@ -281,8 +285,7 @@ class Media
      */
     public function data()
     {
-        if (!$this->_data)
-        {
+        if (!$this->_data) {
             return false;
         }
         $idAttribute = $this->idAttribute();

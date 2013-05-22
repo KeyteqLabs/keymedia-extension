@@ -35,7 +35,7 @@ class KeyMedia extends \ezote\lib\Controller
     public function dashboard()
     {
         return self::response(
-            array('backends' => $this->backends()),
+            array('backends' => self::backends()),
             array(
                 'template' => 'design:dashboard/dashboard.tpl',
                 'left_menu' => 'design:dashboard/left_menu.tpl',
@@ -47,34 +47,27 @@ class KeyMedia extends \ezote\lib\Controller
     public function connection($id = null)
     {
         // Edit existing
-        if ($id)
-        {
-            $backend = Backend::first(compact('id'));
-        }
+        if ($id) $backend = Backend::first(compact('id'));
+        if (!isset($backend)) $backend = Backend::create();
 
-        if ($this->http->method('post'))
-        {
-            if (!isset($backend)) $backend = Backend::create();
-
-            $ezhttp = $this->http->ez();
-
-            $username = $ezhttp->variable('username', false);
-            $host = $ezhttp->variable('host', false);
-            $api_key = $ezhttp->variable('api_key', false);
-            $api_version = $ezhttp->variable('api_version', false);
+        $http = \ezote\lib\HTTP::instance();
+        if ($http->method('post')) {
+            $username = self::$http->variable('username', false);
+            $host = self::$http->variable('host', false);
+            $api_key = self::$http->variable('api_key', false);
+            $api_version = self::$http->variable('api_version', false);
 
             $data = compact('id', 'username', 'host', 'api_key', 'api_version');
 
             $this->save($backend, $data);
 
-            if ($redirectTo = $ezhttp->variable('redirect_to', false))
-            {
+            if ($redirectTo = self::$http->variable('redirect_to', false)) {
                 $id = $backend->attribute('id');
                 header("Location: {$redirectTo}/{$id}");
             }
         }
 
-        $backends = $this->backends();
+        $backends = self::backends();
         return self::response(
             compact('backend', 'backends'),
             array(
@@ -100,11 +93,16 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * eZJSCore method for saving a new scaled version
      */
-    public static function saveVersion(array $args = array())
+    public static function saveVersion($args = array(), $version = false)
     {
-        list($attributeId, $version) = $args;
-        if ($attributeId && $version)
-        {
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else {
+            $attributeId = $args;
+        }
+
+        if ($attributeId && $version) {
             $http = \eZHTTPTool::instance();
 
             $transformations = array(
@@ -117,21 +115,26 @@ class KeyMedia extends \ezote\lib\Controller
             // Store information on content object
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
 
-            $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
+            if (!$attribute) {
+                return array(
+                    'ok' => false,
+                    'error' => 'No such attribute / version combination exists'
+                );
+            }
 
+            $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
             $versionObject = \eZContentObjectVersion::fetchVersion($attribute->attribute('version'), $attribute->attribute('contentobject_id'));
 
-            if ($isKeymediaAttribute)
-            {
+            if ($isKeymediaAttribute) {
                 /**
                  * Update version modified
                  */
                 /** @var $versionObject \eZContentObjectVersion */
-                if ($versionObject)
-                {
+                if ($versionObject) {
                     $versionObject->setAttribute('modified', time());
-                    if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT)
+                    if ($versionObject->attribute('status') == \eZContentObjectVersion::STATUS_INTERNAL_DRAFT) {
                         $versionObject->setAttribute('status', \eZContentObjectVersion::STATUS_DRAFT);
+                    }
                     $versionObject->store();
                 }
 
@@ -151,8 +154,9 @@ class KeyMedia extends \ezote\lib\Controller
                 $backend = Backend::first(array('id' => $keymediaId));
                 $resp = $backend->addVersion($mediaId, $filename, $transformations);
 
-                if (isset($resp->error))
+                if (isset($resp->error)) {
                     $data = array('ok' => false, 'error' => $resp->error);
+                }
                 else {
                     $url = $resp->url;
                     $data = compact('name', 'url') + $transformations;
@@ -165,21 +169,25 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * eZJSCore method for browsing KeyMedia
      */
-    public static function browse(array $args = array())
+    public static function browse($args = array(), $version)
     {
         $criteria = array();
-        list($attributeId, $version) = $args;
-        if ($attributeId && $version)
-        {
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else
+            $attributeId = $args;
+        if ($attributeId && $version) {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
 
-            if ($isKeymediaAttribute)
-            {
+            if ($isKeymediaAttribute) {
                 $handler = $attribute->content();
                 $box = $handler->attribute('minSize');
-                $criteria['minWidth'] = $box->width();
-                $criteria['minHeight'] = $box->height();
+                if ($box) {
+                    $criteria['minWidth'] = $box->width();
+                    $criteria['minHeight'] = $box->height();
+                }
                 $backend = $handler->attribute('backend');
             }
             else
@@ -192,18 +200,17 @@ class KeyMedia extends \ezote\lib\Controller
                     return array('error' => 'No DAM is configured');
             }
         }
-        $http = \eZHTTPTool::instance();
-        $q = $http->variable('q', '');
+        $q = self::$http->variable('q', '');
         $width = 160;
         $height = 120;
-        $offset = $http->variable('offset', 0);
-        $limit = $http->variable('limit', 25);
+        $offset = self::$http->variable('offset', 0);
+        $limit = self::$http->variable('limit', 25);
 
         $results = $backend->search($q, $criteria, compact('width', 'height', 'offset', 'limit'));
 
         $keymediaId = $backend->id;
         $data = compact('results', 'keymediaId');
-        return $data;
+        return self::response($data, array('type' => 'json'));
     }
 
     /**
@@ -213,12 +220,23 @@ class KeyMedia extends \ezote\lib\Controller
     {
         $http = eZHTTPTool::instance();
         $httpFile = eZHTTPFile::fetch('file');
+        $ok = false;
 
         $attributeId = $http->postVariable('AttributeID');
+        $ok = is_numeric($attributeId) ?: 'Non-numeric attributeId: Send keymedia-attributeid or ezoe-attributeid';
+
         $version = $http->postVariable('ContentObjectVersion');
+        $ok = is_numeric($version) ?: 'Non-numeric version';
+
+        if (!$ok) {
+            return array(
+                'ok' => false,
+                'error' => $ok
+            );
+        }
 
         $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-        $isKeymediaAttribute = ($attribute->attribute('data_type_string') == 'keymedia' ? true : false);
+        $isKeymediaAttribute = $attribute->attribute('data_type_string') === 'keymedia';
 
         if ($isKeymediaAttribute)
         {
@@ -228,7 +246,6 @@ class KeyMedia extends \ezote\lib\Controller
 
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
-            $tpl->setVariable('excludeJS', true);
             return array(
                 'media' => $media->data(),
                 'toScale' == $handler->attribute('toscale'),
@@ -264,17 +281,28 @@ class KeyMedia extends \ezote\lib\Controller
     /**
      * Get media preview
      */
-    public static function media(array $args = array())
+    public static function media($args = array(), $version)
     {
-        list($attributeId, $version) = $args;
-        if ($attributeId === 'ezoe')
-        {
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else {
+            $attributeId = $args;
+        }
+
+        if ($attributeId === 'ezoe') {
             /**
              * Use the first DAM
              */
             $backend = self::defaultBackend();
             if ($backend) {
                 $media = $backend->get($version);
+                if (!$media) {
+                    return self::response(
+                        array('error' => "No media by id $version was found"),
+                        array('type'=>'json')
+                    );
+                }
                 $media = $media->data();
                 $media->keymediaId = $backend->id;
 
@@ -304,46 +332,56 @@ class KeyMedia extends \ezote\lib\Controller
                 $classList = $keymediaINI->variable('EditorVersion', 'ClassList');
                 $viewModes = $keymediaINI->variable('EditorVersion', 'ViewModes');
 
-                return compact('media', 'toScale', 'classList', 'viewModes');
+                return self::response(compact('media', 'toScale', 'classList', 'viewModes'), array('type' => 'json'));
             }
             else
-                return array('error' => 'No DAM is configured');
+                return self::response(array('error' => 'No DAM is configured'), array('type' => 'json'));
         }
         else if ($attributeId && $version)
         {
             $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
             $handler = $attribute->content();
-            if ($handler && $media = $handler->attribute('media'))
-            {
-                $toScale = $handler->attribute('toscale');
-                $media = $media->data();
+            if ($handler) {
+                $media = $handler->attribute('media');
+                if ($media) {
+                    $toScale = $handler->attribute('toscale');
+                    $media = $media->data();
+                }
             }
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
-            $tpl->setVariable('excludeJS', true);
             $content = $tpl->fetch('design:content/datatype/edit/keymedia.tpl');
-            return compact('media', 'content', 'toScale');
+            $content = trim($content);
+            return self::response(compact('media', 'content', 'toScale'), array('type' => 'json'));
         }
     }
 
     /**
      * eZJSCore method for adding tags to a remote media
      */
-    public static function tag(array $args = array())
+    public static function tag($args = array(), $version = false)
     {
-        list($attributeId, $version) = $args;
-        if ($attributeId && $version)
-        {
-            $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
-            $handler = $attribute->content();
-            $backend = $handler->attribute('backend');
-            $http = \eZHTTPTool::instance();
-            $tags = (array) $http->variable('tags');
-            $id = $http->variable('id');
-            $media = $backend->tag(compact('id'), $tags);
-            return $media->data();
-        }
-        return false;
+        $http = \eZHTTPTool::instance();
+
+        $id = $http->variable('id');
+        $tags = (array) $http->variable('tags');
+
+        if (is_array($args))
+            list($attributeId, $version) = $args;
+        else
+            $attributeId = $args;
+
+        if (!$attributeId || !is_numeric($attributeId))
+            return array('Missing attribute id');
+        if (!$version || !is_numeric($version))
+            return array('Missing version');
+        if (!$id)
+            return array('Missing media id');
+
+        $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+        $handler = $attribute->content();
+        $media = $handler->tag($tags);
+        return $media ? $media->data() : false;
     }
 
     /***
@@ -378,7 +416,7 @@ class KeyMedia extends \ezote\lib\Controller
         return -1;
     }
 
-    protected function backends()
+    protected static function backends()
     {
         return Backend::find();
     }
@@ -399,7 +437,7 @@ class KeyMedia extends \ezote\lib\Controller
         return $backend->store();
     }
 
-    protected function defaultBackend()
+    protected static function defaultBackend()
     {
         $ini = \eZINI::instance('keymedia.ini');
         if ($ini->hasVariable('KeyMedia', 'DefaultBackend')) {

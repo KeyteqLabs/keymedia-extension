@@ -63,11 +63,13 @@ KeyMedia.views.Upload = Backbone.View.extend({
         return this;
     },
 
-    progress : function(up, file) {
+    progress : function(up, file)
+    {
         this.$('.progress').css('width', file.percent + '%');
     },
 
-    added : function(up, files) {
+    added : function(up, files)
+    {
         up.start();
         // Show loader
         this.$('.loader').removeClass('hide');
@@ -75,15 +77,15 @@ KeyMedia.views.Upload = Backbone.View.extend({
         //this.$('.upload-progress').show();
     },
 
-    render : function(response) {
-        var button = this.$('#' + this.browseButton),
-            text = button.val() + ' (Max ' + this.maxSize + ')';
-        button.val(text);
+    render : function(response)
+    {
+        var button = this.$('#' + this.browseButton);
+        button.val(button.val() + ' (Max ' + this.maxSize + ')');
 
         var settings = {
             runtimes : 'html5,flash,html4',
             container : this.browseContainer,
-            flash_swf_url : '/extension/keymedia/design/standard/javascript/libs/plupload/plupload.flash.swf',
+            flash_swf_url : '/extension/keymedia/design/standard/javascript/libs/plupload/Moxie.swf',
             browse_button : this.browseButton,
             max_file_size : this.maxSize,
             url : this.url(),
@@ -95,12 +97,10 @@ KeyMedia.views.Upload = Backbone.View.extend({
             headers : this.headers
         };
 
-        if ($('#ezxform_token_js').length)
-        {
-            /**
-             * Ugly hack to go with ezformtoken
-             */
-            settings.multipart_params.ezxform_token = $('#ezxform_token_js').attr('title');
+        var $formtoken = $('#ezxform_token_js');
+        if ($formtoken.length > 0) {
+            // Hack to inject ezformtoken in upload request
+            settings.multipart_params.ezxform_token = $formtoken.attr('title');
         }
         this.uploader = new plupload.Uploader(settings);
         this.uploader.init();

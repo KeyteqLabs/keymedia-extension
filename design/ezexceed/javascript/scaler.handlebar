@@ -1,0 +1,11 @@
+<div class="customattributes"></div>
+
+<section class="keymedia-crop">
+    <ul class="nav nav-pills inverted"></ul>
+</section>
+
+<div class="keymedia-crop-container">
+    <div class="image-wrap">
+        <img src="{{media}}" />
+    </div>
+</div>

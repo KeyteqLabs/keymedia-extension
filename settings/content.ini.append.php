@@ -12,6 +12,10 @@ IsInline[keymedia]=image
 CustomAttributes[]
 CustomAttributes[]=mediaId
 CustomAttributes[]=keymediaId
+CustomAttributes[]=mediaid
+CustomAttributes[]=keymediaid
+CustomAttributes[]=media_id
+CustomAttributes[]=keymedia_id
 CustomAttributes[]=image_url
 CustomAttributes[]=x1
 CustomAttributes[]=y1

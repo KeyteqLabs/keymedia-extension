@@ -11,7 +11,7 @@ KeyMedia.views.Modal = Backbone.View.extend({
 
     initialize : function(options)
     {
-        _.bindAll(this, 'render');
+        _.bindAll(this);
         return this;
     },
 

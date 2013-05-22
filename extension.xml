@@ -8,11 +8,11 @@
     </metadata>
 
     <dependencies>
-	<uses>
+        <uses>
             <extension name="ezexceed" />
-	</uses>
+        </uses>
         <requires>
             <extension name="ezote" />
-	</requires>
+        </requires>
     </dependencies>
 </software>

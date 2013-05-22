@@ -16,9 +16,9 @@
     <div class="new-wrap"{if $media} style="display:none"{/if}>
         <span class="kp-icon50 pictures-icon"></span>
 
-        <div class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
-            <button type="button" class="upload" id="keymedia-local-file-{$attribute.id}">{'Upload new media'|i18n( 'content/edit' )}</button>
-        </div>
+        <span class="upload-container" id="keymedia-local-file-container-{$attribute.id}">
+            <button type="button" class="upload" id="keymedia-local-file-{$attribute.id}">{'Upload new media'|i18n('keymedia')}</button>
+        </span>
     </div>
 
 
@@ -28,9 +28,9 @@
         {$media.name|wash}
         </p>
         <div class="tagger">
-            <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n( 'content/edit' )}" />
+            <input type="text" class="tagedit" placeholder="{'Add a tag'|i18n('keymedia')}" />
             <button type="button" class="tagit">
-                {'Add tag'|i18n( 'content/edit' )}
+                {'Add tag'|i18n('keymedia')}
             </button>
             <ul>
             </ul>
@@ -39,5 +39,5 @@
     {/if}
 
 {else}
-    <p class="error">{'No KeyMedia connection for content class'|i18n( 'keymedia' )}</p>
+    <p class="error">{'No KeyMedia connection for content class'|i18n('keymedia')}</p>
 {/if}

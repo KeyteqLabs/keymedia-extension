@@ -221,15 +221,17 @@ class Connector extends \keymedia\models\ConnectorBase
             $thumbUrl = '//' . $media->host . '/' . $width . 'x' . $height . '/' . $media->_id . '.' . $ending;
         }
         $thumb = (object) array('url' => $thumbUrl);
+        $file = $media->file;
         return (object) array(
             'id' => $media->_id,
             'tags' => $media->tags,
             'type' => $mimeParts[0],
-            'filesize' => $media->file->size,
-            'width' => (int) $media->file->width,
-            'height' => (int) $media->file->height,
+            'filesize' => $file->size,
+            'width' => (int) isset($file->width) ? $file->width : 0,
+            'height' => (int) isset($file->height) ? $file->height : 0,
             'thumb' => $thumb,
             'filename' => $media->name,
+            'shared' => isset($media->shared) ? $media->shared : array(),
             'scalesTo' => $media->scalesTo,
             'host' => $media->host
         );
@@ -271,10 +273,5 @@ class Connector extends \keymedia\models\ConnectorBase
         if (strpos($url, "http") === false) $url = 'http://' . $url;
 
         return $url;
-    }
-
-    protected function sign($username, $secret, $payload)
-    {
-        return hash_hmac('sha256', $payload, $secret);
     }
 }
