@@ -1,8 +1,12 @@
-# KeyMedia integration for eZ Publish
+# LEGACY KeyMedia integration for eZ Publish
+
+This branch contains legacy support for KeyMedia sites running Exceed 1.x versions
+It should normally never be used.
 
 ## Installation
 
 ### Dependencies
+
 _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
 ### Checkout from github
@@ -29,17 +33,20 @@ Head over to _Admin Dashboard_ -> _KeyMedia_ and add your KeyMedia API connectio
 
 In your ezoe.ini in settings/override you must add the following:
 
+```ini
 [EditorSettings]
 Plugins[]=keymedia
 
 [EditorLayout]
 Buttons[]=keymedia
+```
 
 The keymedia button could be placed anywhere in the editor. See the eZOe doc on how to arrange buttons
 
 ## Usage
 
 ### Lookup on tags
+
 ```php
 <?php
 $backend = Backend::first(array('id' => $backendId));
@@ -59,7 +66,7 @@ Its simple! Just head over to _mydomain.com/ezote/delegate/keymedia/user_test/ta
 and let you do tag search in them.
 You can look at this example class for code as well, its in _modules/user_test/UserTest.php_.
 
-## Upgrade old beta version
+## Upgrade ancient beta version
 
 KeyMedia was initially named *ezr_keymedia*, and if you have a copy of the extension named as that you must do a few steps:
 
