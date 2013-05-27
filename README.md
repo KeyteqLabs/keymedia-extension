@@ -5,8 +5,10 @@
 ### Dependencies
 _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
-* Exceed 1.1 installations should use `master` branch
-* Exceed 2 installations should use `exceed2` branch
+* Exceed 1.1 installations should use `legacy` branch
+* Exceed 2 installations should use the following tags:
+  * _exceed-2.0.0-rc.3_ <= 2.0.0-rc.3
+  * _exceed-2.0.0-rc.4_ >= 2.0.0-rc.4
 
 ### Checkout from github
 
