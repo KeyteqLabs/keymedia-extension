@@ -1,4 +1,4 @@
-define(['keymedia/view', './upload'], function(View, UploadView)
+define(['keymedia/view', './upload', 'keymedia/templates/browser', 'keymedia/templates/item', 'keymedia/templates/nohits'], function(View, UploadView, Browser, Item, NoHits)
 {
     return View.extend({
         tpl : null,
@@ -66,7 +66,7 @@ define(['keymedia/view', './upload'], function(View, UploadView)
                 id : this.model.id,
                 attribute : this.model.attributes
             };
-            this.$el.append(this.template('browser', context));
+            this.$el.append(Browser(context));
 
             this.$loader = this.$('img.loader');
             this.$body = this.$('.keymedia-thumbs');
@@ -83,11 +83,11 @@ define(['keymedia/view', './upload'], function(View, UploadView)
             var html = '';
             if (this.collection.length) {
                 html = this.collection.map(function(item) {
-                    return this.template('item', item.attributes);
+                    return Item(item.attributes);
                 }, this);
             }
             else {
-                html = this.template('nohits');
+                html = NoHits({});
             }
             
             if (clear)

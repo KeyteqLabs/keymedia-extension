@@ -1,6 +1,6 @@
-this["_keymediaTemplates"] = this["_keymediaTemplates"] || {};
+define(['handlebars'], function(Handlebars) {
 
-this["_keymediaTemplates"]["alert"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -11,9 +11,9 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   buffer += escapeExpression(((stack1 = helpers.translate),stack1 ? stack1.call(depth0, "The image is too small for this crop", options) : helperMissing.call(depth0, "translate", "The image is too small for this crop", options)))
     + "</p>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["browser"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
@@ -38,9 +38,9 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   buffer += escapeExpression(((stack1 = helpers.translate),stack1 ? stack1.call(depth0, "Load more", options) : helperMissing.call(depth0, "translate", "Load more", options)))
     + "\n    <img class=\"icon-16 hide loader\" src=\"/extension/ezexceed/design/ezexceed/images/loader.gif\" />\n</button>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["item"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
@@ -78,9 +78,9 @@ function program1(depth0,data) {
   if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n        </p>\n    </a>\n</div>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["nohits"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -91,9 +91,9 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   buffer += escapeExpression(((stack1 = helpers.translate),stack1 ? stack1.call(depth0, "No results", options) : helperMissing.call(depth0, "translate", "No results", options)))
     + "</h2>\n</div>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["scaledversion"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this, functionType="function";
@@ -134,9 +134,9 @@ function program1(depth0,data) {
   buffer += escapeExpression(stack1)
     + "</small>\n</a>\n<div class=\"overlay\"></div>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["scaler"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
@@ -148,9 +148,9 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   buffer += escapeExpression(stack1)
     + "\" />\n    </div>\n</div>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["scalerattributes"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, stack2, options, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
@@ -245,9 +245,9 @@ function program8(depth0,data) {
   if(stack2 || stack2 === 0) { buffer += stack2; }
   buffer += "\n</div>\n";
   return buffer;
-  });
+  })
 
-this["_keymediaTemplates"]["tag"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+return Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression;
@@ -263,4 +263,6 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   buffer += escapeExpression(stack1)
     + "\">×</button></span>\n";
   return buffer;
-  });
+  })
+
+});

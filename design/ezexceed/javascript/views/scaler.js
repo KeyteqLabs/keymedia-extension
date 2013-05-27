@@ -1,5 +1,5 @@
-define(['keymedia/view', './scaled_version', 'jquery-safe', 'jcrop'],
-    function(View, ScaledVersion, $)
+define(['keymedia/view', './scaled_version', 'jquery-safe', 'keymedia/templates/scaler', 'jcrop'],
+    function(View, ScaledVersion, $, Scaler)
 {
     return View.extend({
         // size of cropping media
@@ -101,7 +101,7 @@ define(['keymedia/view', './scaled_version', 'jquery-safe', 'jcrop'],
 
             this.updateScalerSize(media);
 
-            var content = this.template('scaler', {
+            var content = Scaler({
                 media : media.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
             });
             this.$el.append(content);

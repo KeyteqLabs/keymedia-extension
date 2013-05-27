@@ -1,4 +1,4 @@
-define(['keymedia/view'], function(View)
+define(['keymedia/view', 'keymedia/templates/tag'], function(View, Tag)
 {
     return View.extend({
         bindKeysScoped : true,
@@ -72,7 +72,7 @@ define(['keymedia/view'], function(View)
         renderTags : function() {
             var html = this.collection.map(function(tag)
             {
-                return this.template('tag', tag.toJSON());
+                return Tag(tag.toJSON());
             }, this);
             this.$('.tags').html(html);
         }

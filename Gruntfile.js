@@ -1,8 +1,17 @@
+var _ = require('lodash');
+
 var processName = function(filename)
 {
     // Removes the path prefix + file ending (.handlebar)
     return filename.split('/').pop().slice(0, -10);
 };
+
+var base = 'design/ezexceed/javascript/templates/';
+var templateNames = ['alert', 'browser', 'item', 'nohits', 'scaler', 'scaledversion', 'scalerattributes', 'tag'];
+var templates = {};
+_.each(templateNames, function(name) {
+    templates[base + name + '.js'] = base + name + '.handlebar';
+});
 
 module.exports = function(grunt) {
     grunt.initConfig({
@@ -24,11 +33,10 @@ module.exports = function(grunt) {
                 options: {
                     processName: processName,
                     wrapped: true,
-                    namespace: '_keymediaTemplates'
+                    namespace: false,
+                    amd: true
                 },
-                files: {
-                    'design/ezexceed/javascript/templates.js': 'design/ezexceed/**/*.handlebar'
-                }
+                files: templates
             },
             standard: {
                 options: {

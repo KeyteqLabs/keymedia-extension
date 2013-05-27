@@ -151,7 +151,7 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
                 className : 'icon-32',
                 statusText : 'Uploading…'
             };
-            this.$('.eze-image .thumbnail').html(this.template('shared/loader', data));
+            this.$('.eze-image .thumbnail').html(this._loader(data));
             this.$('.upload-from-disk').attr("disabled", "disabled");
         },
 
