@@ -37,15 +37,6 @@ module.exports = function(grunt) {
                     amd: true
                 },
                 files: templates
-            },
-            standard: {
-                options: {
-                    processName: processName,
-                    wrapped: true
-                },
-                files: {
-                    'design/standard/javascript/templates.js': 'design/standard/**/*.handlebar'
-                }
             }
         },
 

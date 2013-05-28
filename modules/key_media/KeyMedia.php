@@ -238,23 +238,23 @@ class KeyMedia extends \ezote\lib\Controller
         $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
         $isKeymediaAttribute = $attribute->attribute('data_type_string') === 'keymedia';
 
-        if ($isKeymediaAttribute)
-        {
+        if ($isKeymediaAttribute) {
             $handler = $attribute->content();
-            if (!$media = $handler->uploadFile($httpFile))
+            if (!$media = $handler->uploadFile($httpFile)) {
                 return array('error' => 'Failed upload');
+            }
 
             $tpl = \eZTemplate::factory();
             $tpl->setVariable('attribute', $attribute);
+            $content = trim($tpl->fetch('design:content/datatype/edit/keymedia.tpl'));
             return array(
                 'media' => $media->data(),
                 'toScale' == $handler->attribute('toscale'),
-                'content' => $tpl->fetch('design:content/datatype/edit/keymedia.tpl'),
+                'content' => $content,
                 'ok' => true
             );
         }
-        else
-        {
+        else {
             /**
              * If ezxmltext attribute is specified, use the first DAM
              */
@@ -269,12 +269,9 @@ class KeyMedia extends \ezote\lib\Controller
 
             $media = $backend->upload($filepath, $filename);
 
-            if (!$media)
-                return array('error' => 'Failed upload');
-            return array(
-                'media' => $media->data(),
-                'ok' => true
-            );
+            return !$media
+                ?  array('error' => 'Failed upload')
+                : array('media' => $media->data(), 'ok' => true);
         }
     }
 

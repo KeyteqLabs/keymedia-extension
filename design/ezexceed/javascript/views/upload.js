@@ -76,7 +76,7 @@ define(['keymedia/view', 'jquery-safe', 'plupload/plupload'],
             var settings = {
                 runtimes : 'html5,flash,html4',
                 container : this.browseContainer,
-                flash_swf_url : '/extension/keymedia/design/standard/javascript/libs/plupload/plupload.flash.swf',
+                flash_swf_url : eZExceed.config.plupload.flash_swf_url,
                 browse_button : this.browseButton,
                 max_file_size : this.maxSize,
                 url : this.model.urlRoot + '/keymedia::upload',
