@@ -1,4 +1,4 @@
-define(['edit/datatypes/base', 'keymedia/views/main',  './libs/handlebars', 'keymedia/config', './templates'],
+define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'],
     function(Base, MainView)
 {
     return Base.extend({
