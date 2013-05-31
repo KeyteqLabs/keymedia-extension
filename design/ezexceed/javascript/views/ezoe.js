@@ -76,7 +76,7 @@ define(['keymedia/view', 'jquery-safe', '../models', './browser', './scaler'],
                     BrowserView,
                     browserOptions,
                     browserContext
-                ).on('destruct', this.loadScaler);
+                ).once('stack.popped', this.loadScaler);
                 this.collection.search('');
             }
         },
