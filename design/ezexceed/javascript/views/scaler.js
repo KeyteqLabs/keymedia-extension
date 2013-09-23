@@ -102,7 +102,7 @@ define(['keymedia/view', './scaled_version', 'jquery-safe', 'keymedia/templates/
             this.updateScalerSize(media);
 
             var content = Scaler({
-                media : media.thumb(this.SIZE.w, this.SIZE.h, 'jpg')
+                media : media.thumb(this.SIZE.w, this.SIZE.h, 'jpg') + '?original=1'
             });
             this.$el.append(content);
 
