@@ -7,46 +7,47 @@ use \keymedia\models\v2\Connector;
 
 class BackendTest extends \PHPUnit_Framework_TestCase
 {
-    public function testUpload()
+    protected $backend;
+    protected $host = 'localhost';
+    protected $apiVersion = '2';
+
+    public function setUp()
     {
-        $host = 'localhost';
-        $apiVersion = '2';
-        $backend = Backend::create(array(
+        $this->backend = Backend::create(array(
             'id' => 1,
-            'host' => $host,
+            'host' => $this->host,
             'username' => 'test',
             'api_key' => 'test',
-            'api_version' => $apiVersion
+            'api_version' => $this->apiVersion
         ));
+    }
 
-        $mock = \Mockery::mock('keymedia\\models\\ConnectorInterface', array(
-            'search' => 1,
-            'setProgressCallback' => 1,
-            'searchByTerm' => 1,
-            'searchByTags' => 1,
-            'uploadMediaFromForm' => 1,
-            'getTimeout' => 1,
-            'setTimeout' => 1
-        ));
-
+    public function testUpload()
+    {
+        $host = $this->host;
         $filepath = __DIR__ . '/../fixtures/image.jpg';
         $filename = 'Bergen.jpg';
         $tags = array('foo', 'bar');
 
-        $mock
-            ->shouldReceive('uploadMedia')
-            ->with($filepath, $filename, $tags)
-            ->andReturnUsing(function($path, $name, $tags) {
-                $media = array(
-                    'id' => 1,
-                    'host' => $host
-                );
-                return compact('media');
+        $mock = \Mockery::mock('keymedia\\models\\ConnectorInterface', array(
+            'search' => 1,
+            'searchByTerm' => 1,
+            'searchByTags' => 1
+        ));
+
+        $mock->shouldReceive('uploadMedia')
+            ->with($filepath, $filename, $tags, \Mockery::any())
+            ->andReturnUsing(function($path, $name, $tags) use($host) {
+                $media = array('id' => 1, 'host' => $host);
+                $result = new \stdClass;
+                $result->media = $media;
+                $result->host = $host;
+                return $result;
             });
 
-        $backend->setConnector($apiVersion, $mock);
-        $media = $backend->upload($filepath, $filename, $tags);
+        $this->backend->setConnector($this->apiVersion, $mock);
+        $media = $this->backend->upload($filepath, $filename, $tags);
 
-        $this->assertIsA('keymedia\\models\\Media', $media);
+        $this->assertInstanceOf('keymedia\\models\\Media', $media);
     }
 }
