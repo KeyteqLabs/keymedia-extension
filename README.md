@@ -10,6 +10,11 @@ _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
   * _exceed-2.0.0-rc.3_ <= 2.0.0-rc.3
   * _exceed-2.0.0-rc.4_ >= 2.0.0-rc.4
 
+
+### Using composer
+
+	composer.phar install keyteqlabs/keymedia-extension --save
+
 ### Checkout from github
 
 	git clone git@github.com:KeyteqLabs/keymedia-extension.git /my/ez/extension/keymedia
