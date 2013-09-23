@@ -15,10 +15,11 @@ class Curl implements RequestInterface
      * Perform request
      * @param string $url
      * @param string $method
-     * @param string|array|null $payload
+     * @param string|array|null $params
+     * @param array $options
      * @return mixed
      */
-    public function perform($url, $method, $payload = null, array $options = array())
+    public function perform($url, $method, $params = null, array $options = array())
     {
         $options += array(
             'headers' => false,
@@ -55,7 +56,7 @@ class Curl implements RequestInterface
         }
 
         if ($options['headers']) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $options['headers']);
         }
 
         return curl_exec($ch);
