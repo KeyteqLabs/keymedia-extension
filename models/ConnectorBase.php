@@ -19,24 +19,23 @@ abstract class ConnectorBase implements ConnectorInterface
     protected $mediabaseDomain;
     /** @var string The callback used for progress-reporting. */
     protected $callback;
-    /** @var int Timout in seconds before the request is cancelled */
-    protected $timeout;
 
 
     /**
      * Returns an instance of the API.
      *
-     * @param $apiKey
-     * @param $username
-     * @param $mediabaseDomain
+     * @param string $apiKey
+     * @param string $username
+     * @param string $mediabaseDomain
+     * @param RequestInterface $request
      */
-    public function __construct($username, $apiKey, $mediabaseDomain)
+    public function __construct($username, $apiKey, $mediabaseDomain, RequestInterface $request)
     {
         $this->username = $username;
         $this->apiKey = $apiKey;
         $this->mediabaseDomain = $mediabaseDomain;
 
-        $this->timeout = 1800;
+        $this->request = $request;
     }
 
     /**
@@ -81,7 +80,7 @@ abstract class ConnectorBase implements ConnectorInterface
      */
     public function getTimeout()
     {
-        return $this->timeout;
+        return $this->request->timeout;
     }
 
     /**
@@ -89,7 +88,7 @@ abstract class ConnectorBase implements ConnectorInterface
      */
     public function setTimeout($timeout)
     {
-        $this->timeout = $timeout;
+        $this->request->timeout = $timeout;
     }
 
     /**
@@ -107,50 +106,17 @@ abstract class ConnectorBase implements ConnectorInterface
         $method = strtoupper($method);
         $params = array_filter($params);
 
+        foreach ($params as $k => $v) {
+            $params[$k] = is_array($v) ? implode(',', $v) : $v;
+        }
+
         $url = $this->getRequestUrl($action, $params);
 
-        $ch = curl_init();
-        switch ($method)
-        {
-            case 'PUT':
-                // Cant send arrays using curl, makes no sense in http
-                foreach ($params as $k => $v)
-                    $params[$k] = is_array($v) ? implode(',', $v) : $v;
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-                break;
-            case 'POST':
-                // Cant send arrays using curl, makes no sense in http
-                foreach ($params as $k => $v)
-                    $params[$k] = is_array($v) ? implode(',', $v) : $v;
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-                break;
-            case 'GET':
-                $joiner = strpos($url, '?') ? '&' : '?';
-                $url .= $joiner . http_build_query($params);
-                break;
-        }
-        curl_setopt($ch, CURLOPT_URL, $url);
-
-        if ($header = $this->signHeader($params))
-            $headers += $header;
-
-        if ($this->callback)
-        {
-            curl_setopt($ch, CURLOPT_NOPROGRESS, 0);
-            curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, $this->callback);
-        }
-
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        if (is_numeric($this->timeout))
-            curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-
-        if ($headers)
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $result = curl_exec($ch);
+        $options = array(
+            'headers' => $this->signHeader($params),
+            'callback' => $this->callback
+        );
+        $result = $this->request->perform($url, $method, $params, $options);
         return json_decode($result);
     }
 

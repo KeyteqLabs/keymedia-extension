@@ -290,7 +290,8 @@ class Backend extends \eZPersistentObject
                 $this->connection = $class;
             }
             else {
-                $connection = new $class($this->username, $this->api_key, $this->host);
+                $request = new request\Curl();
+                $connection = new $class($this->username, $this->api_key, $this->host, $request);
                 $this->connection = $connection;
             }
         }

@@ -20,7 +20,7 @@ interface ConnectorInterface
      * @param $username
      * @param $mediabaseDomain
      */
-    public function __construct($username, $apiKey, $mediabaseDomain);
+    public function __construct($username, $apiKey, $mediabaseDomain, RequestInterface $request);
 
     /**
      * Perform generic search on backend

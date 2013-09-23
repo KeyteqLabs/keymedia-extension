@@ -4,6 +4,7 @@ namespace keymedia\tests\models;
 
 use \keymedia\models\Backend;
 use \keymedia\models\v2\Connector;
+use \keymedia\models\ConnectorInterface;
 
 class BackendTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,6 +21,12 @@ class BackendTest extends \PHPUnit_Framework_TestCase
             'api_key' => 'test',
             'api_version' => $this->apiVersion
         ));
+    }
+
+    public function testGetConnection()
+    {
+        $con = $this->backend->connection();
+        $this->assertTrue($con instanceof ConnectorInterface);
     }
 
     public function testUpload()
