@@ -30,8 +30,7 @@ class Connector extends \keymedia\models\ConnectorBase
     {
         $payload = $options + $criteria;
         $results = $this->makeRequest('/media.json', $payload);
-        if ($results && isset($results->media))
-        {
+        if ($results && isset($results->media)) {
             $hits = $results->media;
             $total = $results->total;
             return (object) compact('hits', 'total');
@@ -182,13 +181,12 @@ class Connector extends \keymedia\models\ConnectorBase
             return null;
         }
 
-        if (ini_get('max_execution_time') < $this->timeout)
-            set_time_limit($this->timeout + 10);
+        if (ini_get('max_execution_time') < $this->request->timeout) {
+            set_time_limit($this->request->timeout + 10);
+        }
 
-        $file = '@' . $filename;
-        $file .= ';type=' . $this->mime($filename);
+        $file = '@' . $filename . ';type=' . $this->mime($filename);
 
-        // Must send mime type along
         if (isset($attributes['attributes'])) {
             $payload = $attributes + compact('file', 'name', 'tags');
         }

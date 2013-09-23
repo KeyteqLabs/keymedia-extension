@@ -20,7 +20,7 @@ interface ConnectorInterface
      * @param $username
      * @param $mediabaseDomain
      */
-    public function __construct($username, $apiKey, $mediabaseDomain);
+    public function __construct($username, $apiKey, $mediabaseDomain, RequestInterface $request);
 
     /**
      * Perform generic search on backend
@@ -30,20 +30,6 @@ interface ConnectorInterface
      * @return array
      */
     public function search(array $criteria = array(), array $options = array());
-
-    /**
-     *
-     * Sets the callback used for progressreporting.
-     * Check PHPDoc for documentation regarding callbacks.
-     * @link http://php.net/manual/en/language.pseudo-types.php
-     * It should support the four following arguments:
-     * downloadsize, downloadedsize, uploadsize, uploadedsize.
-     *
-     * @param $callback
-     *
-     * @return bool
-     */
-    public function setProgressCallback($callback);
 
     /**
      *
@@ -88,25 +74,4 @@ interface ConnectorInterface
      * @return mixed|null
      */
     public function uploadMedia($filename, $originalName, $tags = array(), $attributes = array());
-
-    /**
-     * Uploads media
-     *
-     * @param $fieldname
-     * @param array $tags
-     * @param array $attributes
-     *
-     * @return mixed|null
-     */
-    public function uploadMediaFromForm($fieldname, $tags = array(), $attributes = array());
-
-    /**
-     * @return int
-     */
-    public function getTimeout();
-
-    /**
-     * @param int $timeout
-     */
-    public function setTimeout($timeout);
 }
