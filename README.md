@@ -13,23 +13,23 @@ _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
 ### Using composer
 
-	composer.phar install keyteqlabs/keymedia-extension --save
+`composer.phar install keyteqlabs/keymedia-extension --save`
 
 ### Checkout from github
 
-	git clone git@github.com:KeyteqLabs/keymedia-extension.git /my/ez/extension/keymedia
+`git clone git@github.com:KeyteqLabs/keymedia-extension.git /my/ez/extension/keymedia`
 
 ### Navigate to the extension.
 
-	cd /my/ez/extension/keymedia
+`cd /my/ez/extension/keymedia`
 
 ### Install sql
 
-	mysql -u username -p -h host databasename < sql/mysql/install.sql
+`mysql -u username -p -h host databasename < sql/mysql/install.sql`
 
 ### Regenerate autoloads and clear cache
 
-	php bin/php/ezpgenerateautoloads.php; php bin/php/ezcache.php --clear-all --purge
+`php bin/php/ezpgenerateautoloads.php; php bin/php/ezcache.php --clear-all --purge`
 	
 ### Connect to KeyMedia
 
@@ -92,6 +92,18 @@ Size=300x100
 [large]
 Size=500x0
 ```
+
+## Developing
+
+Install dev dependencies and run tests:
+
+```
+composer.phar install
+phpunit tests/
+```
+
+In order to run all unit tests the repo need to be placed under `ezpublish/extension/keymedia`,
+it will then use the underlying ezpublish installation for extending `eZPersistentObject`
 
 ## Usage
 
