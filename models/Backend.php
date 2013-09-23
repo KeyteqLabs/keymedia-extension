@@ -5,7 +5,7 @@ namespace keymedia\models;
 use \stdclass;
 use \Exception;
 
-class Backend extends \eZPersistentObject
+class Backend extends eZPersistentObject
 {
     protected $connectors = array(
         '1' => 'keymedia\\models\\v1\\Connector',
@@ -89,6 +89,9 @@ class Backend extends \eZPersistentObject
      */
     public function search($q, array $criteria = array(), array $options = array())
     {
+        $con = $this->connection();
+        if (!$con) { return false; }
+
         $criteria += array(
             'attributes' => false,
             'collection' => false,
@@ -102,16 +105,12 @@ class Backend extends \eZPersistentObject
             'limit' => 10,
             'format' => 'simple'
         );
-        if ($con = $this->connection())
-        {
-            // Donts end format to backend, just used here
-            $format = $options['format'];
-            unset($options['format']);
-            $results = $con->search($criteria, $options);
-            return $results ? $this->_format($results, $format) : false;
-        }
 
-        return false;
+        // Donts end format to backend, just used here
+        $format = $options['format'];
+        unset($options['format']);
+        $results = $con->search($criteria, $options);
+        return $results ? $this->_format($results, $format) : false;
     }
 
     /**
@@ -204,7 +203,7 @@ class Backend extends \eZPersistentObject
     public function get($id)
     {
         $con = $this->connection();
-        if (!$con) return null;
+        if (!$con) { return false; }
 
         $data = $con->media($id);
         if (!$data) return null;
@@ -223,12 +222,13 @@ class Backend extends \eZPersistentObject
      */
     public function addVersion($id, $name, array $transformations = array())
     {
-        // Get connector
-        $connection = $this->connection();
+        $con = $this->connection();
+        if (!$con) { return false; }
 
-        $data = $connection->addVersion($id, $name, $transformations);
-        if (!isset($data->error))
+        $data = $con->addVersion($id, $name, $transformations);
+        if (!isset($data->error)) {
             $data->url = join('/', array('', $id, $data->version->slug));
+        }
         return $data;
     }
 
@@ -246,22 +246,20 @@ class Backend extends \eZPersistentObject
      */
     public function upload($filepath, $filename, array $tags = array(), array $data = array())
     {
-        if ($con = $this->connection())
-        {
-            $data += array('attributes' => array());
-            $result = $con->uploadMedia($filepath, $filename, $tags, $data);
-            if ($result && isset($result->media)) {
-                $media = new Media($result->media);
-                $host = isset($result->host) ? $result->host : $this->host;
-                $media->host($host);
-                return $media;
-            }
-            else {
-                throw new \Exception("Failed uploading media: $result");
-            }
-        }
+        $con = $this->connection();
+        if (!$con) { return false; }
 
-        return false;
+        $data += array('attributes' => array());
+        $result = $con->uploadMedia($filepath, $filename, $tags, $data);
+        if ($result && isset($result->media)) {
+            $media = new Media($result->media);
+            $host = isset($result->host) ? $result->host : $this->host;
+            $media->host($host);
+            return $media;
+        }
+        else {
+            throw new \Exception("Failed uploading media: $result");
+        }
     }
 
     /**
@@ -272,11 +270,7 @@ class Backend extends \eZPersistentObject
      */
     protected function simplify($results)
     {
-        $con = $this->connection();
-        $formatted = array();
-        foreach ($results as $media)
-            $formatted[] = $con->simplify($media);
-        return $formatted;
+        return array_map(array($this->connection(), 'simplify'), $results);
     }
 
     /**
@@ -286,14 +280,19 @@ class Backend extends \eZPersistentObject
      */
     public function connection()
     {
-        if (!is_object($this->connection))
-        {
-            if (!isset($this->connectors[$this->api_version]))
+        if (!is_object($this->connection)) {
+            if (!isset($this->connectors[$this->api_version])) {
                 throw new Exception("API version {$this->api_version} has no conncetor");
+            }
 
             $class = $this->connectors[$this->api_version];
-            $connection = new $class($this->username, $this->api_key, $this->host);
-            $this->connection = $connection;
+            if (is_object($class)) {
+                $this->connection = $class;
+            }
+            else {
+                $connection = new $class($this->username, $this->api_key, $this->host);
+                $this->connection = $connection;
+            }
         }
         return $this->connection;
     }
@@ -307,11 +306,10 @@ class Backend extends \eZPersistentObject
      */
     public function reportUsage($id, array $reference)
     {
-        if ($con = $this->connection())
-        {
+        $con = $this->connection();
+        if ($con) {
             $result = $con->reportUsage($id, $reference);
-            if ($result && isset($result->media))
-            {
+            if ($result && isset($result->media)) {
                 $media = new Media($result->media);
                 $media->host($this->host);
                 return $media;
@@ -319,5 +317,15 @@ class Backend extends \eZPersistentObject
         }
 
         return false;
+    }
+
+    /**
+     * Specify a connector to use when talking to backend
+     *
+     * @param string $version API version
+     * @param string $class Fully namespaced class name
+     */
+    public function setConnector($version, $class) {
+        $this->connectors[$version] = $class;
     }
 }

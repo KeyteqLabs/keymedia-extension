@@ -1,6 +1,6 @@
 <?php
 
-namespace keymedia\tests;
+namespace keymedia\tests\models;
 
 use \keymedia\models\Media;
 
