@@ -77,7 +77,7 @@ KeyMedia.views.Scaler = Backbone.View.extend({
         }
 
         this.$('img').attr({
-            src : this.media.thumb(this.size.w, this.size.h, 'jpg')
+            src : this.media.thumb(this.size.w, this.size.h, 'jpg') + '?original=1'
         });
         this.container = this.$('#keymedia-scaler-image');
 
