@@ -84,14 +84,24 @@ define(['keymedia/view', './scaled_version', 'jquery-safe', 'keymedia/templates/
 
         updateScalerSize : function(media)
         {
+            var file = media.get('file');
             var width = this.$el.width();
             var height = this.$el.height() - 100;
-            var file = media.get('file');
-            if (width > file.width) width = file.width;
-            if (height > file.height) height = file.height;
+            var ratio = file.width / file.height;
+
+            if (ratio > 1) {
+                // Wide media
+                if (file.width < width) width = file.width;
+                height = width * ratio;
+            }
+            else {
+                // Tall media
+                if (file.height < height) height = file.height;
+                width = height * ratio;
+            }
             this.SIZE = {
-                w : width,
-                h : height
+                w : parseInt(width, 10),
+                h : parseInt(height, 10)
             };
             return this;
         },
