@@ -6,9 +6,7 @@
 _eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
 
 * Exceed 1.1 installations should use `legacy` branch
-* Exceed 2 installations should use the following tags:
-  * _exceed-2.0.0-rc.3_ <= 2.0.0-rc.3
-  * _exceed-2.0.0-rc.4_ >= 2.0.0-rc.4
+* Exceed 2 installations should use latest `master`
 
 
 ### Using composer
@@ -53,6 +51,10 @@ Setting up versions the user should be able to produce, is done in the keymedia.
 This is the possible settings with examples:
 
 ```ini
+# Disable using focal point scaler strategy
+[Scaler]
+FocalPoint=false
+
 [Brightcove]
 PlayerId=98234987523
 PlayerKey=OM932489MGXCV009CXVOM3
