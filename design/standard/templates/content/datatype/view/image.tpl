@@ -1,4 +1,13 @@
-<img src="{$media.url}"
+{if is_set($focalPoint)|not}
+    {def $focalPoint = true()}
+    {if eq( 'false', ezini('Scaler', 'FocalPoint', 'keymedia.ini') ) }
+        {set $focalPoint = false()}
+    {/i}
+{/if}
+{if $format|is_array|not}
+    {set $focalPoint = false()}
+{/if}
+<img src="{$media.url}{if $focalPoint|not}?original=1{/if}"
     {if is_set($class)}class="{$class}"{/if}
     {if is_set($width)}width="{$width}"{/if}
     {if is_set($height)}height="{$height}"{/if}
