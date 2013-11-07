@@ -5,7 +5,7 @@
     {/i}
 {/if}
 {if $format|is_array|not}
-    {set $focalPoint = false()}
+    {set $focalPoint = true()}
 {/if}
 <img src="{$media.url}{if $focalPoint|not}?original=1{/if}"
     {if is_set($class)}class="{$class}"{/if}
