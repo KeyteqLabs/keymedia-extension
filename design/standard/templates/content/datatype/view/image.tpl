@@ -2,7 +2,7 @@
     {def $focalPoint = true()}
     {if eq( 'false', ezini('Scaler', 'FocalPoint', 'keymedia.ini') ) }
         {set $focalPoint = false()}
-    {/i}
+    {/if}
 {/if}
 {if $format|is_array|not}
     {set $focalPoint = true()}
