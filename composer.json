@@ -1,5 +1,6 @@
 {
     "name": "keyteqlabs/keymedia-extension",
+    "type": "ezpublish-legacy-extension",
     "description": "eZ Publish KeyMedia connectivity",
     "autoload": {
         "psr-0": {
