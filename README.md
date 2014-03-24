@@ -2,20 +2,9 @@
 
 ## Installation
 
-### Dependencies
-_eZ on the Edge_ extension from [Github](https://github.com/KeyteqLabs/ezote)
-
-* Exceed 1.1 installations should use `legacy` branch
-* Exceed 2 installations should use latest `master`
-
-
 ### Using composer
 
-`composer.phar install keyteqlabs/keymedia-extension --save`
-
-### Checkout from github
-
-`git clone git@github.com:KeyteqLabs/keymedia-extension.git /my/ez/extension/keymedia`
+`composer.phar require keyteqlabs/keymedia-ezpublish`
 
 ### Navigate to the extension.
 
