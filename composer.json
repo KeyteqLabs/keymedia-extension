@@ -11,10 +11,13 @@
         ]
     },
     "extra": {
-        "installer-name": "keymedia"
+        "installer-name": "keymedia",
+        "ezpublish-legacy-extension-name": "keymedia"
     },
     "require": {
-        "composer/installers": "*"
+        "composer/installers": "*",
+        "ezsystems/ezpublish-legacy-installer": "*",
+        "keyteqlabs/ezote": "1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
