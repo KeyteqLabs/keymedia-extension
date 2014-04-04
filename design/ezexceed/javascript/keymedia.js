@@ -25,7 +25,7 @@ define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'],
 
         save : function(id, data)
         {
-            this.model.attr(id, this.version, data);
+            this.editor.saveAttribute(this, data);
         },
 
         saved : function(model, response)
@@ -34,8 +34,6 @@ define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'],
                 this.view.trigger('saved');
         },
 
-        parseEdited : function()
-        {
-        }
+        parseEdited : function() {}
     });
 });

@@ -23,9 +23,10 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
                 media : data.bootstrap
             }, {parse : true});
             this.model.urlRoot = urlRoot;
-            this.model
-                .on('change', this.render)
-                .on('version.create', this.versionCreated);
+            this.model.on({
+                change: this.render,
+                'version.create': this.versionCreated
+            });
 
             this.collection = new Models.collection();
             this.collection.urlRoot = urlRoot;
