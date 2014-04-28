@@ -165,6 +165,32 @@
     margin: 0 0 0 5px;
 }
 
+@keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+    100% { opacity: 0.3; }
+}
+@-webkit-keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+    100% { opacity: 0.3; }
+}
+
+#keymedia-browser button.search.working {
+    -webkit-animation: pulse 3s infinite ease-in-out;
+    animation: pulse 3s infinite ease-in-out;
+}
+
+#keymedia-browser button.search {
+    border: 0;
+    border-radius: 10px;
+    padding: 0 12px;
+    font: normal 12px/20px Helvetica, Arial, sans-serif;
+    height: 24px;
+    background: orange;
+    margin: 0 0 0 5px;
+}
+
 #keymedia-browser a {
     color: #fff;
     text-decoration: none;

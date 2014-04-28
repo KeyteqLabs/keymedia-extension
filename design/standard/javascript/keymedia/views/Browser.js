@@ -14,8 +14,6 @@ KeyMedia.views.Browser = Backbone.View.extend({
             browser : Handlebars.compile($('#tpl-keymedia-browser').html()),
             item : Handlebars.compile($('#tpl-keymedia-item').html())
         };
-
-        return this.render();
     },
 
     events : {
@@ -39,7 +37,14 @@ KeyMedia.views.Browser = Backbone.View.extend({
     search : function(e)
     {
         e.preventDefault();
-        this.collection.search(this.$input.val());
+        var $btn = this.$('button.search');
+        var prevVal = $btn.text();
+        $btn.text('Searching ...').addClass('working');
+        this.collection
+            .search(this.$input.val())
+            .done(function() {
+                $btn.text(prevVal).removeClass('working');
+            });
     },
 
     render : function() {
@@ -67,7 +72,7 @@ KeyMedia.views.Browser = Backbone.View.extend({
             return view[0];
         });
         if (views.length > 0) {
-            this.$('.body').append(views);
+            this.$('.body').html(views);
         }
 
         return this;

@@ -13,6 +13,7 @@ $(function() {
                 prefix : container.data('prefix')
             });
             media.attr = model;
+
             var controller = new KeyMedia.views.KeyMedia({
                 el : container,
                 wrapper : wrapper,
@@ -22,12 +23,15 @@ $(function() {
                 type : container.find('.media-type'),
                 ending : container.find('.media-ending')
             }).render();
+
             var tagger = new KeyMedia.views.Tagger({
                 el : wrapper.find('.tagger'),
                 model : media
             }).render();
-            if (wrapper.data('bootstrap-media'))
-                media.set(wrapper.data('bootstrap-media'));
+
+            var bootstrapData = wrapper.data('bootstrap-media');
+            if (bootstrapData) media.set(bootstrapData);
+
             wrapper.data('objects', {
                 media : media,
                 tagger : tagger,
