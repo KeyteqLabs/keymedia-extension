@@ -228,6 +228,7 @@
 
 #keymedia-browser .item img {
     margin: 0;
+    background-image: url("/extension/keymedia/design/standard/images/transparent-background.png");
 }
 #keymedia-browser .item:hover .meta {
     display:-moz-box;
