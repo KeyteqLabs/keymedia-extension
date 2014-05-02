@@ -14,7 +14,7 @@ define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'],
             });
 
             this.model.on('autosave.saved', this.saved, this);
-            this.view.on('save', this.save, this);
+            this.listenTo(this.view, 'save', this.save);
         },
 
         render : function()
