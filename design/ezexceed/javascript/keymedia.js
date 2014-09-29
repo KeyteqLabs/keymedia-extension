@@ -1,12 +1,13 @@
-define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'],
-    function(Base, MainView)
+define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'], function(Base, MainView)
 {
-    return Base.extend({
+    return Base.extend(
+    {
         initialize : function(options)
         {
             _.bindAll(this);
             this.init(options);
             _.extend(this, _.pick(options, ['version']));
+
             this.view = new MainView({
                 el : options.el,
                 id : options.objectId,
@@ -25,17 +26,20 @@ define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'],
 
         save : function(id, data)
         {
-            this.model.attr(id, this.version, data);
+            var value = {};
+            value[id] = data;
+
+            var values = {};
+            values[this.version] = {attributes : value};
+
+            this.model.manualSave(values);
         },
 
         saved : function(model, response)
         {
-            if (response && _(response).has('attributes') && _(response.attributes).has(this.attributeId))
+            if (response && _(response).has('attributes') && _(response.attributes).has(this.attributeId)) {
                 this.view.trigger('saved');
-        },
-
-        parseEdited : function()
-        {
+            }
         }
     });
 });
