@@ -10,10 +10,10 @@
 {ezscript_require( array(
     'ezjsc::jquery',
     'libs/lodash.js',
-    'libs/backbone.js',
+    'libs/backbone.js'
 ))}
 {ezscript( array(
-    'libs/handlebars.js',
+    'libs/handlebars.runtime.js',
     'libs/plupload/moxie.js',
     'libs/plupload/plupload.js',
     'libs/jquery.jcrop.min.js',
