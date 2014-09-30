@@ -23,17 +23,16 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
                 media : data.bootstrap
             }, {parse : true});
             this.model.urlRoot = urlRoot;
-            this.listenTo(this.model, {
-                change: this.render,
-                'version.create': this.versionCreated
-            });
+            this.model
+                .on('change', this.render)
+                .on('version.create', this.versionCreated);
 
             this.collection = new Models.collection();
             this.collection.urlRoot = urlRoot;
             this.collection.id = data.id;
             this.collection.version = this.version;
 
-            this.listenTo(this, {saved: this.update});
+            this.on('saved', this.update, this);
 
             this.loadCSS();
         },
@@ -69,12 +68,12 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
         removeMedia : function(e)
         {
             e.preventDefault();
-            var attributes = {};
-            attributes[this.model.id] = this.$('.data').val('').serializeArray();
-            var data = {
-                mediaRemove: 1,
-                attributes: attributes
-            };
+            var data = this.$('.data').val('').serializeArray();
+
+            data.push({
+                name : 'mediaRemove',
+                value : 1
+            });
 
             this.trigger('save', this.model.id, data);
             this.hide(this.$('.eze-image'));
@@ -129,19 +128,18 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
             return this;
         },
 
-        changeMedia : function(context)
+        changeMedia : function(data)
         {
-            this.$('.media-id').val(context.id);
-            this.$('.media-host').val(context.host);
-            this.$('.media-type').val(context.type);
-            this.$('.media-ending').val(context.ending);
+            this.$('.media-id').val(data.id);
+            this.$('.media-host').val(data.host);
+            this.$('.media-type').val(data.type);
+            this.$('.media-ending').val(data.ending);
 
-            var attributes = {};
-            attributes[this.model.id] = this.$(':input').serializeArray();
-            var data = {
-                changeMedia: 1,
-                attributes: attributes
-            };
+            data = this.$(':input').serializeArray();
+            data.push({
+                name : 'changeMedia',
+                value : 1
+            });
 
             this.trigger('save', this.model.id, data);
         },
@@ -159,7 +157,7 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
 
         update : function()
         {
-            this.model.fetch().done(this.render);
+            this.model.fetch();
         },
 
         render : function()
