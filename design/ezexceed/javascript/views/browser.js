@@ -28,7 +28,7 @@ define(['keymedia/view', './upload', 'keymedia/templates/browser', 'keymedia/tem
             e.preventDefault();
             var id = this.$(e.currentTarget).data('id');
             var model = this.collection.get(id);
-            eZExceed.stack.pop({
+            var context = {
                 id : id,
                 host : model.get('host'),
                 type : model.get('type'),
@@ -36,7 +36,8 @@ define(['keymedia/view', './upload', 'keymedia/templates/browser', 'keymedia/tem
                 keymediaId : this.collection.keymediaId,
                 refresh : true,
                 model : model.toJSON()
-            });
+            };
+            eZExceed.stack.pop(context);
         },
 
         q : '',
