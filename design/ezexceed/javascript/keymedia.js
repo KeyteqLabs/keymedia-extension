@@ -14,7 +14,6 @@ define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'], function(B
                 version : options.version
             });
 
-            this.model.on('autosave.saved', this.saved, this);
             this.view.on('save', this.save, this);
         },
 
@@ -32,6 +31,7 @@ define(['shared/datatype', 'keymedia/views/main', 'keymedia/config'], function(B
             var values = {};
             values[this.version] = {attributes : value};
 
+            this.model.once('autosave.saved', this.saved, this);
             this.model.manualSave(values);
         },
 
