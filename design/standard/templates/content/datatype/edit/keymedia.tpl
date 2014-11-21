@@ -13,7 +13,7 @@
     'libs/backbone.js'
 ))}
 {ezscript( array(
-    'libs/handlebars.runtime.js',
+    'libs/handlebars.js',
     'libs/plupload/moxie.js',
     'libs/plupload/plupload.js',
     'libs/jquery.jcrop.min.js',
