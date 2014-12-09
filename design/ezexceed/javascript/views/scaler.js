@@ -1,5 +1,5 @@
-define(['keymedia/view', './scaled_version', 'jquery-safe', 'keymedia/templates/scaler', 'jcrop'],
-    function(View, ScaledVersion, $, Scaler)
+define(['keymedia/view', './scaled_version', 'jquery-safe', 'keymedia/templates/scaler', 'keymedia/templates/scalerattributes', 'jcrop'],
+    function(View, ScaledVersion, $, Scaler, Scalerattributes)
 {
     return View.extend({
         // size of cropping media
@@ -158,7 +158,7 @@ define(['keymedia/view', './scaled_version', 'jquery-safe', 'keymedia/templates/
                 }
 
                 this.$('.customattributes').html(
-                    this.template('scalerattributes', {
+                    Scalerattributes({
                         classes : classes,
                         viewmodes : viewsObj,
                         alttext : alttext
