@@ -12,7 +12,6 @@
             attribute=$attribute
             fetchinfo=true()
             nojs=true()
-            class="info"
         }
 
         {if eq($attribute.content.id, 0)|not}
