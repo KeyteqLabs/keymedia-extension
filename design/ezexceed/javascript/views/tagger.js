@@ -55,6 +55,8 @@ define(['keymedia/view', 'keymedia/templates/tag'], function(View, Tag)
         },
 
         inputChange : function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             var val = this.$input.val();
             this.$button.attr('disabled', val.length === 0);
             return this;
