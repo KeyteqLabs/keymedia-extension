@@ -685,6 +685,16 @@ class Handler
         if ($formatSize && ($media = $this->getMedia())) {
             list($versionWidth, $versionHeight) = $formatSize;
             $bestFit = $media->boxInside($versionWidth, $versionHeight);
+
+            if ($versionWidth == 0 || $versionHeight == 0) {
+                $aspectRatio = $media->file->width / $media->file->height;
+                if ($versionHeight == 0) {
+                    $versionHeight = round($versionWidth / $aspectRatio);
+                }
+                else if ($versionWidth == 0) {
+                    $versionWidth = round($versionHeight * $aspectRatio);
+                }
+            }
             $bestFit['size'] = array($versionWidth, $versionHeight);
 
             // Autocreate the best fit version

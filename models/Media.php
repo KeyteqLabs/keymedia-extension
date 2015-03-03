@@ -201,7 +201,7 @@ class Media
         $y = 0;
 
         // Identical ratio - no change needed
-        if ($formatRatio == $outerRatio) {
+        if ($formatRatio == $outerRatio || $formatW == 0 || $formatH == 0) {
             $width = $outerW;
             $height = $outerH;
         }
