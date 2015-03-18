@@ -90,6 +90,7 @@ class KeyMedia extends eZDataType
         if ($extras) {
             $data += json_decode($extras, true);
         }
+        $data['alttext'] = $http->variable($base . '_alttext_' . $attributeId, '');
 
         $handler = new Handler($attribute);
 

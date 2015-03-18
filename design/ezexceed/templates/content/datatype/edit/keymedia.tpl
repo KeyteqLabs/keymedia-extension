@@ -38,6 +38,11 @@
             media=$media
             handler=$handler}
 
+        <div class="keymedia-alttext">
+            <span class="help-block description">{'Alternate text'|i18n('keymedia')}</span>
+            <input type="text"
+                   name="{$attribute_base}_alttext_{$attribute.id}" value="{$media.alttext}" class="media-alttext data">
+        </div>
         <div class="keymedia-tags">
             <div class="input-append add-tag">
                 <input type="text" class="tag" placeholder="{'Write tag'|i18n('keymedia')}" data-autosave="off">

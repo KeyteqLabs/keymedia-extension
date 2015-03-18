@@ -39,5 +39,9 @@
         <source>Search for media</source>
         <translation>Søk etter media</translation>
     </message>
+    <message>
+        <source>Alternate text</source>
+        <translation>Alternativ tekst</translation>
+    </message>
 </context>
 </TS>

@@ -257,7 +257,7 @@ class Handler
         if ($backend) {
             $media = $backend->get($id);
             if ($media) {
-                $values = $this->formatMedia($media->data());
+                $values += $this->formatMedia($media->data());
                 $old = $this->values();
 
                 // If id is same, keep all crop data
