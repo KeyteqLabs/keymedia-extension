@@ -62,7 +62,13 @@ define(['keymedia/view', 'keymedia/models', './tagger', './upload', 'brightcove'
                 e.preventDefault();
                 require(['keymedia/views/scaler'], this.scale);
             },
-            'click .remove' : 'removeMedia'
+            'click .remove' : 'removeMedia',
+            'click .download' : 'downloadMedia'
+        },
+
+        downloadMedia : function(e)
+        {
+            window.location.href = this.model.getOriginalUrl();
         },
 
         removeMedia : function(e)

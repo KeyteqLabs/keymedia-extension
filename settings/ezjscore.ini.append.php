@@ -22,8 +22,13 @@ Functions[]=keymedia_saveVersion
 Class=keymedia\modules\key_media\KeyMedia
 Functions[]=keymedia_tag
 
+[ezjscServer_keymedia_mediaUrl]
+Class=keymedia\modules\key_media\KeyMedia
+Functions[]=keymedia_mediaUrl
 
 [ezjscServer_keymedia]
 Class=keymedia\modules\key_media\KeyMedia
 File=extension/keymedia/modules/key_media/KeyMedia.php
 TemplateFunction=false
+
+*/

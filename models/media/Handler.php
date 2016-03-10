@@ -463,6 +463,12 @@ class Handler
         return $media;
     }
 
+    public function getOriginalUrl()
+    {
+        $media = $this->getMedia(array('fetch' => true));
+        return $media->file->url;
+    }
+
     /**
      * Save or get values for this content object attribute
      *

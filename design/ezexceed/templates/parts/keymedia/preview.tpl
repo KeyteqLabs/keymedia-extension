@@ -4,6 +4,9 @@
 {if not( is_set( $media ) ) }
     {def $media = $handler.media}
 {/if}
+{if not( is_set( $showDownload ) ) }
+    {def $showDownload = ezini( 'KeyMedia', 'ShowDownload', 'keymedia.ini' )}
+{/if}
 
 {if $media}
     <div class="thumbnail">
@@ -21,5 +24,11 @@
         {/if}
         
         {include uri="design:parts/overlay_action_button.tpl" media=$media handler=$handler}
+
+        {if $showDownload}
+        <button type="button" class="btn btn-inverse edit-image download" style="left:70px">
+            Download
+        </button>
+        {/if}
     </div>
 {/if}

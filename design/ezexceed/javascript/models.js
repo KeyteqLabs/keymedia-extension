@@ -85,6 +85,14 @@ define(['backbone', 'jquery-safe'], function(Backbone, $)
             var url = this.url('saveVersion', id, this.get('version'));
 
             return Backbone.sync('create', {url: url}, {data: data});
+        },
+
+        getOriginalUrl : function()
+        {
+            var args = ['keymedia', 'mediaUrl', this.id, this.get('version')];
+
+            var url = args.join('/');
+            return eZExceed.transformUrl(url);
         }
     });
 

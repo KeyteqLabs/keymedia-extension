@@ -381,6 +381,28 @@ class KeyMedia extends \ezote\lib\Controller
         return $media ? $media->data() : false;
     }
 
+    public static function mediaUrl($args = array(), $version)
+    {
+        if (is_array($args)) {
+            list($attributeId, $version) = $args;
+        }
+        else {
+            $attributeId = $args;
+        }
+
+        $url = '';
+        $attribute = eZContentObjectAttribute::fetch($attributeId, $version);
+        $handler = $attribute->content();
+        if ($handler) {
+            $url = $handler->getOriginalUrl();
+
+        }
+        $filename = $handler->attribute('name');
+        header('Content-Type: binary/octet-stream');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        readfile($url);
+    }
+
     /***
      * Render a bunch of templates into an array and return them
      * Defaults to include `skeleton`
